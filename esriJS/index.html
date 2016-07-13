@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>SC Rivers</title>
+    <meta name="description" content="An interactive getting started guide for Brackets.">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.17/esri/css/esri.css">
+    <link rel="stylesheet" href="//js.arcgis.com/3.17/dijit/themes/nihilo/nihilo.css">
+    <script src="https://js.arcgis.com/3.17/"></script>
+
+</head>
+<style>
+    body {
+        background-image: url(images/coastRiv.JPG);
+        background-color: #bbb;
+        background-repeat: no-repeat;
+        background-blend-mode: overlay;
+        padding: 10px;
+    }
+    
+    h1,h2,h3 {color:#006699;margin:5px;}
+    h2 {
+        display: block;
+        text-align: center;
+    }
+    
+    #map {
+        height: 500px;
+        width: 95%;
+        margin:auto;
+    }
+    
+    #otherstuff {
+        height:350px;
+        width: 95%;
+        background-color: rgba(255, 255, 255, 0.5);
+        border: 1px solid #bbb;
+        font-family: Helvetica, Arial, sans-serif;
+        text-align: center;
+        margin:auto;
+    }
+    
+    #currentFlow {
+        position: relative;
+        display: inline-block;
+        padding:10px 0 0 0;
+        width:80%;
+        height:90px;
+        margin:auto;
+        text-align: center;
+        border-top:1px solid gray;
+    }
+    #currentFlow h3{margin:0 0 0.5em 0;}
+
+    #accessTable {
+        width:98%;
+        height:260px;
+        text-align: center;
+        margin: auto;
+    }
+    .esri-feature-table {height:90%;width:100%;}
+    
+    header {
+        display:inline-block;
+        width:100%;
+        border:1px solid #bbb;
+        margin-bottom:10px;
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    #flow {width:100%;height:100px;}
+    .clearfix{overflow:auto;}
+    
+/*DOJO ROTATOR TESTING*/
+    .rotator{
+        width:auto;
+        height:80%;
+        overflow:hidden;
+        margin: auto;
+    }
+    .rotator .pane {width:100%;}
+    #leftButton, #rightButton {display: inline-block;}
+    #usgsLink {
+        font-size:0.7em;
+        line-height: 2em;
+    }
+    #query {
+        position: relative;
+        z-index: 1000;
+        padding: 1em;
+        margin-top:20px;
+    }
+
+    #query select {
+        font-size: 16px;
+    }
+    
+</style>
+
+<body class="nihilo">
+    <header>
+        <h2>Accessing South Carolina's Great Rivers</h2>
+        <div id="dataSelect"></div>
+    </header>
+    
+    <div id="map"></div>
+    <div id="otherstuff" class="clearfix">
+        
+        <div id="accessTable" data-dojo-type="dijit/layout/ContentPane">
+            <h3>River Data</h3>
+            <div id="resultAccess"></div>
+        </div>
+        
+        <div>Select a River/Stream
+            <select id="streamName">
+                <option value="*">ALL</option>
+            </select>
+        </div>         
+        <div>Select a River Point Type
+            <select id="pointType">
+                <option value="*">ALL</option>
+            </select>
+        </div> 
+        
+        
+<!--        
+        <div id="flow">
+            <button id="leftButton" onclick="dojo.publish('myAutoRotator1/rotator/control', ['prev']);">Prev</button>
+            <div id="currentFlow">
+                <h3>Current Flow Conditions</h3>
+                <div id="myAutoRotator1" id="resultFlow" class="rotator"></div>
+            </div>
+            <button id="rightButton" onclick="dojo.publish('myAutoRotator1/rotator/control', ['next']);">Next</button>
+        </div>
+    </div>
+-->
+
+    <script>
+        var map;
+
+        require(["esri/map",
+                "esri/layers/FeatureLayer",
+                "esri/dijit/FeatureTable",
+                "dojo/dom",
+                "dojo/request",
+                "dojo/json",
+                "dojo/_base/array",
+                "dojo/on",
+                "esri/tasks/QueryTask",
+                "esri/tasks/query",
+                "esri/symbols/PictureMarkerSymbol",
+                "esri/renderers/SimpleRenderer",
+                "esri/plugins/FeatureLayerStatistics",
+                "dijit/layout/ContentPane",
+                "dijit/layout/BorderContainer",
+                "dojo/domReady!"
+            ],
+            
+            //DROPDOWN BOXES AT TOP
+                            
+                
+            function(Map, FeatureLayer,FeatureTable, dom, request, JSON, arrayUtil, on, QueryTask, Query,PictureMarkerSymbol,SimpleRenderer,FeatureLayerStatistics, ContentPane, BorderContainer) {
+                map = new Map("map", {
+                    basemap: "hybrid",
+                    center: [-81.0, 33.8], // longitude, latitude
+                    zoom: 8
+                });
+
+                //var broadGages = new FeatureLayer("http://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/broadGages/FeatureServer/0");
+       
+                /*
+                var canoeSymbol = new PictureMarkerSymbol('/rivers/images/canoe.svg',22,22);
+                var canoeSelect = new PictureMarkerSymbol('/rivers/images/canoeSelect.svg',22,22);
+                var canoeRender = new SimpleRenderer(canoeSymbol);
+                */
+
+                var riverAccess = new FeatureLayer("http://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/riversPortal/FeatureServer/0",{
+                    mode: FeatureLayer.MODE_SNAPSHOT,
+                    visible: true,
+                    outFields: ["*"]
+                });
+                
+                map.addLayer(riverAccess);
+            
+            
+            //This stuff will get unique values
+            //right now working on getting unique values from multiple fields and adding to select boxes separately. 
+            
+                var riverAccessStats = new FeatureLayerStatistics({layer: riverAccess});
+                var riverStatsParams = [{field: "streamName"},
+                                        {field:"pointType"}]
+                
+                for (var i = 0; i < riverStatsParams.length; i++){
+                    var param = riverStatsParams[i]
+                    riverAccessStats.getUniqueValues(param).then(function (result){
+                        var sel = document.getElementById(param.field);
+                        result.uniqueValueInfos.forEach(function(r){
+                            var opt = document.createElement('option');
+                            opt.innerHTML = r.value;
+                            opt.value = r.value;
+                            sel.appendChild(opt);
+                            });
+                        });
+                    }
+                
+                document.getElementById("streamName").onchange=function(){
+                    if (this.value == "*"){
+                        riverAccess.setDefinitionExpression("streamName LIKE '%'")
+                    } else {
+                        riverAccess.setDefinitionExpression("streamName = '" + this.value + "'")
+                    }
+                };
+                    
+                
+                /*
+                riverAccess.setRenderer(canoeRender);
+                riverAccess.setSelectionSymbol(canoeSelect);
+                */
+            
+                map.on("load", loadTable);
+            
+                function loadTable() {
+                    
+                    accessTable = new FeatureTable({
+                        featureLayer : riverAccess,
+                        map : map,
+                        showGridHeader:false,
+                        outFields: ["pointName","pointDesc","streamName","linkURL","streamMile","lat","long"],
+                        fieldInfos: [
+                            {name:"pointName",
+                             alias:"Access Name"
+                            },
+                            {name:"pointDesc",
+                             alias:"Access Notes"
+                            },
+                            {name:"streamName",
+                             alias:"Stream Name"
+                            },
+                            {name:"linkURL",
+                              alias: "Link", 
+                              format: {
+                                  template: "<a href='${value}'>More Info</a>"
+                              }
+                            },
+                            {name:"streamMile",
+                             alias:"Stream Mile"
+                            },
+                            {name:"lat",
+                             alias:"Latitude"
+                            },
+                            {name:"long",
+                             alias:"Longitude"
+                            }
+                        ],
+                    },'resultAccess');
+                    
+                    accessTable.startup();
+                };
+                
+            
+            
+            
+        /*    
+                map.addLayer(broadGages);
+                    
+                //get the data from USGS
+                //array of USGS site numbers for testing - WHEN DEVELOPING THE TOOL TO GET THIS INFO FROM THE FEATURE SERVICE, MAKE SURE DATA ARE SORTED IN DATABASE
+                var gages = ["02153200","02153500","02153551","021564493","02156500","02161000"]
+                var gageIndex = 0
+                
+                var gageString = gages.join();
+                var getURL = "http://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites="+gageString+"&parameterCd=00060,00065&siteStatus=active"
+                var resultDiv = dom.byId("resultFlow");
+
+                var panes = []
+                
+                function Pane(classes, html) {
+                    this.className = classes;
+                    this.innerHTML = html;
+                }
+                
+                request.get(getURL, {
+                    handleAs: "json"
+                }).then(function(data) {
+                    
+                    for (i=0; i < gages.length; i++) {
+                    
+                        var qIndex = i*2
+                        var stIndex = qIndex+1
+                        
+                        var gageName = data.value.timeSeries[qIndex].sourceInfo.siteName
+                        var cfs = data.value.timeSeries[qIndex].values[0].value[0].value
+                        var stage = data.value.timeSeries[stIndex].values[0].value[0].value
+                        var siteNo = data.value.timeSeries[qIndex].sourceInfo.siteCode[0].value
+
+                        var USGSlink = "http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo
+
+                        var html = "<span class='gage' id='gageName'>" + gageName + "</span><br>" + 
+                            "<span class='gage'> Flow (cfs): <span class='flow'>" + cfs + "</span></span><br>"+
+                            "<span class='gage'> Stage (ft): <span class='flow'>" + stage + "</span></span><br>"+
+                            "<span id='usgsLink'>" +
+                                "Data streamed from USGS Water Information System. <a href='"+USGSlink+"'>Visit USGS page for gage data.</a>"+
+                            "</span>"
+                        
+                        var paneClass = "pane pane"+i.toString();
+                        var newPane = new Pane(paneClass,html)
+                        panes.push(newPane);
+                        
+                    }
+                    
+                    dojo.require("dojox.widget.AutoRotator");
+                    dojo.require("dojox.widget.rotator.Fade");
+                    dojo.ready(function(){
+                        new dojox.widget.AutoRotator(
+                            {
+                                transition: "dojox.widget.rotator.fade",
+                                cycles:0,
+                                pauseOnManualChange: true,
+                                panes: panes
+                            },
+                            dojo.byId("myAutoRotator1")
+                        );
+                    });
+                    
+//THIS METHOD OF GETTING GAGE ID AND SELECTING ON THE MAP WILL ONLY WORK IF ORIGINAL GAGES ARE SORTED UPSTREAM TO DOWNSTREAM.
+                    
+                    var prevButton = dom.byId("leftButton"),
+                        nextButton = dom.byId("rightButton");
+                    
+//QUERY STUFF FOR SHOWING GAGES
+//NOT ACTUALLY SURE WHERE I NEED TO PUT THIS RIGHT NOW... 
+                    gageQueryTask = new QueryTask(broadGages)
+                    gageQuery = new Query();
+                    gageQuery.returnGeometry = true;
+                    gageQuery.outFields = ["siteID"]
+
+                    gageSelectSymbol = new esri.symbol.SimpleMarkerSymbol();
+                    gageSelectSymbol.setStyle(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE);
+                    gageSelectSymbol.setSize(20);
+                    gageSelectSymbol.setColor(new dojo.Color([100,200,150,0.7]));
+                    
+                    function gageResults(featureSet) {
+                        var gageFeatures = featureSet.features;
+                        for (var i=0, il=gageFeatures.length;i<il;i++){
+                            var graphic = gageFeatures[i];
+                            graphic.setSymbol(gageSelectSymbol);
+                            map.graphics.add(graphic);
+                        };
+                    };
+                    
+                    function executeGageQuery(gageID) {
+                        gageQuery.where = "siteID = " + gages[gageIndex];
+                        gageQueryTask.execute(gageQuery,gageResults);
+                    };              
+
+                    on(prevButton, "click", function(evt){
+                        if (gageIndex == 0) {
+                            gageIndex = gages.length - 1;
+                        } else {
+                            gageIndex -= 1;
+                        }
+                    });
+                    
+                    on(nextButton, "click", function(evt){
+                        if (gageIndex == gages.length-1) {
+                            gageIndex = 0;
+                        } else {
+                            gageIndex += 1;
+                        }
+                    });
+                    
+                    
+                },
+                    function(error) {
+                    resultDiv.innerHTML = error;
+                });    */     
+            
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
