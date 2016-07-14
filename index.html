@@ -112,19 +112,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a river by it's name.</h4>
+                    <h4 class="modal-title">Find a River.</h4>
                 </div>
                 <div class="modal-body">
-                    <p>This is where you can find access to a river that you know the name of.</p>
+                    <p>Do you know the name of the stream or river you want to access?<br> Find it here to zoom to it on the map.</p>
                     <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Streams and Rivers
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="stream-names">
-                            <li><a href="#">Action</a></li>
-                        </ul>
+                        <select class="form-control" id="stream-names">
+                            <option id="hold">Select a river name...</option>
+                        </select>
                     </div>
+                    <div id="stream-name-fill"></div>
+                    <button id="getStream" type="button" class="btn btn-primary" aria-pressed="false" >Zoom to River</button>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
