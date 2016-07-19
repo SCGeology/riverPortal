@@ -103,6 +103,11 @@
                             <li>Put the points into the side table. Instead of showing river miles, show distance from location.</li>
                         </ul>
                     </p>
+                    <form id="nearModal-form">
+                        <label for="name">Enter your address:</label>
+                        <input type="text" name="addressBox">
+                        <button type="button" class="btn btn-primary filter-ptn" data-dismiss="modal">Search</button>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -130,7 +135,7 @@
                     </div>
                     <div id="stream-name-fill"></div>
                     <button id="getStream" type="button" class="btn btn-primary filter-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary view-all" data-dismiss="modal">View All Rivers</button>
@@ -236,6 +241,7 @@
     <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.7/esri-leaflet.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.0/esri-leaflet-geocoder.js"></script>
     <script src="js/app.js"></script>
 </body>
 
