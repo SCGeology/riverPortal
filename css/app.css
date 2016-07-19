@@ -43,6 +43,11 @@ input[type="radio"], input[type="checkbox"] {
  .panel-body{
    width: 350px;
  }
+#searchBox{display:none;}
+.hydrograph{
+    width:99%;
+    padding:1%;
+}
 #sidebar-hide-btn {
   margin-top: -2px;
 }
@@ -84,6 +89,15 @@ input[type="radio"], input[type="checkbox"] {
 .table {
   margin-bottom: 0px;
 }
+#initial {
+    padding:1em;
+    text-align: center;
+}
+#panel-image {
+    width:98%;
+}
+#logo {width:50%;}
+
 #stream-name-fill{
     width:100%;
     height:1em;

@@ -14,7 +14,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-rc.1/leaflet.css">
+    <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">
     <link rel="stylesheet" href="css/app.css">
 
@@ -31,18 +31,12 @@
                 <a class="navbar-brand" href="#">SC Rivers</a>
             </div>
             <div class="navbar-collapse collapse">
-                <form class="navbar-form navbar-right" role="search">
-                    <div class="form-group has-feedback">
-                        <input id="searchbox" type="text" placeholder="Search" class="form-control">
-                        <span id="searchicon" class="fa fa-search form-control-feedback"></span>
-                    </div>
-                </form>
                 <ul class="nav navbar-nav">
                     <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;View Access List</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="near-btn"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;Access Near You</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="river-btn"><i class="fa fa-tint"></i>&nbsp;&nbsp;Find a River</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a Water Trail </a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map white"></i>&nbsp;&nbsp;Make Float Plan</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map white"></i>&nbsp;&nbsp;Make a Float Plan</a></li>
                 </ul>
             </div>
             <!--/.navbar-collapse -->
@@ -54,13 +48,13 @@
             <div class="sidebar-wrapper">
                 <div class="panel panel-default" id="features">
                     <div class="panel-heading">
-                        <h3 class="panel-title">River Points of Interest
+                        <h3 class="panel-title" id="stream-title">Paddling the Palmetto State
               <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
-                                <input type="text" class="form-control search" placeholder="Filter" />
+                                <input id="searchBox" type="text" class="form-control search" placeholder="Filter" />
                             </div>
                         </div>
                     </div>
@@ -80,6 +74,12 @@
                             <tbody class="list"></tbody>
                         </table>
                     </div>
+                    <div id="initial">
+                        <img id="logo" src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo"/>
+                        <h4>GET YOUR PADDLE ON!</h4>
+                        <p>Paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling </p>
+                        <img id="panel-image" src="images/lynches.JPG" alt="wateree river"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,8 +94,15 @@
                     <h4 class="modal-title">Find a river access near your location.</h4>
                 </div>
                 <div class="modal-body">
-                    <p>THIS IS WHERE YOU CAN SEARCH FOR A RIVER NEAR ACCESS NEAR YOU!
-                        <p>
+                    <p>This is where you can use a spatial query to find access near you. Steps needed:
+                        <ul>
+                            <li>Add a geocoder... maybe GeoNames, or ESRI's geocoder (does it take tokens?)</li>
+                            <li>Geocoder will return a point, use this point as the input for a spatial query. Visualize point on map with a marker.</li>
+                            <li>Use the <a href="https://esri.github.io/esri-leaflet/api-reference/tasks/query.html" target="_blank" >ESRI Leaflet functionality for spatial query.</a> </li>
+                            <li>Return the points... will they display the same? </li>
+                            <li>Put the points into the side table. Instead of showing river miles, show distance from location.</li>
+                        </ul>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -112,7 +119,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a River.</h4>
+                    <h4 class="modal-title">Find a River</h4>
                 </div>
                 <div class="modal-body">
                     <p>Do you know the name of the stream or river you want to access?<br> Find it here to zoom to it on the map.</p>
@@ -122,10 +129,11 @@
                         </select>
                     </div>
                     <div id="stream-name-fill"></div>
-                    <button id="getStream" type="button" class="btn btn-primary" aria-pressed="false" >Zoom to River</button>
+                    <button id="getStream" type="button" class="btn btn-primary filter-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
                     
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary view-all" data-dismiss="modal">View All Rivers</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -140,12 +148,20 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a River Trail.</h4>
+                    <h4 class="modal-title">Find a River Trail</h4>
                 </div>
                 <div class="modal-body">
                     <p>This is where you can find access on one of the many Blue Trails in the state.</p>
+                    <div class="dropdown">
+                        <select class="form-control" id="trail-names">
+                            <option id="hold">Select a trail name...</option>
+                        </select>
+                    </div>
+                    <div id="stream-name-fill"></div>
+                    <button id="getTrail" type="button" class="btn btn-primary filter-btn" aria-pressed="false" data-dismiss="modal">Zoom to Trail</button>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary view-all" data-dismiss="modal">View All Rivers</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -217,7 +233,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
-    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-rc.1/leaflet-src.js"></script>
+    <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.7/esri-leaflet.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
     <script src="js/app.js"></script>
