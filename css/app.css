@@ -97,6 +97,7 @@ input[type="radio"], input[type="checkbox"] {
     width:98%;
 }
 #logo {width:50%;}
+#clear-plan{float:right;}
 
 #stream-name-fill{
     width:100%;

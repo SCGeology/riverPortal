@@ -179,7 +179,13 @@
                     <h4 class="modal-title">Create a Float Plan!</h4>
                 </div>
                 <div class="modal-body">
-                    <p>This is where you can select a start and end point, and get all of the points in between. They will sorted from upstream to downstream and reported with river miles to make it easy to come up with a quick plan of action. Also, download the point into a format that can go in your GPS!</p>
+                    <p>Generate a list of points with the river miles. Click a point in the map to choose your start and end points.</p>
+                    <h5>Start Point: </h5>
+                    <p id="planStartText"></p>
+                    <h5>End Point:</h5>
+                    <p id="planEndText"></p>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Generate Plan</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" id="clear-plan">Clear Start and End</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -199,6 +205,11 @@
                     <h4 class="modal-title text-primary" id="feature-title"></h4>
                 </div>
                 <div class="modal-body" id="feature-info"></div>
+                <div class="modal-body" id="float-plan">
+                    <h4>Add to Float Plan</h4>
+                    <button type="button" class="btn btn-default btn-sm" id="planStart">Make Start Point</button>
+                    <button type="button" class="btn btn-default btn-sm" id="planEnd">Make End Point</button>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>

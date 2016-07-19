@@ -225,7 +225,11 @@ var accessLayer = L.esri.featureLayer({
                     }
 
                     $("#featureModal").modal("show");
-                    //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+                    planID = layer.feature.properties.pointID
+                    planName = layer.feature.properties.pointName
+                    planMiles = layer.feature.properties.streamMile
+                    planStream = layer.feature.properties.streamName
+                    coords = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
                 }
             });
             accessSearch.push({
@@ -378,6 +382,60 @@ $(".view-all").click(function() {
     $("#searchBox").hide();
 });
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// DEVELOP FLOAT PLAN TOOL
+// SELECT A START AND END POINT, RETURN ALL POINTS IN BETWEEN
+// IF MULTIPLE STREAMS, RETURN ERROR IF THOSE DO NOT CONNECT
+
+//This works bc onEachFeature assigns the variables on the click for the modal, and then it is sent to the float plan modal when the button is clicked
+//This is the initial stuff that happens on the map and getting the points.
+
+var planGroup = L.layerGroup().addTo(map); 
+
+var startCircle = L.circleMarker([0,0], {
+        radius:18,
+        fillOpacity:0,
+        color:"#00cc00"        
+    });
+var endCircle = L.circleMarker([0,0], {
+        radius:18,
+        fillOpacity:0,
+        color:"#ff3300"        
+    });
+
+$("#planStart").click(function(){
+    $("#planStartText").html(planName)
+    startID = planID
+    startMile = planMiles
+    startStream = planStream
+    startCircle.setLatLng(coords).addTo(planGroup);    
+});
+
+$("#planEnd").click(function(){
+    $("#planEndText").html(planName)
+    endID = planID
+    endMile = planMiles
+    endStream = planStream
+    endCircle.setLatLng(coords).addTo(planGroup);
+});
+
+var clearPlan = function() {
+    startID = "", $("#planStartText").html("")
+    endID = "", $("#planEndText").html("")
+    planGroup.clearLayers();
+}
+
+$("#clear-plan").click(function(){
+    clearPlan();
+});
+
+//Begin to query the data in between the points... 
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
 // Leaflet patch to make layer control scrollable on touch browsers
 var container = $(".leaflet-control-layers")[0];
 if (!L.Browser.touch) {
@@ -387,8 +445,6 @@ if (!L.Browser.touch) {
 } else {
     L.DomEvent.disableClickPropagation(container);
 }
-
-
 
 //NOT SURE IF I AM GOING TO INCLUDE ANY OF THIS OR NOT
 // Typeahead search functionality
