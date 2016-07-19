@@ -37,6 +37,7 @@
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="river-btn"><i class="fa fa-tint"></i>&nbsp;&nbsp;Find a River</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a Water Trail </a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map white"></i>&nbsp;&nbsp;Make a Float Plan</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="feedback-btn"><i class="fa fa-comment white"></i>&nbsp;&nbsp;Provide Feedback</a></li>
                 </ul>
             </div>
             <!--/.navbar-collapse -->
@@ -75,10 +76,10 @@
                         </table>
                     </div>
                     <div id="initial">
-                        <img id="logo" src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo"/>
+                        <img id="logo" src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" />
                         <h4>GET YOUR PADDLE ON!</h4>
-                        <p>Paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling </p>
-                        <img id="panel-image" src="images/lynches.JPG" alt="wateree river"/>
+                        <p>Paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling.</p>
+                        <img id="panel-image" src="images/lynches.JPG" alt="wateree river" />
                     </div>
                 </div>
             </div>
@@ -98,7 +99,7 @@
                         <ul>
                             <li>Add a geocoder... maybe GeoNames, or ESRI's geocoder (does it take tokens?)</li>
                             <li>Geocoder will return a point, use this point as the input for a spatial query. Visualize point on map with a marker.</li>
-                            <li>Use the <a href="https://esri.github.io/esri-leaflet/api-reference/tasks/query.html" target="_blank" >ESRI Leaflet functionality for spatial query.</a> </li>
+                            <li>Use the <a href="https://esri.github.io/esri-leaflet/api-reference/tasks/query.html" target="_blank">ESRI Leaflet functionality for spatial query.</a> </li>
                             <li>Return the points... will they display the same? </li>
                             <li>Put the points into the side table. Instead of showing river miles, show distance from location.</li>
                         </ul>
@@ -122,7 +123,8 @@
                     <h4 class="modal-title">Find a River</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Do you know the name of the stream or river you want to access?<br> Find it here to zoom to it on the map.</p>
+                    <p>Do you know the name of the stream or river you want to access?
+                        <br> Find it here to zoom to it on the map.</p>
                     <div class="dropdown">
                         <select class="form-control" id="stream-names">
                             <option id="hold">Select a river name...</option>
@@ -130,7 +132,7 @@
                     </div>
                     <div id="stream-name-fill"></div>
                     <button id="getStream" type="button" class="btn btn-primary filter-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary view-all" data-dismiss="modal">View All Rivers</button>
@@ -191,6 +193,53 @@
     </div>
     <!-- /.modal -->
 
+       <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Provide some feedback!</h4>
+          </div>
+          <div class="modal-body">        
+              <div>
+                <form id="contact-form">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="first-name">First Name:</label>
+                          <input type="text" class="form-control" id="first-name">
+                        </div>
+                        <div class="form-group">
+                          <label for="last-name">Last Name:</label>
+                          <input type="text" class="form-control" id="last-email">
+                        </div>
+                        <div class="form-group">
+                          <label for="email">Email:</label>
+                          <input type="text" class="form-control" id="email">
+                        </div>
+                      </div>
+                      <div class="col-md-8">
+                        <label for="message">Message:</label>
+                        <textarea class="form-control" rows="8" id="message"></textarea>
+                      </div>
+                      <div class="col-md-12">
+                        <p>
+                          <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Submit</button>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
     <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">

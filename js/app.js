@@ -46,6 +46,12 @@ $("#float-btn").click(function() {
     return false;
 });
 
+$("#feedback-btn").click(function() {
+    $("#feedbackModal").modal("show");
+    $(".navbar-collapse.in").collapse("hide");
+    return false;
+});
+
 $("#nav-btn").click(function() {
     $(".navbar-collapse").collapse("toggle");
     return false;
