@@ -117,7 +117,7 @@ var basemap = L.esri.basemapLayer("Imagery");
 
 // GET RIVER ACCESS DATA VIA ESRI LEAFLET FROM AGOL (FOR NOW, PROBABLY SWITCH TO SERVER)
 
-var access = "https://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/riversPortal/FeatureServer/0"
+var access = "http://arcgis:6080/arcgis/rest/services/RiverConservation/riverPortal/MapServer/0"
 
 var pTypes = {
     1: ["Canoe/Kayak Access", "canoe.svg", "canoe.svg"],
@@ -151,7 +151,7 @@ function getSide(val){
     if (val != null){
         return rSide[val]
     } else{
-        return "n/a"
+        return "na"
     }
 }
 
@@ -208,7 +208,7 @@ var accessLayer = L.esri.featureLayer({
         }
         if (feature.properties) {
             //THIS IS WHAT GOES IN THE MODAL    
-            var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
+            var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr><table>";
 
             layer.on({
                 click: function(e) {
@@ -432,10 +432,74 @@ var clearPlan = function() {
 }
 
 $("#clear-plan").click(function(){
-    clearPlan();
+    clearPlan()
 });
 
-//Begin to query the data in between the points... 
+//Begin to query the data in between the points...
+var getPoints = function(mileList,streamName){
+    
+    mileExpression = "streamMile <="+mileList[0].toString()+"AND streamMile >="+mileList[1].toString()+"AND streamName = '"+streamName+"'"
+    
+    accessLayer.query()
+        .where(mileExpression)
+        .run(function(error,floatPlanPoints,response){
+            console.log(floatPlanPoints);
+            for (var i=0;i < floatPlanPoints.features.length; i ++) {
+                pName = floatPlanPoints.features[i].properties.pointName
+                console.log(pName)
+            }
+    });
+}
+
+var getFloatPoints = function(){
+    
+    if (startStream === endStream){
+        var streamName = startStream
+        var mileList = [startMile,endMile]
+        getPoints(mileList,streamName);
+        
+    } else {
+        var cons = []
+//GOTTA FIGURE OUT THE FREAKING WHILE LOOP!!!!!!!!!!!!!!!!!!!!!~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!;LASJD;FAKJSD;FJASD
+        x = 0
+        while (x<3) {
+            compareConQuery(cons);
+            x++
+        }
+    }
+}
+    
+var compareConQuery = function(conList) {
+    if (conList.length == 0){
+        var firstCon = startStream
+    } else {
+        var conName = conList[conList.length-1]
+        var firstCon = conName.slice(0,conName.length-11)
+        alert(conName + " - " + firstCon)
+    }
+
+    var exp = "pointType = 8 AND streamName = '" + firstCon + "'AND streamMile = 0"
+
+    accessLayer.query()
+        .where(exp)
+        .run(function(error,conPoint,response){
+            var conPointName = conPoint.features[0].properties.pointName
+            conList.push(conPointName);
+            compare = conPointName.slice(0,conPointName.length-11) 
+            if (compare != endStream){
+                alert("keep going... " + compare)
+            } else if (compare == endStream) {
+                alert('you made it! '+ compare)
+            }
+        });
+}  
+
+
+//TO TEST INITIAL RETURN OF DATA
+$("#generate-plan").click(function(){
+    getFloatPoints();
+});
+    
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

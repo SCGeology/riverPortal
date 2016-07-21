@@ -51,8 +51,8 @@ input[type="radio"], input[type="checkbox"] {
 #sidebar-hide-btn {
   margin-top: -2px;
 }
-#aboutTabsContent {
-  padding-top: 10px;
+#modal-footer {
+  clear:both;
 }
 .progress-bar-full {
   width: 100%;
@@ -97,8 +97,16 @@ input[type="radio"], input[type="checkbox"] {
     width:98%;
 }
 #logo {width:50%;}
-#clear-plan{float:right;}
-
+.left-btn{
+    float:left;
+}
+.right-btn{
+    float:right;
+}
+#plan-points{
+    width:100%;
+    margin-bottom: 2em;
+}
 #stream-name-fill{
     width:100%;
     height:1em;
