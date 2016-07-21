@@ -91,7 +91,7 @@ function sidebarClick(id) {
 }
 
 function syncSidebar(field, filter) {
-    // Empty sidebar features 
+    // Empty sidebar features
     $("#feature-list tbody").empty();
     // Add features to side bar
     accessLayer.eachFeature(function(layer) {
@@ -141,7 +141,7 @@ function getType(val) {
     return pTypes[val];
 }
 function getSide(val){
-//accounting for nulls right now, but all data will have  a value in future, so we can delete this. 
+//accounting for nulls right now, but all data will have  a value in future, so we can delete this.
     if (val != null){
         return rSide[val]
     } else{
@@ -201,7 +201,7 @@ var accessLayer = L.esri.featureLayer({
             trailNames.push(feature.properties.waterTrail_Name)
         }
         if (feature.properties) {
-            //THIS IS WHAT GOES IN THE MODAL    
+            //THIS IS WHAT GOES IN THE MODAL
             var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
 
             layer.on({
@@ -324,7 +324,7 @@ $("#featureModal").on("hidden.bs.modal", function(e) {
     $(document).on("mouseout", ".feature-row", clearHighlight);
 });
 
-//ONCE ALL DATA LOADS, GET ALL THE RIVER and TRAIL NAMES AND ADD THEM TO THE DROPDOWN LISTS IN THE MODALS. 
+//ONCE ALL DATA LOADS, GET ALL THE RIVER and TRAIL NAMES AND ADD THEM TO THE DROPDOWN LISTS IN THE MODALS.
 accessLayer.on("load", function() {
     for (var i = 0; i < riverNames.length; i++) {
         val = riverNames.sort()[i];
@@ -351,7 +351,7 @@ $(".filter-btn").click(function(evt) {
 
     $("#initial").hide();
     $("#searchBox").show();
-    
+
     accessLayer.setWhere(expression, function() {
         syncSidebar(field, filter);
     });
@@ -360,8 +360,58 @@ $(".filter-btn").click(function(evt) {
         .bounds(function(error, latlngbounds) {
             map.flyToBounds(latlngbounds);
         });
-    
+
 });
+
+//NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
+//var locate = document.form[0].addressBox.value
+
+function geocodeLatLng(){
+  //var address = $("#addressBox").val()
+  //var city = $("#cityBox").val()
+  //var state = $("#stateBox").val("South Carolina")
+  L.esri.Geocoding.geocode()
+  .address("5 Geology Rd")
+  .city("Columbia")
+  .region("South Carolina")
+  .run(function(err, address, response){
+
+    var lat = address.results[0].latlng.lat
+    var lng = address.results[0].latlng.lng
+    var latlng = [lat, lng];
+    alert(latlng);
+    return latlng
+});
+}
+
+function queryLatLng(latlng){
+  alert('hey');
+  var query = L.esri.query({
+    url:accessLayer
+  });
+  alert(latlng);
+  query.nearby(latlng, 10000);
+
+  query.run(function(error, featureCollection, response){
+    console.log('Found ' + featureCollection.features.length + ' features');
+  });
+
+}
+
+
+$("#geocode-btn").click(function() {
+  geocodeLatLng(function(){
+    queryLatLng(latlng)
+  });
+});
+
+
+
+
+
+
+
+//NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $(".view-all").click(function() {
@@ -395,7 +445,7 @@ if (!L.Browser.touch) {
 /*$(document).on("ajaxStop", function() {
     $("#loading").hide();
     sizeLayerControl();
-    // Fit map to boroughs bounds 
+    // Fit map to boroughs bounds
     map.fitBounds(accessLayer.getBounds());
 
     var geonamesBH = new Bloodhound({

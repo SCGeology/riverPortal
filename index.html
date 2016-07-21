@@ -105,8 +105,10 @@
                     </p>
                     <form id="nearModal-form">
                         <label for="name">Enter your address:</label>
-                        <input type="text" name="addressBox">
-                        <button type="button" class="btn btn-primary filter-ptn" data-dismiss="modal">Search</button>
+                        <input type="text" name="addressBox" id="addressBox" placeholder="Address">
+                        <input type="text" name="cityBox" id="cityBox" placeholder="City">
+                        <input type="text" name="stateBox" id="stateBox" placeholder="South Carolina">
+                        <button type="button" class="btn btn-primary filter-ptn" data-dismiss="modal" id="geocode-btn">Search</button>
                     </form>
                 </div>
                 <div class="modal-footer">
