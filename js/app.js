@@ -363,52 +363,49 @@ $(".filter-btn").click(function(evt) {
 
 });
 
+
+
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
-//var locate = document.form[0].addressBox.value
+
+//SET THE STATE VALUE TO AUTOMATICALLY BE SC, BUT WILL CHANGE IF SOMEONE CHANGES IT
+$("#stateBox").val("South Carolina")
+
+function queryLatLng(latlng){
+    
+  var distance = Number($("#distanceBox").val())*1609.34 
+  
+  alert("Searching "+distance+" meters from "+ latlng)
+  
+  accessLayer.query()
+      .nearby(latlng,distance)
+      .run(function(error, featureCollection, response){
+            alert('Found ' + featureCollection.features.length + ' features');
+          });
+}
 
 function geocodeLatLng(){
-  //var address = $("#addressBox").val()
-  //var city = $("#cityBox").val()
-  //var state = $("#stateBox").val("South Carolina")
+        
+  var address = $("#addressBox").val()
+  var city = $("#cityBox").val()
+  var state = $("#stateBox").val()
   L.esri.Geocoding.geocode()
-  .address("5 Geology Rd")
-  .city("Columbia")
-  .region("South Carolina")
+  .address(address)
+  .city(city)
+  .region(state)
   .run(function(err, address, response){
 
     var lat = address.results[0].latlng.lat
     var lng = address.results[0].latlng.lng
     var latlng = [lat, lng];
-    alert(latlng);
-    return latlng
+
+    queryLatLng(latlng);
+    
 });
 }
-
-function queryLatLng(latlng){
-  alert('hey');
-  var query = L.esri.query({
-    url:accessLayer
-  });
-  alert(latlng);
-  query.nearby(latlng, 10000);
-
-  query.run(function(error, featureCollection, response){
-    console.log('Found ' + featureCollection.features.length + ' features');
-  });
-
-}
-
 
 $("#geocode-btn").click(function() {
-  geocodeLatLng(function(){
-    queryLatLng(latlng)
-  });
+    geocodeLatLng();
 });
-
-
-
-
-
 
 
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------

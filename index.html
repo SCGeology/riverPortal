@@ -87,32 +87,24 @@
     </div>
 
     <div class="modal fade" id="nearModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Find a river access near your location.</h4>
                 </div>
                 <div class="modal-body">
-                    <p>This is where you can use a spatial query to find access near you. Steps needed:
-                        <ul>
-                            <li>Add a geocoder... maybe GeoNames, or ESRI's geocoder (does it take tokens?)</li>
-                            <li>Geocoder will return a point, use this point as the input for a spatial query. Visualize point on map with a marker.</li>
-                            <li>Use the <a href="https://esri.github.io/esri-leaflet/api-reference/tasks/query.html" target="_blank" >ESRI Leaflet functionality for spatial query.</a> </li>
-                            <li>Return the points... will they display the same? </li>
-                            <li>Put the points into the side table. Instead of showing river miles, show distance from location.</li>
-                        </ul>
+                    <p>Enter your address and how far you want to search. 
                     </p>
                     <form id="nearModal-form">
-                        <label for="name">Enter your address:</label>
-                        <input type="text" name="addressBox" id="addressBox" placeholder="Address">
-                        <input type="text" name="cityBox" id="cityBox" placeholder="City">
-                        <input type="text" name="stateBox" id="stateBox" placeholder="South Carolina">
-                        <button type="button" class="btn btn-primary filter-ptn" data-dismiss="modal" id="geocode-btn">Search</button>
+                        <input type="text" class="form-control" name="addressBox" id="addressBox" placeholder="Address"><br>
+                        <input type="text" class="form-control" name="cityBox" id="cityBox" placeholder="City"><br>
+                        <input type="text" class="form-control" name="stateBox" id="stateBox" placeholder="South Carolina"><br>
+                        <input type="text" class="form-control" name="distanceBox" id="distanceBox" placeholder="How many miles?"><br>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
                 </div>
             </div>
             <!-- /.modal-content -->
