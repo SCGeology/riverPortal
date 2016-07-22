@@ -175,6 +175,7 @@ function getUrl(property) {
 //GET THE UNIQUE NAMES OF RIVERS AND POPULATE A DROPDOWN IN THE 'FIND A RIVER' MODAL
 var riverNames = []
 var trailNames = []
+var scenicNames = []
 
 map = L.map("map", {
     zoom: 8,
@@ -205,6 +206,9 @@ var accessLayer = L.esri.featureLayer({
         }
         if ($.inArray(feature.properties.waterTrail_Name, trailNames) === -1) {
             trailNames.push(feature.properties.waterTrail_Name)
+        }
+        if ($.inArray(feature.properties.scenic_River, scenicNames) === -1) {
+            scenicNames.push(feature.properties.scenic_River)
         }
         if (feature.properties) {
             //THIS IS WHAT GOES IN THE MODAL    
@@ -344,6 +348,10 @@ accessLayer.on("load", function() {
         val = trailNames.sort()[i];
         $("#trail-names").append('<option value="' + val + '">' + val + '</option>');
     }
+    for (var i = 0; i < scenicNames.length; i++) {
+        val = scenicNames.sort()[i];
+        $("#scenic-names").append('<option value="' + val + '">' + val + '</option>');
+    }
     accessLayer.off("load");
 });
 
@@ -355,6 +363,9 @@ $(".filter-btn").click(function(evt) {
     } else if (this.id == "getTrail") {
         var field = "waterTrail_Name"
         var filter = $("#trail-names").val();
+    } else if (this.id == "getScenic") {
+        var field = "scenic_River"
+        var filter = $("#scenic-names").val();
     }
 
     var expression = field + "='" + filter + "'"
@@ -435,10 +446,56 @@ $("#clear-plan").click(function(){
     clearPlan()
 });
 
-//Begin to query the data in between the points...
-var getPoints = function(mileList,streamName){
+//THE WHILE LOOP IS GOING THROUGH AND DOING THE LAST ENTRY BIT TWO TIMES IN A ROW... GIVING AN UNDEFINED.  THAT'S WHY IT'S NOT WORKING...
+//SO SOMEHOW WE HAVE TO REARRANGE IT SO THAT IT FLOWS IN ORDER.
+
+function getNextStream(list,i) {
     
-    mileExpression = "streamMile <="+mileList[0].toString()+"AND streamMile >="+mileList[1].toString()+"AND streamName = '"+streamName+"'"
+//get the confluence point for stream A
+    var lastEntry = list[i]
+    
+    console.log(lastEntry);
+//this expression gets the confluence point at the end of a given stream name    
+    var exp = "pointType = 8 AND streamName = '" + lastEntry["stream"] + "'AND streamMile = 0"
+    
+    accessLayer.query()
+        .where(exp)
+        .run(function(error,conPoint,response){
+            
+            alert("running the query for the "+i+" time.")
+            //point ID of the confluence point for Stream A
+            var pID = conPoint.features[0].properties.pointID
+            console.log(pID);
+            
+            //point ID of the correspond confluence point on stream B
+            var coID = conPoint.features[0].properties.coID
+            console.log(coID);
+            
+//this expression returns the point of the corresponding confluence, so you can get that points streamName, and miles            
+            var exp2 = "pointID = '"+coID+"'"
+            
+            accessLayer.query()
+                .where(exp2)
+                .run(function(error,coIDPoint,response){
+                    alert("the query is running for the "+i+" time.")    
+                
+                    var coIDStream = coIDPoint.features[0].properties.streamName
+                    var coStartMile = coIDPoint.features[0].properties.streamMile
+                
+                    console.log(coIDStream+" "+coStartMile);
+                    
+                    list.push({"stream":coIDStream, "startMiles":coStartMile, "endMiles":0});
+                    
+            });
+        
+        });
+}  
+
+
+//Begin to query the data in between the points...
+function getPoints(mileA,mileB,streamName){
+    
+    mileExpression = "streamMile <="+mileA+"AND streamMile >="+mileB+"AND streamName = '"+streamName+"'"
     
     accessLayer.query()
         .where(mileExpression)
@@ -451,53 +508,27 @@ var getPoints = function(mileList,streamName){
     });
 }
 
-var getFloatPoints = function(){
+
+
+$("#generate-plan").click(function(){
     
     if (startStream === endStream){
-        var streamName = startStream
-        var mileList = [startMile,endMile]
-        getPoints(mileList,streamName);
+        
+        getPoints(startMile, endMile, startStream);
         
     } else {
-        var cons = []
-//GOTTA FIGURE OUT THE FREAKING WHILE LOOP!!!!!!!!!!!!!!!!!!!!!~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!;LASJD;FAKJSD;FJASD
-        x = 0
-        while (x<3) {
-            compareConQuery(cons);
-            x++
-        }
-    }
-}
-    
-var compareConQuery = function(conList) {
-    if (conList.length == 0){
-        var firstCon = startStream
-    } else {
-        var conName = conList[conList.length-1]
-        var firstCon = conName.slice(0,conName.length-11)
-        alert(conName + " - " + firstCon)
-    }
-
-    var exp = "pointType = 8 AND streamName = '" + firstCon + "'AND streamMile = 0"
-
-    accessLayer.query()
-        .where(exp)
-        .run(function(error,conPoint,response){
-            var conPointName = conPoint.features[0].properties.pointName
-            conList.push(conPointName);
-            compare = conPointName.slice(0,conPointName.length-11) 
-            if (compare != endStream){
-                alert("keep going... " + compare)
-            } else if (compare == endStream) {
-                alert('you made it! '+ compare)
+        var streamMilesArray = []
+        
+        streamMilesArray.push({"stream":startStream, "startMiles":startMile, "endMiles":0})
+        
+        var i = 0
+        
+        while (i < 3){
+                getNextStream(streamMilesArray,i);
+                i++
             }
-        });
-}  
-
-
-//TO TEST INITIAL RETURN OF DATA
-$("#generate-plan").click(function(){
-    getFloatPoints();
+        console.log(streamMilesArray);
+        } 
 });
     
 
