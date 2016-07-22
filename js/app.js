@@ -114,13 +114,13 @@ var basemap = L.esri.basemapLayer("Imagery");
 var access = "https://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/riversPortal/FeatureServer/0"
 
 var pTypes = {
-    1: ["Canoe/Kayak Access", "canoe.svg", "canoe.svg"],
-    2: ["Boat Ramp", "ramp.svg", "ramp.svg"],
-    3: ["Dam - Portage", "damp.svg", "damp.svg"],
-    4: ["Rapids/Shoals", "rapids.svg", "rapids.svg"],
-    5: ["Public Land", "pub.svg", ""],
+    1: ["Canoe/Kayak Access", "canoe.svg"],
+    2: ["Boat Ramp", "ramp.svg"],
+    3: ["Dam - Portage", "damp.svg"],
+    4: ["Rapids/Shoals", "rapids.svg"],
+    5: ["Public Land", "pub.svg"],
     6: ["Bridge", "bridge.svg"],
-    7: ["Dam - No Portage", "damn.svg", "damn.svg"],
+    7: ["Dam - No Portage", "damn.svg"],
     8: ["Confluence", "conf.svg"],
     9: ["Island", "island.svg"],
     10: ["Reservoir", "lake.svg"],
@@ -140,17 +140,18 @@ var rSide = {
 function getType(val) {
     return pTypes[val];
 }
-function getSide(val){
-//accounting for nulls right now, but all data will have  a value in future, so we can delete this.
-    if (val != null){
+
+function getSide(val) {
+    //accounting for nulls right now, but all data will have  a value in future, so we can delete this.
+    if (val != null) {
         return rSide[val]
-    } else{
+    } else {
         return "n/a"
     }
 }
 
-function getAmenities(property){
-    if (property != null){
+function getAmenities(property) {
+    if (property != null) {
         return property
     } else {
         return ""
@@ -181,18 +182,64 @@ basemap.addTo(map);
 
 var fullWhere = "pointType IN (1,2,11)"
 
+
+//~~~~~THESE FUNCTIONS WILL BE USED TO BUILD AND DISPLAY LEAFLET GEOJSON, BOTH ON ORIGINAL ESRI FEATURE LAYER AND ALSO FEATURE COLLECTIONS RETURNED FROM ESRI.QUERY~~~~~~~~~~~
+
+function featureModalContent(feature) {
+
+    $("#feature-title").html(feature.properties.pointName + '&nbsp;&nbsp<img width="30" height="30" src="icons/' + getType(feature.properties.pointType)[1] + '">');
+
+    if (feature.properties.pointType == 11) {
+        //GET USGS GAGE DATA
+        var gageURL = "http://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
+
+        $.getJSON(gageURL, function(data) {
+            var cfs = data.value.timeSeries[0].values[0].value[0].value
+            var stage = data.value.timeSeries[1].values[0].value[0].value
+
+            var gageContent = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>Stream Gage on the " + feature.properties.streamName + "</td></tr>" + "<tr><th>Stage (feet)</th><td>" + stage + "</td></tr>" + "<tr><th>Discharge (cfs)</th><td>" + cfs + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + " from USGS</td></tr>" + "<tr><td colspan='2'><img class='hydrograph' src='http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no=" + feature.properties.pointID + "&parm_cd=00060&period=7'/></td></tr>" + "<table>"
+
+            $("#feature-info").html(gageContent);
+        });
+
+    } else {
+
+        var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
+
+        $("#feature-info").html(content);
+    }
+
+    $("#featureModal").modal("show");
+    //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+}
+
+function pushToSearch(layer) {
+    accessSearch.push({
+        name: layer.feature.properties.pointName,
+        source: "Access",
+        id: layer.feature.properties.pointID,
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+    });
+}
+
+function makePointToLayer(geojson, latlng) {
+    return L.marker(latlng, {
+        icon: L.icon({
+            iconUrl: 'icons/' + getType(geojson.properties.pointType)[1],
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+        })
+    })
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+//DEFINE THE DATA FROM ESRI FEATURE LAYER - PLUGIN IN THE FUNCTIONS TO BUILD GEOSJON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var accessLayer = L.esri.featureLayer({
     url: access,
     where: fullWhere,
-    pointToLayer: function(geojson, latlng) {
-        return L.marker(latlng, {
-            icon: L.icon({
-                iconUrl: 'icons/' + getType(geojson.properties.pointType)[1],
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
-            }),
-        });
-    },
+    pointToLayer: makePointToLayer,
     onEachFeature: function(feature, layer) {
         if ($.inArray(feature.properties.streamName, riverNames) === -1) {
             riverNames.push(feature.properties.streamName);
@@ -201,48 +248,18 @@ var accessLayer = L.esri.featureLayer({
             trailNames.push(feature.properties.waterTrail_Name)
         }
         if (feature.properties) {
-            //THIS IS WHAT GOES IN THE MODAL
-            var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
 
             layer.on({
                 click: function(e) {
-                    $("#feature-title").html(feature.properties.pointName + '&nbsp;&nbsp<img width="30" height="30" src="icons/' + getType(layer.feature.properties.pointType)[1] + '">');
-                    if (feature.properties.pointType == 11) {
-                        //GET USGS GAGE DATA
-                        var gageURL = "http://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
-
-                        $.getJSON(gageURL, function(data) {
-                            var cfs = data.value.timeSeries[0].values[0].value[0].value
-                            var stage = data.value.timeSeries[1].values[0].value[0].value
-
-                            var gageContent = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>Stream Gage on the " + feature.properties.streamName + "</td></tr>" + "<tr><th>Stage (feet)</th><td>" + stage + "</td></tr>" + "<tr><th>Discharge (cfs)</th><td>" + cfs + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + " from USGS</td></tr>" + "<tr><td colspan='2'><img class='hydrograph' src='http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no=" + feature.properties.pointID + "&parm_cd=00060&period=7'/></td></tr>" + "<table>"
-
-                            $("#feature-info").html(gageContent);
-                        });
-
-                    } else {
-                        $("#feature-info").html(content);
-                    }
-
-                    $("#featureModal").modal("show");
-                    //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+                    featureModalContent(feature);
                 }
             });
-            accessSearch.push({
-                name: layer.feature.properties.pointName,
-                source: "Access",
-                id: layer.feature.properties.pointID,
-                lat: layer.feature.geometry.coordinates[1],
-                lng: layer.feature.geometry.coordinates[0]
-            });
+            pushToSearch(layer);
         }
     }
 }).addTo(map);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/* Clear feature highlight when map is clicked */
-map.on("click", function(e) {
-    highlight.clearLayers();
-});
 
 /* Attribution control */
 function updateAttribution(e) {
@@ -358,49 +375,99 @@ $(".filter-btn").click(function(evt) {
     accessLayer.query()
         .where(expression)
         .bounds(function(error, latlngbounds) {
-            map.flyToBounds(latlngbounds);
+            map.flyToBounds(latlngbounds,{
+                padding:[150,150]
+            });
         });
 
 });
 
 
-
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
+
+function syncSidebarGeo(layer,text) {
+    
+    $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+
+    $("#stream-title").html("GeoSearch Result");
+    /* Update list.js featureList */
+    featureList = new List("features", {
+        valueNames: ["point-name","stream-name"]
+    });
+    featureList.sort("stream-name");
+    
+    $("#stream-title").html("Searching "+$("#distanceBox").val()+ " miles from " + text);
+    
+    /*$("#sidebar").animate({
+        width:"450px"
+    }, 800, function(){
+        map.invalidateSize();
+    });*/
+}
 
 //SET THE STATE VALUE TO AUTOMATICALLY BE SC, BUT WILL CHANGE IF SOMEONE CHANGES IT
 $("#stateBox").val("South Carolina")
 
-function queryLatLng(latlng){
-    
-  var distance = Number($("#distanceBox").val())*1609.34 
-  
-  alert("Searching "+distance+" meters from "+ latlng)
-  
-  accessLayer.query()
-      .nearby(latlng,distance)
-      .run(function(error, featureCollection, response){
-            alert('Found ' + featureCollection.features.length + ' features');
-          });
+function queryLatLng(latlng,text) {
+
+    var distance = Number($("#distanceBox").val()) * 1609.34
+
+    accessLayer.query()
+        .where("pointType IN (1,2,5)")
+        .nearby(latlng, distance)
+        .run(function(error, fc, response) {
+            if (fc.features.length == 0) {
+                alert("No results were found. Please enter a valid address or increase your search distance.")
+            } else {
+                
+                map.removeLayer(accessLayer);
+                
+                $("#feature-list tbody").empty();
+                $("#initial").hide();
+                $("#searchBox").show();
+                
+                var geoSearchLayer = L.geoJson(fc, {
+                    pointToLayer: makePointToLayer,
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties) {
+
+                            layer.on({
+                                click: function(e) {
+                                    featureModalContent(feature);
+                                }
+                            });  
+                        }
+                        syncSidebarGeo(layer,text);
+                    }
+                }).addTo(map);
+                
+                map.flyToBounds(geoSearchLayer.getBounds(),{
+                    padding:[150,150]
+                });
+                
+            }
+        });
 }
 
-function geocodeLatLng(){
-        
-  var address = $("#addressBox").val()
-  var city = $("#cityBox").val()
-  var state = $("#stateBox").val()
-  L.esri.Geocoding.geocode()
-  .address(address)
-  .city(city)
-  .region(state)
-  .run(function(err, address, response){
+function geocodeLatLng() {
 
-    var lat = address.results[0].latlng.lat
-    var lng = address.results[0].latlng.lng
-    var latlng = [lat, lng];
+    var address = $("#addressBox").val()
+    var city = $("#cityBox").val()
+    var state = $("#stateBox").val()
+    L.esri.Geocoding.geocode()
+        .address(address)
+        .city(city)
+        .region(state)
+        .run(function(err, address, response) {
 
-    queryLatLng(latlng);
-    
-});
+            var lat = address.results[0].latlng.lat
+            var lng = address.results[0].latlng.lng
+            var text = address.results[0].text
+            var latlng = [lat, lng];
+
+            queryLatLng(latlng,text);
+
+        });
 }
 
 $("#geocode-btn").click(function() {
@@ -414,7 +481,9 @@ $("#geocode-btn").click(function() {
 $(".view-all").click(function() {
     accessLayer.setWhere(fullWhere);
     accessLayer.query().bounds(function(error, latlngbounds) {
-        map.flyToBounds(latlngbounds);
+        map.flyToBounds(latlngbounds,{
+            padding:[150,150]
+        });
     });
     //NEED TO PUT THE DEFAULT STUFF BACK IN THE PANEL AND CLEAR THE LIST OF ITEMS
     $("#feature-list tbody").empty();

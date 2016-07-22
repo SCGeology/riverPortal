@@ -38,10 +38,10 @@ input[type="radio"], input[type="checkbox"] {
     box-shadow: none;
 }
 .panel-heading{
-    width: 350px;
+    width: 100%;
  }
  .panel-body{
-   width: 350px;
+   width: 100%;
  }
 #searchBox{display:none;}
 .hydrograph{
@@ -72,7 +72,7 @@ input[type="radio"], input[type="checkbox"] {
 .sidebar-table {
   position: absolute;
   width: 100%;
-  top: 103px;
+  top: 120px;
   bottom: 0px;
   overflow: auto;
 }
