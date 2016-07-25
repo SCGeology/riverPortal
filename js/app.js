@@ -186,7 +186,7 @@ map = L.map("map", {
 
 basemap.addTo(map);
 
-var fullWhere = "pointType IN (1,2,11)"
+var fullWhere = "pointType IN (1,2,5)"
 
 var accessLayer = L.esri.featureLayer({
     url: access,
@@ -449,48 +449,55 @@ $("#clear-plan").click(function(){
 //THE WHILE LOOP IS GOING THROUGH AND DOING THE LAST ENTRY BIT TWO TIMES IN A ROW... GIVING AN UNDEFINED.  THAT'S WHY IT'S NOT WORKING...
 //SO SOMEHOW WE HAVE TO REARRANGE IT SO THAT IT FLOWS IN ORDER.
 
-function getNextStream(list,i) {
+
+function floatPlanQuery(list){
+    var lastEntry = list[list.length-1]
     
-//get the confluence point for stream A
-    var lastEntry = list[i]
-    
-    console.log(lastEntry);
-//this expression gets the confluence point at the end of a given stream name    
-    var exp = "pointType = 8 AND streamName = '" + lastEntry["stream"] + "'AND streamMile = 0"
-    
+    if (lastEntry["stream"] === endStream){
+        
+        for (var i=0; i < list.length; i++){
+            getPoints(list[i]['startMiles'],list[i]['endMiles'],list[i]['stream']);
+        }
+        
+    } else {
+        
     accessLayer.query()
-        .where(exp)
+        .where("pointType = 8 AND streamName = '" + lastEntry["stream"] + "'AND streamMile = 0")
         .run(function(error,conPoint,response){
             
-            alert("running the query for the "+i+" time.")
             //point ID of the confluence point for Stream A
             var pID = conPoint.features[0].properties.pointID
-            console.log(pID);
             
             //point ID of the correspond confluence point on stream B
             var coID = conPoint.features[0].properties.coID
-            console.log(coID);
             
 //this expression returns the point of the corresponding confluence, so you can get that points streamName, and miles            
             var exp2 = "pointID = '"+coID+"'"
             
             accessLayer.query()
                 .where(exp2)
-                .run(function(error,coIDPoint,response){
-                    alert("the query is running for the "+i+" time.")    
+                .run(function(error,coIDPoint,response){ 
                 
                     var coIDStream = coIDPoint.features[0].properties.streamName
                     var coStartMile = coIDPoint.features[0].properties.streamMile
-                
-                    console.log(coIDStream+" "+coStartMile);
                     
-                    list.push({"stream":coIDStream, "startMiles":coStartMile, "endMiles":0});
+                    if (coIDStream === endStream){
+                        var coEndMiles = endMile
+                    } else {
+                        var coEndMiles = 0
+                    }
+                    
+                    list.push({"stream":coIDStream, "startMiles":coStartMile, "endMiles":coEndMiles});
+                
+                    floatPlanQuery(list);
+                    
+                    console.log(list);
                     
             });
         
         });
-}  
-
+    }
+}
 
 //Begin to query the data in between the points...
 function getPoints(mileA,mileB,streamName){
@@ -500,13 +507,33 @@ function getPoints(mileA,mileB,streamName){
     accessLayer.query()
         .where(mileExpression)
         .run(function(error,floatPlanPoints,response){
-            console.log(floatPlanPoints);
             for (var i=0;i < floatPlanPoints.features.length; i ++) {
                 pName = floatPlanPoints.features[i].properties.pointName
                 console.log(pName)
             }
-    });
-}
+            
+            map.removeLayer(accessLayer);
+        
+            var floatPlanLayer = L.geoJson(floatPlanPoints, {
+                pointToLayer:makePointToLayer,
+                onEachFeature:function(feature,layer) {
+                    if (feature.properties){
+                        layer.on({
+                            click: function(e){
+                                featureModalContent(feature);
+                            }
+                        });
+                    }
+                    syncSidebar(layer,"float plan");
+                }
+            }).addTo(map);
+        
+            map.flyToBounds(floatPlanLayer.getBounds(),{
+                padding:[150,150]
+            });
+        
+        });
+    }
 
 
 
@@ -520,14 +547,9 @@ $("#generate-plan").click(function(){
         var streamMilesArray = []
         
         streamMilesArray.push({"stream":startStream, "startMiles":startMile, "endMiles":0})
+    
+        floatPlanQuery(streamMilesArray);
         
-        var i = 0
-        
-        while (i < 3){
-                getNextStream(streamMilesArray,i);
-                i++
-            }
-        console.log(streamMilesArray);
         } 
 });
     
