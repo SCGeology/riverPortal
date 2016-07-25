@@ -15,7 +15,7 @@ if (!("ontouchstart" in window)) {
     });
 }
 
-$(document).on("mouseout", ".feature-row", clearHighlight);
+//$(document).on("mouseout", ".feature-row", clearHighlight);
 
 $("#near-btn").click(function() {
     $("#nearModal").modal("show");
@@ -71,9 +71,9 @@ function sizeLayerControl() {
     $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
 }
 
-function clearHighlight() {
+/*function clearHighlight() {
     highlight.clearLayers();
-}
+}*/
 
 function animateSidebar() {
     $("#sidebar").animate({
@@ -216,12 +216,7 @@ function featureModalContent(feature) {
         $("#feature-info").html(content);
     }
 
-    $("#featureModal").modal("show");
-    planID = layer.feature.properties.pointID
-    planName = layer.feature.properties.pointName
-    planMiles = layer.feature.properties.streamMile
-    planStream = layer.feature.properties.streamName
-    coords = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
+    
     //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
 }
 
@@ -266,6 +261,12 @@ var accessLayer = L.esri.featureLayer({
             layer.on({
                 click: function(e) {
                     featureModalContent(feature);
+                    $("#featureModal").modal("show");
+                    planID = layer.feature.properties.pointID
+                    planName = layer.feature.properties.pointName
+                    planMiles = layer.feature.properties.streamMile
+                    planStream = layer.feature.properties.streamName
+                    coords = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
                 }
             });
             pushToSearch(layer);
@@ -351,9 +352,9 @@ $("#searchbox").keypress(function(e) {
     }
 });
 
-$("#featureModal").on("hidden.bs.modal", function(e) {
+/*$("#featureModal").on("hidden.bs.modal", function(e) {
     $(document).on("mouseout", ".feature-row", clearHighlight);
-});
+});*/
 
 //ONCE ALL DATA LOADS, GET ALL THE RIVER and TRAIL NAMES AND ADD THEM TO THE DROPDOWN LISTS IN THE MODALS.
 accessLayer.on("load", function() {
@@ -410,7 +411,6 @@ function syncSidebarGeo(layer,text) {
     
     $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
-    $("#stream-title").html("GeoSearch Result");
     /* Update list.js featureList */
     featureList = new List("features", {
         valueNames: ["point-name","stream-name"]
@@ -419,11 +419,6 @@ function syncSidebarGeo(layer,text) {
     
     $("#stream-title").html("Searching "+$("#distanceBox").val()+ " miles from " + text);
     
-    /*$("#sidebar").animate({
-        width:"450px"
-    }, 800, function(){
-        map.invalidateSize();
-    });*/
 }
 
 //SET THE STATE VALUE TO AUTOMATICALLY BE SC, BUT WILL CHANGE IF SOMEONE CHANGES IT
@@ -455,17 +450,13 @@ function queryLatLng(latlng,text) {
                             layer.on({
                                 click: function(e) {
                                     featureModalContent(feature);
+                                    $("#featureModal").modal("show");
                                 }
                             });  
                         }
                         syncSidebarGeo(layer,text);
                     }
-                }).addTo(map);
-                
-                map.flyToBounds(geoSearchLayer.getBounds(),{
-                    padding:[150,150]
-                });
-                
+                }).addTo(map);                
             }
         });
 }
@@ -523,7 +514,7 @@ $(".view-all").click(function() {
 //This works bc onEachFeature assigns the variables on the click for the modal, and then it is sent to the float plan modal when the button is clicked
 //This is the initial stuff that happens on the map and getting the points.
 
-var planGroup = L.layerGroup().addTo(map); 
+var planGroup = L.featureGroup().addTo(map); 
 
 var startCircle = L.circleMarker([0,0], {
         radius:18,
@@ -541,6 +532,7 @@ $("#planStart").click(function(){
     startID = planID
     startMile = planMiles
     startStream = planStream
+    $("#planStartStream").html("On the "+startStream)
     startCircle.setLatLng(coords).addTo(planGroup);    
 });
 
@@ -549,12 +541,14 @@ $("#planEnd").click(function(){
     endID = planID
     endMile = planMiles
     endStream = planStream
+    $("#planEndStream").html("On the "+endStream)
     endCircle.setLatLng(coords).addTo(planGroup);
 });
 
 var clearPlan = function() {
-    startID = "", $("#planStartText").html("")
-    endID = "", $("#planEndText").html("")
+    startID = "", $("#planStartText").html("No start point selected..."),$("#planStartStream").html("...")
+    endID = "", $("#planEndText").html("No end point selected..."),$("#planEndStream").html("...")
+    
     planGroup.clearLayers();
 }
 
@@ -562,8 +556,21 @@ $("#clear-plan").click(function(){
     clearPlan()
 });
 
-//THE WHILE LOOP IS GOING THROUGH AND DOING THE LAST ENTRY BIT TWO TIMES IN A ROW... GIVING AN UNDEFINED.  THAT'S WHY IT'S NOT WORKING...
-//SO SOMEHOW WE HAVE TO REARRANGE IT SO THAT IT FLOWS IN ORDER.
+
+function syncSidebarFloat(layer) {
+    
+    $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+
+    $("#stream-title").html("Float Plan, from upstream to downstream.");
+    
+    /* Update list.js featureList */
+    featureList = new List("features", {
+        valueNames: ["point-name","stream-mile"]
+    });
+    featureList.sort("stream-name");
+    //featureList.sort("stream-mile",{order:"desc"});
+
+}
 
 
 function floatPlanQuery(list){
@@ -572,6 +579,7 @@ function floatPlanQuery(list){
     if (lastEntry["stream"] === endStream){
         
         for (var i=0; i < list.length; i++){
+            
             getPoints(list[i]['startMiles'],list[i]['endMiles'],list[i]['stream']);
         }
         
@@ -618,18 +626,16 @@ function floatPlanQuery(list){
 //Begin to query the data in between the points...
 function getPoints(mileA,mileB,streamName){
     
+//Need to set up multiple tables so that the data can be divided up into river sections    
+    
     mileExpression = "streamMile <="+mileA+"AND streamMile >="+mileB+"AND streamName = '"+streamName+"'"
     
     accessLayer.query()
         .where(mileExpression)
         .run(function(error,floatPlanPoints,response){
-            for (var i=0;i < floatPlanPoints.features.length; i ++) {
-                pName = floatPlanPoints.features[i].properties.pointName
-                console.log(pName)
-            }
-            
+
             map.removeLayer(accessLayer);
-        
+            
             var floatPlanLayer = L.geoJson(floatPlanPoints, {
                 pointToLayer:makePointToLayer,
                 onEachFeature:function(feature,layer) {
@@ -637,16 +643,17 @@ function getPoints(mileA,mileB,streamName){
                         layer.on({
                             click: function(e){
                                 featureModalContent(feature);
+                                $("#featureModal").modal("show");
                             }
                         });
                     }
-                    syncSidebar(layer,"float plan");
+                    syncSidebarFloat(layer);
                 }
             }).addTo(map);
         
-            map.flyToBounds(floatPlanLayer.getBounds(),{
-                padding:[150,150]
-            });
+            map.flyToBounds(planGroup.getBounds(),{
+                    padding:[150,150]
+                });
         
         });
     }
@@ -655,11 +662,16 @@ function getPoints(mileA,mileB,streamName){
 
 $("#generate-plan").click(function(){
     
+    $("#feature-list tbody").empty();
+        $("#initial").hide();
+        $("#searchBox").show();
+    
     if (startStream === endStream){
         
         getPoints(startMile, endMile, startStream);
         
     } else {
+        
         var streamMilesArray = []
         
         streamMilesArray.push({"stream":startStream, "startMiles":startMile, "endMiles":0})

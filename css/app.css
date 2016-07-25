@@ -125,7 +125,8 @@ input[type="radio"], input[type="checkbox"] {
     background-size: cover;
     background-repeat: no-repeat;
 }
-.navbar-inverse .navbar-nav>li>a{color:#FFFFFF;}
+.navbar-inverse .navbar-nav>li>a{color:#FFFFFF;font-size:16px;}
+.navbar-inverse .navbar-nav>li>a:hover{color:aquamarine;}
 .navbar .navbar-brand {
   font-weight: bold;
   font-size: 25px;

@@ -32,10 +32,10 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;View Access List</a></li>
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;View Access List</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="near-btn"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;Access Near You</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a River or Blue Trail </a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map white"></i>&nbsp;&nbsp;Make a Float Plan</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map"></i>&nbsp;&nbsp;Make a Float Plan</a></li>
                 </ul>
             </div>
             <!--/.navbar-collapse -->
@@ -57,7 +57,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="sidebar-table">
+                    <div class="sidebar-table" id="side-table">
                         <table class="table table-hover" id="feature-list">
                             <thead class="hidden">
                                 <tr>
@@ -171,7 +171,7 @@
                     <h4 class="modal-title">Create a Float Plan!</h4>
                 </div>
                 <div class="modal-body planPoints">
-                    <p>Generate a list of points with the river miles. Click a point in the map to choose your start and end points.</p>
+                    <h5>Generate a list of points with the river miles. Click a point in the map to choose your start and end points.</h5>
                     <table id="plan-points">
                         <tr>
                             <th>Start Point:</th>
@@ -180,6 +180,10 @@
                         <tr>
                             <td id="planStartText">No start point selected...</td>
                             <td id="planEndText">No end point selected...</td>
+                        </tr>
+                        <tr>
+                            <td id="planStartStream">...</td>
+                            <td id="planEndStream">...</td>
                         </tr>
                     </table>
                 </div>
