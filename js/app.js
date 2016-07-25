@@ -117,7 +117,7 @@ var basemap = L.esri.basemapLayer("Imagery");
 
 // GET RIVER ACCESS DATA VIA ESRI LEAFLET FROM AGOL (FOR NOW, PROBABLY SWITCH TO SERVER)
 
-var access = "https://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/riversPortal/FeatureServer/0"
+var access = "http://arcgis:6080/arcgis/rest/services/RiverConservation/riverPortal/MapServer/0"
 
 var pTypes = {
     1: ["Canoe/Kayak Access", "canoe.svg"],
@@ -176,6 +176,7 @@ function getUrl(property) {
 //GET THE UNIQUE NAMES OF RIVERS AND POPULATE A DROPDOWN IN THE 'FIND A RIVER' MODAL
 var riverNames = []
 var trailNames = []
+var scenicNames = []
 
 map = L.map("map", {
     zoom: 8,
@@ -186,7 +187,7 @@ map = L.map("map", {
 
 basemap.addTo(map);
 
-var fullWhere = "pointType IN (1,2,11)"
+var fullWhere = "pointType IN (1,2,5)"
 
 
 //~~~~~THESE FUNCTIONS WILL BE USED TO BUILD AND DISPLAY LEAFLET GEOJSON, BOTH ON ORIGINAL ESRI FEATURE LAYER AND ALSO FEATURE COLLECTIONS RETURNED FROM ESRI.QUERY~~~~~~~~~~~
@@ -253,8 +254,10 @@ var accessLayer = L.esri.featureLayer({
         if ($.inArray(feature.properties.waterTrail_Name, trailNames) === -1) {
             trailNames.push(feature.properties.waterTrail_Name)
         }
+        if ($.inArray(feature.properties.scenic_River, scenicNames) === -1) {
+            scenicNames.push(feature.properties.scenic_River)
+        }
         if (feature.properties) {
-
             layer.on({
                 click: function(e) {
                     featureModalContent(feature);
@@ -357,6 +360,10 @@ accessLayer.on("load", function() {
         val = trailNames.sort()[i];
         $("#trail-names").append('<option value="' + val + '">' + val + '</option>');
     }
+    for (var i = 0; i < scenicNames.length; i++) {
+        val = scenicNames.sort()[i];
+        $("#scenic-names").append('<option value="' + val + '">' + val + '</option>');
+    }
     accessLayer.off("load");
 });
 
@@ -368,6 +375,9 @@ $(".filter-btn").click(function(evt) {
     } else if (this.id == "getTrail") {
         var field = "waterTrail_Name"
         var filter = $("#trail-names").val();
+    } else if (this.id == "getScenic") {
+        var field = "scenic_River"
+        var filter = $("#scenic-names").val();
     }
 
     var expression = field + "='" + filter + "'"
@@ -500,6 +510,166 @@ $(".view-all").click(function() {
     $("#searchBox").hide();
 });
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// DEVELOP FLOAT PLAN TOOL
+// SELECT A START AND END POINT, RETURN ALL POINTS IN BETWEEN
+// IF MULTIPLE STREAMS, RETURN ERROR IF THOSE DO NOT CONNECT
+
+//This works bc onEachFeature assigns the variables on the click for the modal, and then it is sent to the float plan modal when the button is clicked
+//This is the initial stuff that happens on the map and getting the points.
+
+var planGroup = L.layerGroup().addTo(map); 
+
+var startCircle = L.circleMarker([0,0], {
+        radius:18,
+        fillOpacity:0,
+        color:"#00cc00"        
+    });
+var endCircle = L.circleMarker([0,0], {
+        radius:18,
+        fillOpacity:0,
+        color:"#ff3300"        
+    });
+
+$("#planStart").click(function(){
+    $("#planStartText").html(planName)
+    startID = planID
+    startMile = planMiles
+    startStream = planStream
+    startCircle.setLatLng(coords).addTo(planGroup);    
+});
+
+$("#planEnd").click(function(){
+    $("#planEndText").html(planName)
+    endID = planID
+    endMile = planMiles
+    endStream = planStream
+    endCircle.setLatLng(coords).addTo(planGroup);
+});
+
+var clearPlan = function() {
+    startID = "", $("#planStartText").html("")
+    endID = "", $("#planEndText").html("")
+    planGroup.clearLayers();
+}
+
+$("#clear-plan").click(function(){
+    clearPlan()
+});
+
+//THE WHILE LOOP IS GOING THROUGH AND DOING THE LAST ENTRY BIT TWO TIMES IN A ROW... GIVING AN UNDEFINED.  THAT'S WHY IT'S NOT WORKING...
+//SO SOMEHOW WE HAVE TO REARRANGE IT SO THAT IT FLOWS IN ORDER.
+
+
+function floatPlanQuery(list){
+    var lastEntry = list[list.length-1]
+    
+    if (lastEntry["stream"] === endStream){
+        
+        for (var i=0; i < list.length; i++){
+            getPoints(list[i]['startMiles'],list[i]['endMiles'],list[i]['stream']);
+        }
+        
+    } else {
+        
+    accessLayer.query()
+        .where("pointType = 8 AND streamName = '" + lastEntry["stream"] + "'AND streamMile = 0")
+        .run(function(error,conPoint,response){
+            
+            //point ID of the confluence point for Stream A
+            var pID = conPoint.features[0].properties.pointID
+            
+            //point ID of the correspond confluence point on stream B
+            var coID = conPoint.features[0].properties.coID
+            
+//this expression returns the point of the corresponding confluence, so you can get that points streamName, and miles            
+            var exp2 = "pointID = '"+coID+"'"
+            
+            accessLayer.query()
+                .where(exp2)
+                .run(function(error,coIDPoint,response){ 
+                
+                    var coIDStream = coIDPoint.features[0].properties.streamName
+                    var coStartMile = coIDPoint.features[0].properties.streamMile
+                    
+                    if (coIDStream === endStream){
+                        var coEndMiles = endMile
+                    } else {
+                        var coEndMiles = 0
+                    }
+                    
+                    list.push({"stream":coIDStream, "startMiles":coStartMile, "endMiles":coEndMiles});
+                
+                    floatPlanQuery(list);
+                    
+                    console.log(list);
+                    
+            });
+        
+        });
+    }
+}
+
+//Begin to query the data in between the points...
+function getPoints(mileA,mileB,streamName){
+    
+    mileExpression = "streamMile <="+mileA+"AND streamMile >="+mileB+"AND streamName = '"+streamName+"'"
+    
+    accessLayer.query()
+        .where(mileExpression)
+        .run(function(error,floatPlanPoints,response){
+            for (var i=0;i < floatPlanPoints.features.length; i ++) {
+                pName = floatPlanPoints.features[i].properties.pointName
+                console.log(pName)
+            }
+            
+            map.removeLayer(accessLayer);
+        
+            var floatPlanLayer = L.geoJson(floatPlanPoints, {
+                pointToLayer:makePointToLayer,
+                onEachFeature:function(feature,layer) {
+                    if (feature.properties){
+                        layer.on({
+                            click: function(e){
+                                featureModalContent(feature);
+                            }
+                        });
+                    }
+                    syncSidebar(layer,"float plan");
+                }
+            }).addTo(map);
+        
+            map.flyToBounds(floatPlanLayer.getBounds(),{
+                padding:[150,150]
+            });
+        
+        });
+    }
+
+
+
+$("#generate-plan").click(function(){
+    
+    if (startStream === endStream){
+        
+        getPoints(startMile, endMile, startStream);
+        
+    } else {
+        var streamMilesArray = []
+        
+        streamMilesArray.push({"stream":startStream, "startMiles":startMile, "endMiles":0})
+    
+        floatPlanQuery(streamMilesArray);
+        
+        } 
+});
+    
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
 // Leaflet patch to make layer control scrollable on touch browsers
 var container = $(".leaflet-control-layers")[0];
 if (!L.Browser.touch) {
@@ -509,8 +679,6 @@ if (!L.Browser.touch) {
 } else {
     L.DomEvent.disableClickPropagation(container);
 }
-
-
 
 //NOT SURE IF I AM GOING TO INCLUDE ANY OF THIS OR NOT
 // Typeahead search functionality

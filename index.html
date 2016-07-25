@@ -34,10 +34,8 @@
                 <ul class="nav navbar-nav">
                     <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;View Access List</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="near-btn"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;Access Near You</a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="river-btn"><i class="fa fa-tint"></i>&nbsp;&nbsp;Find a River</a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a Water Trail </a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a River or Blue Trail </a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map white"></i>&nbsp;&nbsp;Make a Float Plan</a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="feedback-btn"><i class="fa fa-comment white"></i>&nbsp;&nbsp;Provide Feedback</a></li>
                 </ul>
             </div>
             <!--/.navbar-collapse -->
@@ -116,42 +114,34 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="riverModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a River</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you know the name of the stream or river you want to access?
-                        <br> Find it here to zoom to it on the map.</p>
-                    <div class="dropdown">
-                        <select class="form-control" id="stream-names">
-                            <option id="hold">Select a river name...</option>
-                        </select>
-                    </div>
-                    <div id="stream-name-fill"></div>
-                    <button id="getStream" type="button" class="btn btn-primary filter-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary view-all" data-dismiss="modal">View All Rivers</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
     <div class="modal fade" id="trailModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a River Trail</h4>
+                    <h4 class="modal-title">Find a River or Blue Trail</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you know the name of the stream or river you want to access?
+                    <div class="dropdown">
+                        <select class="form-control" id="stream-names">
+                            <option id="hold">Select a river name...</option>
+                        </select>
+                    </div>
+                    <div class="btn-container">
+                        <button id="getStream" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                    </div>    
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to explore one South Carolina's State Scenic Rivers?
+                    <div class="dropdown">
+                        <select class="form-control" id="scenic-names">
+                            <option id="hold">Select a Scenic River...</option>
+                        </select>
+                    </div>
+                    <div class="btn-container">
+                        <button id="getScenic" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                    </div>    
                 </div>
                 <div class="modal-body">
                     <p>This is where you can find access on one of the many Blue Trails in the state.</p>
@@ -160,12 +150,13 @@
                             <option id="hold">Select a trail name...</option>
                         </select>
                     </div>
-                    <div id="stream-name-fill"></div>
-                    <button id="getTrail" type="button" class="btn btn-primary filter-btn" aria-pressed="false" data-dismiss="modal">Zoom to Trail</button>
+                    <div class="btn-container">
+                        <button id="getTrail" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary view-all" data-dismiss="modal">View All Rivers</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default left-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
+                    <button type="button" class="btn btn-warning view-all right-btn" data-dismiss="modal">View All Rivers</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -181,11 +172,22 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Create a Float Plan!</h4>
                 </div>
-                <div class="modal-body">
-                    <p>This is where you can select a start and end point, and get all of the points in between. They will sorted from upstream to downstream and reported with river miles to make it easy to come up with a quick plan of action. Also, download the point into a format that can go in your GPS!</p>
+                <div class="modal-body planPoints">
+                    <p>Generate a list of points with the river miles. Click a point in the map to choose your start and end points.</p>
+                    <table id="plan-points">
+                        <tr>
+                            <th>Start Point:</th>
+                            <th>End Point:</th>
+                        </tr>
+                        <tr>
+                            <td id="planStartText">No start point selected...</td>
+                            <td id="planEndText">No end point selected...</td>
+                        </tr>
+                    </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="generate-plan">Generate Plan</button>
+                    <button type="button" class="btn btn-warning left-btn" data-dismiss="modal" id="clear-plan">Clear Start and End</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -235,7 +237,6 @@
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -249,6 +250,11 @@
                     <h4 class="modal-title text-primary" id="feature-title"></h4>
                 </div>
                 <div class="modal-body" id="feature-info"></div>
+                <div class="modal-body" id="float-plan">
+                    <h4>Add to Float Plan</h4>
+                    <button type="button" class="btn btn-default btn-sm" id="planStart">Make Start Point</button>
+                    <button type="button" class="btn btn-default btn-sm" id="planEnd">Make End Point</button>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -265,7 +271,7 @@
                 <div class="modal-header">
                     <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">
-              Developed by <a href='http://bryanmcbride.com'>bryanmcbride.com</a>
+              Template by <a href='http://bryanmcbride.com'>bryanmcbride.com</a>
             </h4>
                 </div>
                 <div class="modal-body">
