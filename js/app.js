@@ -217,6 +217,11 @@ function featureModalContent(feature) {
     }
 
     $("#featureModal").modal("show");
+    planID = layer.feature.properties.pointID
+    planName = layer.feature.properties.pointName
+    planMiles = layer.feature.properties.streamMile
+    planStream = layer.feature.properties.streamName
+    coords = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
     //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
 }
 
