@@ -434,7 +434,7 @@ function queryLatLng(latlng,text) {
                 alert("No results were found. Please enter a valid address or increase your search distance.")
             } else {
                 
-                removeLayers();
+                map.removeLayer(accessLayer);
                 
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
