@@ -407,7 +407,7 @@ $(".filter-btn").click(function(evt) {
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
 
 function syncSidebarGeo(layer,text) {
-    
+
     $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     $("#stream-title").html("GeoSearch Result");
@@ -416,9 +416,9 @@ function syncSidebarGeo(layer,text) {
         valueNames: ["point-name","stream-name"]
     });
     featureList.sort("stream-name");
-    
+
     $("#stream-title").html("Searching "+$("#distanceBox").val()+ " miles from " + text);
-    
+
     /*$("#sidebar").animate({
         width:"450px"
     }, 800, function(){
@@ -440,13 +440,13 @@ function queryLatLng(latlng,text) {
             if (fc.features.length == 0) {
                 alert("No results were found. Please enter a valid address or increase your search distance.")
             } else {
-                
+
                 map.removeLayer(accessLayer);
-                
+
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
                 $("#searchBox").show();
-                
+
                 var geoSearchLayer = L.geoJson(fc, {
                     pointToLayer: makePointToLayer,
                     onEachFeature: function(feature, layer) {
@@ -456,16 +456,16 @@ function queryLatLng(latlng,text) {
                                 click: function(e) {
                                     featureModalContent(feature);
                                 }
-                            });  
+                            });
                         }
                         syncSidebarGeo(layer,text);
                     }
                 }).addTo(map);
-                
+
                 map.flyToBounds(geoSearchLayer.getBounds(),{
                     padding:[150,150]
                 });
-                
+
             }
         });
 }
@@ -485,15 +485,35 @@ function geocodeLatLng() {
             var lng = address.results[0].latlng.lng
             var text = address.results[0].text
             var latlng = [lat, lng];
+            var geoMarker = L.marker([lat,lng]).addTo(map);
+            geoMarker.bindPopup("<b>" + text + "</b>");
+
 
             queryLatLng(latlng,text);
 
         });
+
 }
 
 $("#geocode-btn").click(function() {
     geocodeLatLng();
 });
+
+//GEOLOCATOR BUTTON------------------------------
+function onLocationFound(e) {
+      map.locate({setView: true, maxZoom: 16});
+      L.marker(e.latlng).addTo(map);
+  };
+
+$("#locate-btn").click(function() {
+    onLocationFound();
+});
+
+
+
+
+
+
 
 
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
