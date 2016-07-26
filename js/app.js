@@ -478,6 +478,20 @@ $("#geocode-btn").click(function() {
     geocodeLatLng();
 });
 
+//GEOLOCATOR BUTTON------------------------------
+function onLocationFound(e) {
+      map.locate({setView: true, maxZoom: 16});
+      L.marker(e.latlng).addTo(map);
+  };
+
+$("#locate-btn").click(function() {
+    onLocationFound();
+});
+
+
+
+
+
 
 
 
