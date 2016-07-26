@@ -39,7 +39,7 @@
                 </ul>
             </div>
             <!--/.navbar-collapse -->
-        </div>
+        </div> 
     </div>
 
     <div id="container">
@@ -50,13 +50,16 @@
                         <h3 class="panel-title" id="stream-title">Paddling the Palmetto State
               <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
                     </div>
-                    <div class="panel-body">
+                    
+                <!--    <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <input id="searchBox" type="text" class="form-control search" placeholder="Filter" />
                             </div>
                         </div>
                     </div>
+                -->
+                    
                     <div class="sidebar-table" id="side-table">
                         <table class="table table-hover" id="feature-list">
                             <thead class="hidden">
@@ -101,6 +104,7 @@
                         <label for="distanceBox">How far to search?</label>
                         <input type="text" class="form-control" name="distanceBox" id="distanceBox" placeholder="Miles..."><br>
                     </form>
+                    <p>The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
@@ -153,8 +157,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
-                    <button type="button" class="btn btn-warning view-all right-btn" data-dismiss="modal">View All Rivers</button>
+                    <button type="button" class="btn btn-default right-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
+                    <button type="button" class="btn btn-warning view-all left-btn" data-dismiss="modal">View All Rivers</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -182,7 +186,7 @@
                             <td id="planEndText">No end point selected...</td>
                         </tr>
                         <tr>
-                            <td id="planStartStream">...</td>
+                            <td id="planStartStream" >...</td>
                             <td id="planEndStream">...</td>
                         </tr>
                     </table>

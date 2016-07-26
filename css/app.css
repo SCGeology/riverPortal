@@ -72,7 +72,7 @@ input[type="radio"], input[type="checkbox"] {
 .sidebar-table {
   position: absolute;
   width: 100%;
-  top: 120px;
+  top: 80px;
   bottom: 0px;
   overflow: auto;
 }
@@ -126,7 +126,7 @@ input[type="radio"], input[type="checkbox"] {
     background-repeat: no-repeat;
 }
 .navbar-inverse .navbar-nav>li>a{color:#FFFFFF;font-size:16px;}
-.navbar-inverse .navbar-nav>li>a:hover{color:aquamarine;}
+.navbar-inverse .navbar-nav>li>a:hover{text-shadow:1px 1px #444;}
 .navbar .navbar-brand {
   font-weight: bold;
   font-size: 25px;
