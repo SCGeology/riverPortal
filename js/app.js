@@ -199,7 +199,7 @@ function featureModalContent(feature) {
 
     if (feature.properties.pointType == 11) {
         //GET USGS GAGE DATA
-        var gageURL = "http://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
+        var gageURL = "https://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
 
         $.getJSON(gageURL, function(data) {
             var cfs = data.value.timeSeries[0].values[0].value[0].value
@@ -539,12 +539,14 @@ var planGroup = L.featureGroup().addTo(map);
 var startCircle = L.circleMarker([0,0], {
         radius:18,
         fillOpacity:0,
-        color:"#00cc00"        
+        color:"#00cc00",
+        pane:"popupPane"
     });
 var endCircle = L.circleMarker([0,0], {
         radius:18,
         fillOpacity:0,
-        color:"#ff3300"        
+        color:"#ff3300",        
+        pane:"popupPane"
     });
 
 $("#planStart").click(function(){
@@ -553,7 +555,7 @@ $("#planStart").click(function(){
     startMile = planMiles
     startStream = planStream
     $("#planStartStream").html("On the "+startStream)
-    startCircle.setLatLng(coords).addTo(planGroup);    
+    startCircle.setLatLng(coords).addTo(planGroup);
 });
 
 $("#planEnd").click(function(){
