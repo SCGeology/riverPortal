@@ -92,6 +92,7 @@ input[type="radio"], input[type="checkbox"] {
 #initial {
     padding:1em;
     text-align: center;
+    height:100%;
 }
 #panel-image {
     width:98%;
