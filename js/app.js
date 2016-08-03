@@ -183,9 +183,9 @@ basemap.addTo(map);
 
 var fullWhere = "pointType IN (1,2,5)"
 
-function removeLayers(){
+function removeLayers(keepLayers){
     map.eachLayer(function(layer){
-        if (layer != basemap){
+        if ($.inArray(layer,keepLayers) == -1){
             map.removeLayer(layer);
         }
     });
@@ -241,6 +241,14 @@ function makePointToLayer(geojson, latlng) {
         })
     })
 }
+
+function defineFloatPoints(layer){
+    planID = layer.feature.properties.pointID
+    planName = layer.feature.properties.pointName
+    planMiles = layer.feature.properties.streamMile
+    planStream = layer.feature.properties.streamName
+    coords = [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0]]
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -264,11 +272,7 @@ var accessLayer = L.esri.featureLayer({
                 click: function(e) {
                     featureModalContent(feature);
                     $("#featureModal").modal("show");
-                    planID = layer.feature.properties.pointID
-                    planName = layer.feature.properties.pointName
-                    planMiles = layer.feature.properties.streamMile
-                    planStream = layer.feature.properties.streamName
-                    coords = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
+                    defineFloatPoints(layer);
                 }
             });
         }
@@ -378,21 +382,41 @@ $(".filter-btn").click(function(evt) {
     if (this.id === "getStream") {
         var field = "streamName"
         var filter = $("#stream-names").val();
+        //reset the other boxes selection 
+        $("#scenic-names").val("Select a Scenic River...");
+        $("#trail-names").val("Select a trail name...");
     } else if (this.id == "getTrail") {
         var field = "waterTrail_Name"
         var filter = $("#trail-names").val();
+        //reset the other boxes selection
+        $("#stream-names").val("Select a river name...");
+        $("#scenic-names").val("Select a Scenic River...");
     } else if (this.id == "getScenic") {
         var field = "scenic_River"
         var filter = $("#scenic-names").val();
+        //reset the other boxes selection
+        $("#stream-names").val("Select a river name...");
+        $("#trail-names").val("Select a trail name...");
     }
 
     var expression = field + "='" + filter + "'"
 
     $("#initial").hide();
-
+    
+    //clear layers and remove float plain points, if exist
+    removeLayers([basemap,accessLayer,planGroup]);
+    $(".floatTable").remove();
+    //make sure that accessLayer is added to map, or setWhere filter can't happen
+    if (!(map.hasLayer(accessLayer))){
+        map.addLayer(accessLayer);
+    }
+    
+//CONSIDER DOING A QUERY INSTEAD OF SET WHERE FILTER....
+    
     accessLayer.setWhere(expression, function() {
         syncSidebar(field, filter);
     });
+    
     accessLayer.query()
         .where(expression)
         .bounds(function(error, latlngbounds) {
@@ -415,7 +439,7 @@ function syncSidebarGeo(layer,text) {
     });
     featureList.sort("stream-name");
     
-    $("#stream-title").html("Searching "+$("#distanceBox").val()+ " miles from " + text);
+    $("#stream-title").html("Search distance: "+$("#distanceBox").val()+ " miles.");
     
 }
 
@@ -434,7 +458,9 @@ function queryLatLng(latlng,text) {
                 alert("No results were found. Please enter a valid address or increase your search distance.")
             } else {
                 
-                removeLayers();
+            //remove layers and clear the side table of float plan points if it exists.
+                removeLayers([basemap,planGroup]);
+                $(".floatTable").remove();
                 
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
@@ -448,6 +474,7 @@ function queryLatLng(latlng,text) {
                                 click: function(e) {
                                     featureModalContent(feature);
                                     $("#featureModal").modal("show");
+                                    defineFloatPoints(layer);
                                 }
                             });  
                         }
@@ -485,22 +512,38 @@ function geocodeLatLng() {
 
 $("#geocode-btn").click(function() {
     geocodeLatLng();
+    $("#stream-names").val("Select a river name...");
+    $("#scenic-names").val("Select a Scenic River...");
+    $("#trail-names").val("Select a trail name...");
 });
 
 
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
-$(".view-all").click(function() {
+$("#view-all").click(function() {
+    
+    removeLayers([basemap,accessLayer,planGroup]);
+    
+    if (!(map.hasLayer(accessLayer))){
+        map.addLayer(accessLayer);
+    }
+    
+    clearPlan();
+    
+    $(".floatTable").remove();
+    
     accessLayer.setWhere(fullWhere);
     accessLayer.query().bounds(function(error, latlngbounds) {
         map.flyToBounds(latlngbounds,{
             padding:[30,30]
         });
     });
+    
     //NEED TO PUT THE DEFAULT STUFF BACK IN THE PANEL AND CLEAR THE LIST OF ITEMS
     $("#feature-list tbody").empty();
     $("#stream-names").val("Select a river name...");
+    $("#scenic-names").val("Select a Scenic River...");
     $("#trail-names").val("Select a trail name...");
     $("#stream-title").html("Paddling the Palmetto State");
     $("#initial").show();
@@ -532,7 +575,7 @@ $("#planStart").click(function(){
     startID = planID
     startMile = planMiles
     startStream = planStream
-    $("#planStartStream").html("On the "+startStream)
+    $("#planStartStream").html(startStream)
     startCircle.setLatLng(coords).addTo(planGroup);    
 });
 
@@ -541,7 +584,7 @@ $("#planEnd").click(function(){
     endID = planID
     endMile = planMiles
     endStream = planStream
-    $("#planEndStream").html("On the "+endStream)
+    $("#planEndStream").html(endStream)
     endCircle.setLatLng(coords).addTo(planGroup);
 });
 
@@ -563,7 +606,7 @@ function syncSidebarFloat(layer,index) {
     
     $tableID.find("tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
-    $("#stream-title").html("Float Plan, from upstream to downstream.");
+    $("#stream-title").html("Float Plan");
     
     /*
     featureList = new List("features", {
@@ -584,6 +627,7 @@ function floatPlanQuery(list){
             
             var $newTable = $("#feature-list").clone(true);
             $newTable.attr("id","feature-list"+i.toString());
+            $newTable.addClass("floatTable");
             $("#side-table").append($newTable);
             $newTable.find("tbody").append("<tr class='feature-row'><th colspan='4' style='text-align:center;'>"+list[i]['stream']+"</th><tr>")
             
@@ -640,10 +684,8 @@ function getPoints(mileA,mileB,streamName,index){
     
     accessLayer.query()
         .where(mileExpression)
-        .orderBy("streamMile")
+        .orderBy("streamMile","desc")
         .run(function(error,floatPlanPoints,response){
-
-            map.removeLayer(accessLayer);
             
             var floatPlanLayer = L.geoJson(floatPlanPoints, {
                 pointToLayer:makePointToLayer,
@@ -653,6 +695,7 @@ function getPoints(mileA,mileB,streamName,index){
                             click: function(e){
                                 featureModalContent(feature);
                                 $("#featureModal").modal("show");
+                                defineFloatPoints(layer);
                             }
                         });
                     }
@@ -671,8 +714,14 @@ $("#generate-plan").click(function(){
     if ($("#planStartText").text() == "No start point selected..." || $("#planEndText").text() == "No end point selected..."){
         alert("Select a start and end point by clicking on access points on the map.")
     } else {
+        
+        removeLayers([basemap,planGroup]);
+        
+        $(".floatTable").remove();
         $("#feature-list tbody").empty();
         $("#initial").hide();
+        
+        floatPlanActive = true
 
         if (startStream === endStream){
 
