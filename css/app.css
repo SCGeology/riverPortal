@@ -11,7 +11,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 #sidebar {
-    display:block;
+  display:block;
   width: 350px;
   height: 100%;
   max-width: 100%;
@@ -73,7 +73,7 @@ input[type="radio"], input[type="checkbox"] {
 .sidebar-table {
   position: absolute;
   width: 100%;
-  top: 80px;
+  top: 38px;
   bottom: 0px;
   overflow: auto;
 }
@@ -90,6 +90,7 @@ input[type="radio"], input[type="checkbox"] {
 .table {
   margin-bottom: 0px;
 }
+
 #legendbtn-navbar{
   float:right;
 }
@@ -107,6 +108,20 @@ input[type="radio"], input[type="checkbox"] {
     padding-bottom: 10px;
     float:left;
 }
+
+#plan-points {
+    border-collapse: separate;
+    border-spacing: 10px 5px;
+}
+#plan-points td {
+    height:30px;
+    border-radius:5px;
+    padding:0 5px;
+}
+#planStartText {background-color:#d9f2e6;}
+#planEndText {background-color:#ffd6cc;}
+#planStartStream, #planEndStream{background-color:#e6f7ff;}
+
 #initial {
     padding:1em;
     text-align: center;
@@ -132,6 +147,14 @@ input[type="radio"], input[type="checkbox"] {
 #plan-points{
     width:100%;
     margin-bottom: 2em;
+}
+#view-all {
+    position:absolute;
+    top:30px;
+    right:10px;
+    color:#FFF;
+    background:none;
+    z-index: 1049;
 }
 #stream-name-fill{
     width:100%;

@@ -34,8 +34,8 @@
                 <ul class="nav navbar-nav">
                     <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;View Access List</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="near-btn"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;Access Near You</a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a River or Blue Trail </a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map"></i>&nbsp;&nbsp;Make a Float Plan</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a River </a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map"></i>&nbsp;&nbsp;Float Plan</a></li>
                 </ul>
                 <ul class="nav navbar-nav" id="legendbtn-navbar">
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="legend-btn"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;About</a></li>
@@ -92,7 +92,9 @@
                 </div>
             </div>
         </div>
-        <div id="map"></div>
+        <div id="map">
+            <button type="button" id="view-all" class="btn btn-default left-btn" data-dismiss="modal">View All Rivers</button>
+        </div>
     </div>
 
     <div class="modal fade" id="nearModal" tabindex="-1" role="dialog">
@@ -165,8 +167,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default right-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
-                    <button type="button" class="btn btn-warning view-all left-btn" data-dismiss="modal">View All Rivers</button>
+                    <button type="button" class="btn btn-default left-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -192,6 +193,10 @@
                         <tr>
                             <td id="planStartText">No start point selected...</td>
                             <td id="planEndText">No end point selected...</td>
+                        </tr>
+                        <tr>
+                            <th>Stream/River:</th>
+                            <th>Stream/River:</th>
                         </tr>
                         <tr>
                             <td id="planStartStream" >...</td>
@@ -422,9 +427,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
     <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.7/esri-leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.1/esri-leaflet.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.0/esri-leaflet-geocoder.js"></script>
+    <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
     <script src="js/app.js"></script>
 </body>
 
