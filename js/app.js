@@ -286,38 +286,6 @@ var zoomControl = L.control.zoom({
     position: "bottomright"
 }).addTo(map);
 
-/* GPS enabled geolocation control set to follow the user's location */
-var locateControl = L.control.locate({
-    position: "bottomright",
-    drawCircle: true,
-    follow: true,
-    setView: true,
-    keepCurrentZoomLevel: true,
-    markerStyle: {
-        weight: 1,
-        opacity: 0.8,
-        fillOpacity: 0.8
-    },
-    circleStyle: {
-        weight: 1,
-        clickable: false
-    },
-    icon: "fa fa-location-arrow",
-    metric: false,
-    strings: {
-        title: "My location",
-        popup: "You are within {distance} {unit} from this point",
-        outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
-    },
-    locateOptions: {
-        maxZoom: 18,
-        watch: true,
-        enableHighAccuracy: true,
-        maximumAge: 10000,
-        timeout: 10000
-    }
-}).addTo(map);
-
 /* Larger screens get expanded layer control and visible sidebar */
 if (document.body.clientWidth <= 767) {
     var isCollapsed = true;
@@ -478,24 +446,47 @@ $("#geocode-btn").click(function() {
     geocodeLatLng();
 });
 
-//GEOLOCATOR BUTTON------------------------------
+//GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY------------------------------
 function onLocationFound(e) {
       map.locate({setView: true, maxZoom: 16});
-      L.marker(e.latlng).addTo(map);
+
+      var geocodeService = L.esri.Geocoding.geocodeService();
+      map.on('locationfound',function(e) {
+        geocodeService.reverse().latlng(e.latlng).run(function(error,result){
+          L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+          $('#addressBox').val(result.address.Address);
+          $('#cityBox').val(result.address.City);
+        });
+      });
+
+
+      //queryLatLng(e.latlng);
+
   };
 
+
 $("#locate-btn").click(function() {
+    //map.on('locationfound', onLocationFound);
     onLocationFound();
 });
 
 
+//INFORMATION/LEGEND BUTTON----------------------------------------
+$("#legend-btn").click(function() {
+  $("#legendModal").modal("show");
+  $(".navbar-collapse.in").collapse("hide");
+  return false;
+});
+
+//INFORMATION/LEGEND BUTTON IN SMALL SCREENS--------------------
+/*if (document.body.clientWidth <= 767) {
+    $("#info-text").text('About');
+} else {
+    $("#info-text").text('');
+};*/
 
 
 
-
-
-
-//NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $(".view-all").click(function() {

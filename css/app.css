@@ -9,6 +9,7 @@ body {
 input[type="radio"], input[type="checkbox"] {
   margin: 0;
 }
+
 #sidebar {
     display:block;
   width: 350px;
@@ -88,6 +89,23 @@ input[type="radio"], input[type="checkbox"] {
 }
 .table {
   margin-bottom: 0px;
+}
+#legendbtn-navbar{
+  float:right;
+}
+#credit-list {
+  padding-left: 40%;
+}
+#dnrcredits {
+  margin:auto;
+  text-align: center;
+}
+#legendBox {
+    width: 40%;
+    margin:auto;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    float:left;
 }
 #initial {
     padding:1em;
@@ -182,6 +200,19 @@ input[type="radio"], input[type="checkbox"] {
   #sidebar {
     display: none;
   }
+}
+@media (max-width: 767px){
+  #legendBox {
+    float:none;
+    width: 60%;
+  }
+  #credit-list{
+    padding-left: 5%;
+  }
+  #legendbtn-navbar{
+    float:none;
+  }
+}
   .url-break {
     word-break: break-all;
     word-break: break-word;
