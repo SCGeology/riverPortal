@@ -212,12 +212,12 @@ function featureModalContent(feature) {
 
     } else {
 
-        var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
+        var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<tr><th>Directions</th><td>" + "<a href='https://www.google.com/maps/dir/Current+Location/" + feature.properties.lat + "," + feature.properties.long + "'>" + "Get Directions" + "</a>" + "</td></tr>" + "</table>";
 
         $("#feature-info").html(content);
     }
 
-    
+
     //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
 }
 
@@ -350,7 +350,7 @@ $(".filter-btn").click(function(evt) {
     if (this.id === "getStream") {
         var field = "streamName"
         var filter = $("#stream-names").val();
-        //reset the other boxes selection 
+        //reset the other boxes selection
         $("#scenic-names").val("Select a Scenic River...");
         $("#trail-names").val("Select a trail name...");
     } else if (this.id == "getTrail") {
@@ -370,7 +370,7 @@ $(".filter-btn").click(function(evt) {
     var expression = field + "='" + filter + "'"
 
     $("#initial").hide();
-    
+
     //clear layers and remove float plain points, if exist
     removeLayers([basemap,accessLayer,planGroup]);
     $(".floatTable").remove();
@@ -378,13 +378,13 @@ $(".filter-btn").click(function(evt) {
     if (!(map.hasLayer(accessLayer))){
         map.addLayer(accessLayer);
     }
-    
+
 //CONSIDER DOING A QUERY INSTEAD OF SET WHERE FILTER....
-    
+
     accessLayer.setWhere(expression, function() {
         syncSidebar(field, filter);
     });
-    
+
     accessLayer.query()
         .where(expression)
         .bounds(function(error, latlngbounds) {
@@ -408,7 +408,7 @@ function syncSidebarGeo(layer,text) {
     featureList.sort("stream-name");
 
     $("#stream-title").html("Search distance: "+$("#distanceBox").val()+ " miles.");
-    
+
 }
 
 //SET THE STATE VALUE TO AUTOMATICALLY BE SC, BUT WILL CHANGE IF SOMEONE CHANGES IT
@@ -425,15 +425,15 @@ function queryLatLng(latlng,text) {
             if (fc.features.length == 0) {
                 alert("No results were found. Please enter a valid address or increase your search distance.")
             } else {
-                
+
             //remove layers and clear the side table of float plan points if it exists.
                 removeLayers([basemap,planGroup]);
                 $(".floatTable").remove();
 
-                
+
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
-                
+
                 var geoSearchLayer = L.geoJson(fc, {
                     pointToLayer: makePointToLayer,
                     onEachFeature: function(feature, layer) {
@@ -534,24 +534,24 @@ $("#legend-btn").click(function() {
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $("#view-all").click(function() {
-    
+
     removeLayers([basemap,accessLayer,planGroup]);
-    
+
     if (!(map.hasLayer(accessLayer))){
         map.addLayer(accessLayer);
     }
-    
+
     clearPlan();
-    
+
     $(".floatTable").remove();
-    
+
     accessLayer.setWhere(fullWhere);
     accessLayer.query().bounds(function(error, latlngbounds) {
         map.flyToBounds(latlngbounds,{
             padding:[30,30]
         });
     });
-    
+
     //NEED TO PUT THE DEFAULT STUFF BACK IN THE PANEL AND CLEAR THE LIST OF ITEMS
     $("#feature-list tbody").empty();
     $("#stream-names").val("Select a river name...");
@@ -569,7 +569,7 @@ $("#view-all").click(function() {
 //This works bc onEachFeature assigns the variables on the click for the modal, and then it is sent to the float plan modal when the button is clicked
 //This is the initial stuff that happens on the map and getting the points.
 
-var planGroup = L.featureGroup().addTo(map); 
+var planGroup = L.featureGroup().addTo(map);
 
 var startCircle = L.circleMarker([0,0], {
         radius:18,
@@ -580,7 +580,7 @@ var startCircle = L.circleMarker([0,0], {
 var endCircle = L.circleMarker([0,0], {
         radius:18,
         fillOpacity:0,
-        color:"#ff3300",        
+        color:"#ff3300",
         pane:"popupPane"
     });
 
@@ -591,7 +591,7 @@ $("#planStart").click(function(){
     startStream = planStream
 
     $("#planStartStream").html(startStream)
-    startCircle.setLatLng(coords).addTo(planGroup);    
+    startCircle.setLatLng(coords).addTo(planGroup);
 
 });
 
@@ -607,7 +607,7 @@ $("#planEnd").click(function(){
 var clearPlan = function() {
     startID = "", $("#planStartText").html("No start point selected..."),$("#planStartStream").html("...")
     endID = "", $("#planEndText").html("No end point selected..."),$("#planEndStream").html("...")
-    
+
     planGroup.clearLayers();
 }
 
@@ -617,13 +617,13 @@ $("#clear-plan").click(function(){
 
 
 function syncSidebarFloat(layer,index) {
-    
+
     var $tableID = $("#feature-list"+index.toString());
-    
+
     $tableID.find("tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     $("#stream-title").html("Float Plan");
-    
+
     /*
     featureList = new List("features", {
         valueNames: ["point-name","stream-mile"]
@@ -634,75 +634,75 @@ function syncSidebarFloat(layer,index) {
 
 function floatPlanQuery(list){
     var lastEntry = list[list.length-1]
-    
+
     if (lastEntry["stream"] === endStream){
-        
+
         for (var i=0; i < list.length; i++){
-            
-        //set up new tables for each stream in the list returned. will append each data to appropriate table with stream name as header. 
-            
+
+        //set up new tables for each stream in the list returned. will append each data to appropriate table with stream name as header.
+
             var $newTable = $("#feature-list").clone(true);
             $newTable.attr("id","feature-list"+i.toString());
             $newTable.addClass("floatTable");
             $("#side-table").append($newTable);
             $newTable.find("tbody").append("<tr class='feature-row'><th colspan='4' style='text-align:center;'>"+list[i]['stream']+"</th><tr>")
-            
+
             getPoints(list[i]['startMiles'],list[i]['endMiles'],list[i]['stream'],i);
-            
+
         }
-        
+
     } else {
-        
+
     accessLayer.query()
         .where("pointType = 8 AND streamName = '" + lastEntry["stream"] + "'AND streamMile = 0")
         .run(function(error,conPoint,response){
-            
+
             //point ID of the confluence point for Stream A
             var pID = conPoint.features[0].properties.pointID
-            
+
             //point ID of the correspond confluence point on stream B
             var coID = conPoint.features[0].properties.coID
-            
-//this expression returns the point of the corresponding confluence, so you can get that points streamName, and miles            
+
+//this expression returns the point of the corresponding confluence, so you can get that points streamName, and miles
             var exp2 = "pointID = '"+coID+"'"
-            
+
             accessLayer.query()
                 .where(exp2)
-                .run(function(error,coIDPoint,response){ 
-                
+                .run(function(error,coIDPoint,response){
+
                     var coIDStream = coIDPoint.features[0].properties.streamName
                     var coStartMile = coIDPoint.features[0].properties.streamMile
-                    
+
                     if (coIDStream === endStream){
                         var coEndMiles = endMile
                     } else {
                         var coEndMiles = 0
                     }
-                    
+
                     list.push({"stream":coIDStream, "startMiles":coStartMile, "endMiles":coEndMiles});
-                
+
                     floatPlanQuery(list);
-                    
+
                     console.log(list);
-                    
+
             });
-        
+
         });
     }
 }
 
 //Begin to query the data in between the points...
 function getPoints(mileA,mileB,streamName,index){
-    
-//Need to set up multiple tables so that the data can be divided up into river sections    
-    
+
+//Need to set up multiple tables so that the data can be divided up into river sections
+
     mileExpression = "streamMile <="+mileA+"AND streamMile >="+mileB+"AND streamName = '"+streamName+"'"
-    
+
     accessLayer.query()
         .where(mileExpression)
         .orderBy("streamMile","desc")
         .run(function(error,floatPlanPoints,response){
-            
+
             var floatPlanLayer = L.geoJson(floatPlanPoints, {
                 pointToLayer:makePointToLayer,
                 onEachFeature:function(feature,layer) {
@@ -718,11 +718,11 @@ function getPoints(mileA,mileB,streamName,index){
                     syncSidebarFloat(layer,index);
                 }
             }).addTo(map);
-        
+
             map.flyToBounds(planGroup.getBounds(),{
                     padding:[150,150]
                 });
-        
+
         });
     }
 
@@ -730,13 +730,13 @@ $("#generate-plan").click(function(){
     if ($("#planStartText").text() == "No start point selected..." || $("#planEndText").text() == "No end point selected..."){
         alert("Select a start and end point by clicking on access points on the map.")
     } else {
-        
+
         removeLayers([basemap,planGroup]);
-        
+
         $(".floatTable").remove();
         $("#feature-list tbody").empty();
         $("#initial").hide();
-        
+
         floatPlanActive = true
 
         if (startStream === endStream){
@@ -755,9 +755,9 @@ $("#generate-plan").click(function(){
 
             floatPlanQuery(streamMilesArray);
 
-        }    
+        }
     }
-     
+
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
