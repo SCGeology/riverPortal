@@ -18,6 +18,11 @@
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">
     <link rel="stylesheet" href="css/app.css">
 
+    <link rel="apple-touch-icon" sizes="76x76" href="images/dnrLogo76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/dnrLogo120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/dnrLogo152.png">
+    <link rel="shortcut icon" href="images/appIcon.png">
+
 </head>
 
 <body>
@@ -42,7 +47,7 @@
                 </ul>
             </div>
             <!--/.navbar-collapse -->
-        </div> 
+        </div>
     </div>
 
     <div id="container">
@@ -53,7 +58,7 @@
                         <h3 class="panel-title" id="stream-title">Paddling the Palmetto State
               <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
                     </div>
-                    
+
                     <div class="sidebar-table" id="side-table">
                         <table class="table table-hover" id="feature-list">
                             <thead class="hidden">
@@ -97,7 +102,7 @@
                 <div class="modal-body">
                     <form id="nearModal-form">
                         <label for="addressBox cityBox stateBox">Enter address or use current location: </label> &nbsp;
-                        <button type="button" data-toggle="collapse" data-target=".navbar-collapse.in" class="btn btn-primary right-btn" id="locate-btn">Locate Me</button><br><br>
+                        <button type="button" data-toggle="collapse" data-target=".navbar-collapse.in" class="btn btn-default" id="locate-btn">Locate Me</button><br><br>
                         <input type="text" class="form-control" name="addressBox" id="addressBox" placeholder="Address"><br>
                         <input type="text" class="form-control" name="cityBox" id="cityBox" placeholder="City"><br>
                         <input type="text" class="form-control" name="stateBox" id="stateBox" placeholder="South Carolina"><br>
@@ -133,7 +138,7 @@
                     </div>
                     <div class="btn-container">
                         <button id="getStream" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                    </div>    
+                    </div>
                 </div>
                 <div class="modal-body">
                     <p>Do you want to explore one South Carolina's State Scenic Rivers?
@@ -144,7 +149,7 @@
                     </div>
                     <div class="btn-container">
                         <button id="getScenic" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                    </div>    
+                    </div>
                 </div>
                 <div class="modal-body">
                     <p>This is where you can find access on one of the many Blue Trails in the state.</p>
@@ -243,7 +248,7 @@
             <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Provide some feedback!</h4>
           </div>
-          <div class="modal-body">        
+          <div class="modal-body">
               <div>
                 <form id="contact-form">
                   <div class="well well-sm">
@@ -281,7 +286,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-    
+
     <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -403,7 +408,7 @@
                     program keep the data up-to-date.
                   </p>
                   <h5><strong>Credits</strong></h5>
-                  <p> A special thanks to Tom Taylor, the owner of <a href="http://randomconnections.com" target="_blank"> Random Connections Blog.</a>
+                  <p> A special thanks to Tom Taylor, the owner of <a href="http://randomconnections.com" target="_blank">Random Connections Blog.</a>
                      Much of the foundation of this project was made possible because of the impressive project undertaken by him. His work is
                      located
                      <a href="http://randomconnections.com/paddling-south-carolinas-rivers/" target="_blank">here.</a>
@@ -422,10 +427,42 @@
                   <p><strong>Contact us:</strong><br>
                     Phone: 803.896.7714<br>
                     <a href="mailto:ArringtonT@dnr.sc.gov">ArringtonT@dnr.sc.gov</a>
-                  </p>
-                    <div class="dropdown">
-                    </div>
-                </div>
+                  </p><br>
+                      <h4>Add this Application to your Mobile Device Home Screen</h4>
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="instruct-btn" data-target="#intruct">Apple iOS Instructions</button>&nbsp;
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="androidins-btn" data-target="#androidins">Android OS Instructions</button><br><br>
+                        <div id="instruct" class="collapse">
+                          <h4>Step 1:</h4>
+                          <p>
+                            Visit the application in the Mobile Device's Safari Web Browser
+                          </p>
+                          <h4>Step 2:</h4>
+                          <p>
+                            <img src="images/part1instruct.png" alt="part1" id="instructPics">
+                          </p>
+                          <h4>Step 3:</h4>
+                          <img src="images/part2instruct.png" alt="part2" id="instructPics">
+                          <h4>Step 4:</h4>
+                          <p>
+                            Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
+                          </p>
+                        </div><br>
+                        <div id="androidins" class="collapse">
+                          <h4>Step 1:</h4>
+                          <p>
+                            Visit the application in your Mobile Device's Web Browser
+                          </p>
+                          <h4>Step 2:</h4>
+                          <p>
+                            <img src="images/part1instruct.png" alt="part1" id="instructPics">
+                          </p>
+                          <h4>Step 3:</h4>
+                            <img src="images/part2instruct.png" alt="part2" id="instructPics">
+                          <h4>Step 4:</h4>
+                          <p>
+                            Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
+                          </p>
+                        </div>
                 <div class="modal-footer">
                   <div id="dnrcredits">
                     <img src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" width="10%" height="10%">
@@ -441,6 +478,10 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
+
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
