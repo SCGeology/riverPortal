@@ -245,7 +245,7 @@ input[type="radio"], input[type="checkbox"] {
 @media (max-width: 767px){
   #legendBox {
     float:none;
-    width: 60%;
+    width: 90%;
   }
   #credit-list{
     padding-left: 5%;
