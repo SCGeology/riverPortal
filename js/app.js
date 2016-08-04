@@ -36,11 +36,19 @@ $("#list-btn").click(function() {
 
 $("#float-btn").click(function() {
     if (floatPlanActive == false){
-        $("#floatModal").modal("show");   
+        $("#floatModal").modal("show");
+        $(".navbar-collapse.in").collapse("hide");
+        return false;
     } else {
         $("#floatResultModal").modal("show");
+        $(".navbar-collapse.in").collapse("hide");
+        return false;
     }
     
+});
+
+$("#goToFloat").click(function(){
+    $("#floatModal").modal("show");
 });
 
 $(".feedback-btn").click(function() {
@@ -535,7 +543,7 @@ $("#androidins-btn").click(function() {
 });
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
-$("#view-all").click(function() {
+$(".view-all").click(function() {
 
     removeLayers([basemap,accessLayer,planGroup]);
 
@@ -593,9 +601,11 @@ $("#planStart").click(function(){
     startID = planID
     startMile = planMiles
     startStream = planStream
-
     $("#planStartStream").html(startStream)
     startCircle.setLatLng(coords).addTo(planGroup);
+    
+//style the border of the button to show it has been selected
+    $("#planStart").addClass("startSelected");
 
 });
 
@@ -606,13 +616,19 @@ $("#planEnd").click(function(){
     endStream = planStream
     $("#planEndStream").html(endStream)
     endCircle.setLatLng(coords).addTo(planGroup);
+    
+//style the border of the button to show it has been selected    
+    $("#planEnd").addClass("endSelected");
 });
 
 var clearPlan = function() {
     startID = "", $("#planStartText").html("No start point selected..."),$("#planStartStream").html("...")
     endID = "", $("#planEndText").html("No end point selected..."),$("#planEndStream").html("...")
-
+    
     planGroup.clearLayers();
+    
+    $("#planStart").removeClass("startSelected");
+    $("#planEnd").removeClass("endSelected");
 }
 
 $("#clear-plan").click(function(){

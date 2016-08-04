@@ -182,14 +182,24 @@
     <!-- /.modal -->
 
     <div class="modal fade" id="floatModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Create a Float Plan!</h4>
                 </div>
                 <div class="modal-body planPoints">
-                    <h5>Generate a list of points with the river miles. Click a point in the map to choose your start and end points.</h5>
+                    <h4>Find out what you'll encounter along the river!</h4>
+                       <h5>Choose Start and End points by clicking on the icons in the map. Then come back here, review your start and end points below, and hit the <i>Make Float Plan</i> button.</h5>
+                    <p>With the Float Plan tool, you'll create a list of connected points so you can plan your trip. </p>
+                       <ul> 
+                            <li>Choose points from multiple rivers (as long as they're connected)</li>
+                           <li>Make sure the <b>Start Point is upstream of the End Point</b></li>
+                            <li>View the points and the list on the map.</li>
+                            <li>Listed in upstream to downstream order, with river miles.</li>
+                            <li>Export the data to CSV file for importing to GPS.</li>
+                            <li>Export a PDF that you can print and take with you.</li>
+                        </ul><br>
                     <table id="plan-points">
                         <tr>
                             <th>Start Point:</th>
@@ -236,10 +246,10 @@
                 </div>
                 <div class="modal-footer">
                     <div id="planOptions">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" id="view-map">View Map</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-map">View Map</button>
                         <button type="button" class="btn btn-success" data-dismiss="modal" id="export-csv">Export CSV</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-pdf">Export PDF</button>
-                        <button type="button" class="btn btn-primary view-all" data-dismiss="modal" id="start-over">Start Over</button>
+                        <button type="button" class="btn btn-default view-all" data-dismiss="modal" id="start-over">Start Over</button>
                     </div>
                 </div>
             </div>
@@ -307,8 +317,9 @@
                 <div class="modal-body" id="feature-info"></div>
                 <div class="modal-body" id="float-plan">
                     <h4>Add to Float Plan</h4>
-                    <button type="button" class="btn btn-default btn-sm" id="planStart">Make Start Point</button>
-                    <button type="button" class="btn btn-default btn-sm" id="planEnd">Make End Point</button>
+                    <button type="button" class="btn btn-default" id="planStart">Make Start Point</button>
+                    <button type="button" class="btn btn-default" id="planEnd">Make End Point</button>
+                    <button type="button" class="btn btn-default right-btn" data-dismiss="modal" id="goToFloat">Float Plan Window</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
