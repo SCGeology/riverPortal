@@ -139,8 +139,10 @@ input[type="radio"], input[type="checkbox"] {
     width:82%;
     margin:1em auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
+#planOptions button {margin:5px;}
 #initial {
     padding:1em;
     text-align: center;
@@ -225,8 +227,6 @@ input[type="radio"], input[type="checkbox"] {
   #sidebar {
     display: none;
   }
-}
-@media (max-width: 767px){
   #legendBox {
     float:none;
     width: 90%;
@@ -240,6 +240,9 @@ input[type="radio"], input[type="checkbox"] {
   #instructPics {
     width: 90%;
   }
+    #planList {
+        width:95%;
+    }
 }
   .url-break {
     word-break: break-all;

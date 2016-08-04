@@ -36,21 +36,15 @@ $("#list-btn").click(function() {
 
 $("#float-btn").click(function() {
     if (floatPlanActive == false){
-        $("#floatModal").modal("show");
-        $(".navbar-collapse.in").collapse("hide");
-        return false;    
+        $("#floatModal").modal("show");   
     } else {
         $("#floatResultModal").modal("show");
-        $(".navbar-collapse.in").collapse("hide");
-        return false;
     }
     
 });
 
-$("#feedback-btn").click(function() {
+$(".feedback-btn").click(function() {
     $("#feedbackModal").modal("show");
-    $(".navbar-collapse.in").collapse("hide");
-    return false;
 });
 
 $("#nav-btn").click(function() {
@@ -213,7 +207,7 @@ function featureModalContent(feature) {
 
     $("#feature-title").html(feature.properties.pointName + '&nbsp;&nbsp<img width="30" height="30" src="icons/' + getType(feature.properties.pointType)[1] + '">');
 
-    var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
+    var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<tr><th>Directions</th><td>" + "<a href='https://www.google.com/maps/dir//" + feature.properties.lat + "," + feature.properties.long + "' target='_blank'>" + "Google Maps" + "</a>" + "</td></tr>" + "<table>";
 
     $("#feature-info").html(content);
     
@@ -341,11 +335,15 @@ accessLayer.on("load", function() {
     }
     for (var i = 0; i < trailNames.length; i++) {
         val = trailNames.sort()[i];
-        $("#trail-names").append('<option value="' + val + '">' + val + '</option>');
+        if (val != null){
+            $("#trail-names").append('<option value="' + val + '">' + val + '</option>');
+        }
     }
     for (var i = 0; i < scenicNames.length; i++) {
         val = scenicNames.sort()[i];
-        $("#scenic-names").append('<option value="' + val + '">' + val + '</option>');
+        if (val != null){
+            $("#scenic-names").append('<option value="' + val + '">' + val + '</option>');
+        }
     }
     accessLayer.off("load");
 });
@@ -655,7 +653,7 @@ function floatPlanQuery(list){
             
             var totMiles = (sMiles - eMiles).toFixed(1);
             
-            $("#planMiles").append("<tr><th>"+strm+"</th><td class='totMiles'>"+totMiles.toString()+"</td><tr>");
+            $("#planMiles").append("<tr><th>"+strm+"</th><td class='totMiles'>"+totMiles.toString()+" miles</td><tr>");
             
             totalMiles += parseFloat(totMiles);
             

@@ -77,12 +77,8 @@
                         </table>
                     </div>
                     <div id="initial">
-
-                        <img id="logo" src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" />
-
-                        <h4>GET YOUR PADDLE ON!</h4>
-                        <p>Paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling paddling.</p>
-                        <img id="panel-image" src="images/lynches.JPG" alt="wateree river" />
+                        <img id="panel-image" src="images/appstartup.png" alt="lynches river" />
+                        <p>South Carolina's rivers are awesome!</p>
                     </div>
                 </div>
             </div>
@@ -112,7 +108,7 @@
                     <p>The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
                     <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
                 </div>
             </div>
@@ -163,7 +159,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal" ><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -219,7 +215,7 @@
                     <h4 class="modal-title">Float Plan</h4>
                 </div>
                 <div class="modal-body">
-                    <h3>This river trip covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s).</span></h3>
+                    <h4>This river trip covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s).</span></h4>
                     <div id="planList">
                         <table id="planMiles">
                         </table>
@@ -227,10 +223,10 @@
                 </div>
                 <div class="modal-footer">
                     <div id="planOptions">
-                        <button type="button" class="btn btn-warning view-all" data-dismiss="modal" id="start-over">Start Over</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal" id="view-map">View Map</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" id="export-csv">Export CSV</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" id="export-pdf">Export PDF</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" id="export-csv">Export CSV</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-pdf">Export PDF</button>
+                        <button type="button" class="btn btn-primary view-all" data-dismiss="modal" id="start-over">Start Over</button>
                     </div>
                 </div>
             </div>
@@ -247,6 +243,7 @@
           <div class="modal-header">
             <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Provide some feedback!</h4>
+            <p>Do you see a mistake? Want to add a public access point? Have a question about this information?</p>
           </div>
           <div class="modal-body">
               <div>
@@ -301,7 +298,7 @@
                     <button type="button" class="btn btn-default btn-sm" id="planEnd">Make End Point</button>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Provide Feedback</li></button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
