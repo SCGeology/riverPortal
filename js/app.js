@@ -145,8 +145,8 @@ function getSide(val) {
     //accounting for nulls right now, but all data will have  a value in future, so we can delete this.
     if (val != null) {
         return rSide[val]
-    } else{
-        return "na"
+    } else {
+        return "n/a"
     }
 }
 
@@ -199,7 +199,7 @@ function featureModalContent(feature) {
 
     if (feature.properties.pointType == 11) {
         //GET USGS GAGE DATA
-        var gageURL = "http://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
+        var gageURL = "https://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
 
         $.getJSON(gageURL, function(data) {
             var cfs = data.value.timeSeries[0].values[0].value[0].value
@@ -305,38 +305,6 @@ var zoomControl = L.control.zoom({
     position: "bottomright"
 }).addTo(map);
 
-/* GPS enabled geolocation control set to follow the user's location */
-var locateControl = L.control.locate({
-    position: "bottomright",
-    drawCircle: true,
-    follow: true,
-    setView: true,
-    keepCurrentZoomLevel: true,
-    markerStyle: {
-        weight: 1,
-        opacity: 0.8,
-        fillOpacity: 0.8
-    },
-    circleStyle: {
-        weight: 1,
-        clickable: false
-    },
-    icon: "fa fa-location-arrow",
-    metric: false,
-    strings: {
-        title: "My location",
-        popup: "You are within {distance} {unit} from this point",
-        outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
-    },
-    locateOptions: {
-        maxZoom: 18,
-        watch: true,
-        enableHighAccuracy: true,
-        maximumAge: 10000,
-        timeout: 10000
-    }
-}).addTo(map);
-
 /* Larger screens get expanded layer control and visible sidebar */
 if (document.body.clientWidth <= 767) {
     var isCollapsed = true;
@@ -430,7 +398,7 @@ $(".filter-btn").click(function(evt) {
 //NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
 
 function syncSidebarGeo(layer,text) {
-    
+
     $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     /* Update list.js featureList */
@@ -438,7 +406,7 @@ function syncSidebarGeo(layer,text) {
         valueNames: ["point-name","stream-name"]
     });
     featureList.sort("stream-name");
-    
+
     $("#stream-title").html("Search distance: "+$("#distanceBox").val()+ " miles.");
     
 }
@@ -461,6 +429,7 @@ function queryLatLng(latlng,text) {
             //remove layers and clear the side table of float plan points if it exists.
                 removeLayers([basemap,planGroup]);
                 $(".floatTable").remove();
+
                 
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
@@ -476,12 +445,12 @@ function queryLatLng(latlng,text) {
                                     $("#featureModal").modal("show");
                                     defineFloatPoints(layer);
                                 }
-                            });  
+                            });
                         }
                         syncSidebarGeo(layer,text);
                     }
                 }).addTo(map);
-                
+
                 map.flyToBounds(geoSearchLayer.getBounds(),{
                     padding:[150,150]
                 });
@@ -504,10 +473,14 @@ function geocodeLatLng() {
             var lng = address.results[0].latlng.lng
             var text = address.results[0].text
             var latlng = [lat, lng];
+            var geoMarker = L.marker([lat,lng]).addTo(map);
+            geoMarker.bindPopup("<b>" + text + "</b>");
+
 
             queryLatLng(latlng,text);
 
         });
+
 }
 
 $("#geocode-btn").click(function() {
@@ -517,8 +490,47 @@ $("#geocode-btn").click(function() {
     $("#trail-names").val("Select a trail name...");
 });
 
+//GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY------------------------------
+function onLocationFound(e) {
+      map.locate({setView: true, maxZoom: 16});
 
-//NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
+      var geocodeService = L.esri.Geocoding.geocodeService();
+      map.on('locationfound',function(e) {
+        geocodeService.reverse().latlng(e.latlng).run(function(error,result){
+          L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
+          $('#addressBox').val(result.address.Address);
+          $('#cityBox').val(result.address.City);
+        });
+      });
+
+
+      //queryLatLng(e.latlng);
+
+  };
+
+
+$("#locate-btn").click(function() {
+    //map.on('locationfound', onLocationFound);
+    onLocationFound();
+});
+
+
+//INFORMATION/LEGEND BUTTON----------------------------------------
+$("#legend-btn").click(function() {
+  $("#legendModal").modal("show");
+  $(".navbar-collapse.in").collapse("hide");
+  return false;
+});
+
+//INFORMATION/LEGEND BUTTON IN SMALL SCREENS--------------------
+/*if (document.body.clientWidth <= 767) {
+    $("#info-text").text('About');
+} else {
+    $("#info-text").text('');
+};*/
+
+
+
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $("#view-all").click(function() {
@@ -562,12 +574,14 @@ var planGroup = L.featureGroup().addTo(map);
 var startCircle = L.circleMarker([0,0], {
         radius:18,
         fillOpacity:0,
-        color:"#00cc00"        
+        color:"#00cc00",
+        pane:"popupPane"
     });
 var endCircle = L.circleMarker([0,0], {
         radius:18,
         fillOpacity:0,
-        color:"#ff3300"        
+        color:"#ff3300",        
+        pane:"popupPane"
     });
 
 $("#planStart").click(function(){
@@ -575,8 +589,10 @@ $("#planStart").click(function(){
     startID = planID
     startMile = planMiles
     startStream = planStream
+
     $("#planStartStream").html(startStream)
     startCircle.setLatLng(coords).addTo(planGroup);    
+
 });
 
 $("#planEnd").click(function(){
