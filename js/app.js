@@ -529,6 +529,17 @@ $("#legend-btn").click(function() {
     $("#info-text").text('');
 };*/
 
+//APPLE DEVICE HOME SCREEN INSTRUCTIONS-----------------------
+$("#instruct-btn").click(function() {
+  $('#instruct').collapse();
+  return false;
+});
+
+//ANDROID DEVICE HOME SCREEN INSTRUCTIONS--------------------
+$("#androidins-btn").click(function() {
+  $('#androidins').collapse();
+  return false;
+});
 
 
 

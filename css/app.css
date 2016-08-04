@@ -253,6 +253,9 @@ input[type="radio"], input[type="checkbox"] {
   #legendbtn-navbar{
     float:none;
   }
+  #instructPics {
+    width: 90%;
+  }
 }
   .url-break {
     word-break: break-all;
