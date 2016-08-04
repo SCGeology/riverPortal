@@ -44,7 +44,7 @@ input[type="radio"], input[type="checkbox"] {
  .panel-body{
    width: 100%;
  }
-#searchBox{display:none;}
+
 .hydrograph{
     width:99%;
     padding:1%;
@@ -108,7 +108,8 @@ input[type="radio"], input[type="checkbox"] {
     padding-bottom: 10px;
     float:left;
 }
-
+#planStart{background-color:#d9f2e6;}
+#planEnd{background-color:#ffd6cc;}
 #plan-points {
     border-collapse: separate;
     border-spacing: 10px 5px;
@@ -121,7 +122,25 @@ input[type="radio"], input[type="checkbox"] {
 #planStartText {background-color:#d9f2e6;}
 #planEndText {background-color:#ffd6cc;}
 #planStartStream, #planEndStream{background-color:#e6f7ff;}
+#planList {
+    margin:10px;
+    width:50%;
+}
+#planMiles {
+    width:100%;
+}
 
+#planMiles td, #planMiles th {
+    padding:4px;
+    font-size:1.2em;
+}
+.totals{color:#0099cc;}
+#planOptions {
+    width:82%;
+    margin:1em auto;
+    display: flex;
+    justify-content: space-between;
+}
 #initial {
     padding:1em;
     text-align: center;
@@ -150,7 +169,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 #view-all {
     position:absolute;
-    top:30px;
+    top:11px;
     right:10px;
     color:#FFF;
     background:none;
@@ -186,41 +205,6 @@ input[type="radio"], input[type="checkbox"] {
 }
 .navbar-header a.navbar-icon {
   margin-left: 25px;
-}
-.typeahead {
-  background-color: #FFFFFF;
-}
-.tt-dropdown-menu {
-  background-color: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px 4px 4px 4px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 4px;
-  padding: 4px 0;
-  width: 100%;
-  max-height: 300px;
-  overflow: auto;
-}
-.tt-suggestion {
-  font-size: 14px;
-  line-height: 20px;
-  padding: 3px 10px;
-}
-.tt-suggestion.tt-cursor {
-  background-color: #0097CF;
-  color: #FFFFFF;
-  cursor: pointer;
-}
-.tt-suggestion p {
-  margin: 0;
-}
-.tt-suggestion + .tt-suggestion {
-  border-top: 1px solid #ccc;
-}
-.typeahead-header {
-  margin: 0 5px 5px 5px;
-  padding: 3px 0;
-  border-bottom: 2px solid #333;
 }
 .has-feedback .form-control-feedback {
   position: absolute;
