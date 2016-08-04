@@ -35,9 +35,16 @@ $("#list-btn").click(function() {
 });
 
 $("#float-btn").click(function() {
-    $("#floatModal").modal("show");
-    $(".navbar-collapse.in").collapse("hide");
-    return false;
+    if (floatPlanActive == false){
+        $("#floatModal").modal("show");
+        $(".navbar-collapse.in").collapse("hide");
+        return false;    
+    } else {
+        $("#floatResultModal").modal("show");
+        $(".navbar-collapse.in").collapse("hide");
+        return false;
+    }
+    
 });
 
 $("#feedback-btn").click(function() {
@@ -64,6 +71,15 @@ $("#sidebar-hide-btn").click(function() {
 function sizeLayerControl() {
     $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
 }
+
+var floatPlanActive = false;
+
+//INFORMATION/LEGEND BUTTON IN SMALL SCREENS--------------------
+if (document.body.clientWidth <= 767) {
+    zoomPadding = [20,20]
+} else {
+    zoomPadding = [100,100]
+};
 
 /*function clearHighlight() {
     highlight.clearLayers();
@@ -197,27 +213,15 @@ function featureModalContent(feature) {
 
     $("#feature-title").html(feature.properties.pointName + '&nbsp;&nbsp<img width="30" height="30" src="icons/' + getType(feature.properties.pointType)[1] + '">');
 
-    if (feature.properties.pointType == 11) {
-        //GET USGS GAGE DATA
-        var gageURL = "https://waterservices.usgs.gov/nwis/iv/?format=json,1.1&sites=" + feature.properties.pointID + "&parameterCd=00060,00065&siteStatus=active"
+    var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
 
-        $.getJSON(gageURL, function(data) {
-            var cfs = data.value.timeSeries[0].values[0].value[0].value
-            var stage = data.value.timeSeries[1].values[0].value[0].value
-
-            var gageContent = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>Stream Gage on the " + feature.properties.streamName + "</td></tr>" + "<tr><th>Stage (feet)</th><td>" + stage + "</td></tr>" + "<tr><th>Discharge (cfs)</th><td>" + cfs + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + " from USGS</td></tr>" + "<tr><td colspan='2'><img class='hydrograph' src='http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no=" + feature.properties.pointID + "&parm_cd=00060&period=7'/></td></tr>" + "<table>"
-
-            $("#feature-info").html(gageContent);
-        });
-
-    } else {
-
-        var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td>" + feature.properties.lat + ", " + feature.properties.long + "</td></tr>" + "<table>";
-
-        $("#feature-info").html(content);
-    }
-
+    $("#feature-info").html(content);
     
+    if (floatPlanActive == true){
+        $("#float-plan").css("display","none");
+    } else {
+        $("#float-plan").css("display","block");
+    }   
     //highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
 }
 
@@ -389,7 +393,7 @@ $(".filter-btn").click(function(evt) {
         .where(expression)
         .bounds(function(error, latlngbounds) {
             map.flyToBounds(latlngbounds,{
-                padding:[150,150]
+                padding:zoomPadding
             });
         });
 });
@@ -400,12 +404,6 @@ $(".filter-btn").click(function(evt) {
 function syncSidebarGeo(layer,text) {
 
     $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-
-    /* Update list.js featureList */
-    featureList = new List("features", {
-        valueNames: ["point-name","stream-name"]
-    });
-    featureList.sort("stream-name");
 
     $("#stream-title").html("Search distance: "+$("#distanceBox").val()+ " miles.");
     
@@ -421,6 +419,7 @@ function queryLatLng(latlng,text) {
     accessLayer.query()
         .where("pointType IN (1,2,5)")
         .nearby(latlng, distance)
+        .orderBy("streamName")
         .run(function(error, fc, response) {
             if (fc.features.length == 0) {
                 alert("No results were found. Please enter a valid address or increase your search distance.")
@@ -429,8 +428,6 @@ function queryLatLng(latlng,text) {
             //remove layers and clear the side table of float plan points if it exists.
                 removeLayers([basemap,planGroup]);
                 $(".floatTable").remove();
-
-                
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
                 
@@ -452,7 +449,7 @@ function queryLatLng(latlng,text) {
                 }).addTo(map);
 
                 map.flyToBounds(geoSearchLayer.getBounds(),{
-                    padding:[150,150]
+                    padding:zoomPadding
                 });
             }
         });
@@ -522,18 +519,8 @@ $("#legend-btn").click(function() {
   return false;
 });
 
-//INFORMATION/LEGEND BUTTON IN SMALL SCREENS--------------------
-/*if (document.body.clientWidth <= 767) {
-    $("#info-text").text('About');
-} else {
-    $("#info-text").text('');
-};*/
-
-
-
-
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
-$("#view-all").click(function() {
+$(".view-all").click(function() {
     
     removeLayers([basemap,accessLayer,planGroup]);
     
@@ -543,12 +530,14 @@ $("#view-all").click(function() {
     
     clearPlan();
     
+    floatPlanActive = false;
+    
     $(".floatTable").remove();
     
     accessLayer.setWhere(fullWhere);
     accessLayer.query().bounds(function(error, latlngbounds) {
         map.flyToBounds(latlngbounds,{
-            padding:[30,30]
+            padding:zoomPadding
         });
     });
     
@@ -623,12 +612,6 @@ function syncSidebarFloat(layer,index) {
     $tableID.find("tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     $("#stream-title").html("Float Plan");
-    
-    /*
-    featureList = new List("features", {
-        valueNames: ["point-name","stream-mile"]
-    });
-    featureList.sort("stream-mile",{order:"desc"});*/
 
 }
 
@@ -636,6 +619,8 @@ function floatPlanQuery(list){
     var lastEntry = list[list.length-1]
     
     if (lastEntry["stream"] === endStream){
+        
+        var totalMiles = 0;
         
         for (var i=0; i < list.length; i++){
             
@@ -647,9 +632,22 @@ function floatPlanQuery(list){
             $("#side-table").append($newTable);
             $newTable.find("tbody").append("<tr class='feature-row'><th colspan='4' style='text-align:center;'>"+list[i]['stream']+"</th><tr>")
             
-            getPoints(list[i]['startMiles'],list[i]['endMiles'],list[i]['stream'],i);
+            var sMiles = list[i]['startMiles']
+            var eMiles = list[i]['endMiles']
+            var strm = list[i]['stream']
+            
+            var totMiles = (sMiles - eMiles).toFixed(1);
+            
+            $("#planMiles").append("<tr><th>"+strm+"</th><td class='totMiles'>"+totMiles.toString()+"</td><tr>");
+            
+            totalMiles += parseFloat(totMiles);
+            
+            getPoints(sMiles,eMiles,strm,i);
             
         }
+        
+        $("#totalMiles").text(totalMiles.toString());
+        $("#totalRivers").text(list.length);
         
     } else {
         
@@ -683,8 +681,6 @@ function floatPlanQuery(list){
                 
                     floatPlanQuery(list);
                     
-                    console.log(list);
-                    
             });
         
         });
@@ -695,14 +691,13 @@ function floatPlanQuery(list){
 function getPoints(mileA,mileB,streamName,index){
     
 //Need to set up multiple tables so that the data can be divided up into river sections    
-    
     mileExpression = "streamMile <="+mileA+"AND streamMile >="+mileB+"AND streamName = '"+streamName+"'"
     
     accessLayer.query()
         .where(mileExpression)
         .orderBy("streamMile","desc")
         .run(function(error,floatPlanPoints,response){
-            
+        
             var floatPlanLayer = L.geoJson(floatPlanPoints, {
                 pointToLayer:makePointToLayer,
                 onEachFeature:function(feature,layer) {
@@ -720,31 +715,32 @@ function getPoints(mileA,mileB,streamName,index){
             }).addTo(map);
         
             map.flyToBounds(planGroup.getBounds(),{
-                    padding:[150,150]
+                    padding:zoomPadding
                 });
-        
         });
     }
 
 $("#generate-plan").click(function(){
+    
     if ($("#planStartText").text() == "No start point selected..." || $("#planEndText").text() == "No end point selected..."){
+        
         alert("Select a start and end point by clicking on access points on the map.")
+        
     } else {
         
-        removeLayers([basemap,planGroup]);
+        floatPlanActive = true;
         
-        $(".floatTable").remove();
+        removeLayers([basemap,planGroup])
         $("#feature-list tbody").empty();
+        $("#planMiles").empty();
         $("#initial").hide();
-        
-        floatPlanActive = true
 
         if (startStream === endStream){
 
             var streamMilesArray = []
 
             streamMilesArray.push({"stream":startStream, "startMiles":startMile, "endMiles":endMile})
-
+            
             floatPlanQuery(streamMilesArray);
 
         } else {
@@ -755,7 +751,14 @@ $("#generate-plan").click(function(){
 
             floatPlanQuery(streamMilesArray);
 
-        }    
+        }
+        
+    //open float plan results modal
+    $("#floatModal").modal("hide");    
+    $("#floatResultModal").modal("show");
+    $(".navbar-collapse.in").collapse("hide");
+    return false;    
+        
     }
      
 });
