@@ -108,7 +108,9 @@ input[type="radio"], input[type="checkbox"] {
     padding-bottom: 10px;
     float:left;
 }
-
+#geocode-btn{
+    margin-bottom:10px;
+}
 #plan-points {
     border-collapse: separate;
     border-spacing: 10px 5px;
@@ -148,6 +150,14 @@ input[type="radio"], input[type="checkbox"] {
 .endSelected{
     border:2px solid #ff3300;
 }
+#float-warning-st,#float-warning-en,#float-error-bw,#float-error-mult{
+    color:#ff471a;
+    text-decoration: underline;
+    display:none;
+    width:100%;
+    margin-top:10px;
+}
+#error-close{display:none;}
 #initial {
     padding:1em;
     text-align: center;
@@ -228,6 +238,7 @@ input[type="radio"], input[type="checkbox"] {
     font-size: 18px;
   }
 }
+
 @media (max-width: 767px){
   #sidebar {
     display: none;
@@ -248,6 +259,12 @@ input[type="radio"], input[type="checkbox"] {
     #planList {
         width:95%;
     }
+    #float-plan .btn{
+        display:block;
+        margin:5px auto;
+        width:144px;
+    }
+    #goToFloat{float:none;}
 }
   .url-break {
     word-break: break-all;

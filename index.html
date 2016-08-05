@@ -68,7 +68,7 @@
             <div class="sidebar-wrapper">
                 <div class="panel panel-default" id="features">
                     <div class="panel-heading">
-                        <h3 class="panel-title" id="stream-title">Paddling the Palmetto State
+                        <h3 class="panel-title" id="stream-title">SC Department of Natural Resources
               <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
                     </div>
 
@@ -77,7 +77,7 @@
                             <thead class="hidden">
                                 <tr>
                                     <th>Icon</th>
-                                  <tr>
+                                    <tr>
                                         <tr>
                                             <th>Name</th>
                                             <tr>
@@ -106,23 +106,32 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a river access near your location.</h4>
+                    <h3 class="modal-title">Find river access near you.</h3>
                 </div>
                 <div class="modal-body">
                     <form id="nearModal-form">
-                        <label for="addressBox cityBox stateBox">Enter address OR <br> </label>
-                        <button type="button" data-toggle="collapse" data-target=".navbar-collapse.in" class="btn btn-default" id="locate-btn"><b>Use Current Location</b>&nbsp;&nbsp;<i class="fa fa-location-arrow" aria-hidden="true"></i></button><br><br>
-                        <input type="text" class="form-control" name="addressBox" id="addressBox" placeholder="Address"><br>
-                        <input type="text" class="form-control" name="cityBox" id="cityBox" placeholder="City"><br>
-                        <input type="text" class="form-control" name="stateBox" id="stateBox" placeholder="South Carolina"><br>
+                        <label for="addressBox cityBox stateBox">Enter address OR
+                            <br> </label>
+                        <button type="button" data-toggle="collapse" data-target=".navbar-collapse.in" class="btn btn-default" id="locate-btn"><b>Use Current Location</b>&nbsp;&nbsp;<i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+                        <br>
+                        <br>
+                        <input type="text" class="form-control" name="addressBox" id="addressBox" placeholder="Address">
+                        <br>
+                        <input type="text" class="form-control" name="cityBox" id="cityBox" placeholder="City">
+                        <br>
+                        <input type="text" class="form-control" name="stateBox" id="stateBox" placeholder="South Carolina">
+                        <br>
                         <label for="distanceBox">How far to search?</label>
-                        <input type="text" class="form-control" name="distanceBox" id="distanceBox" placeholder="Miles..."><br>
+                        <input type="text" class="form-control" name="distanceBox" id="distanceBox" placeholder="Miles...">
+                        <br>
                     </form>
-                    <p>The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
+                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
+                    <p style="width:75%;">The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
-                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -136,32 +145,32 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Find a River or Blue Trail</h4>
+                    <h3 class="modal-title">Find a River or Blue Trail.</h3>
                 </div>
                 <div class="modal-body">
-                    <p>Do you know the name of the stream or river you want to access?
-                    <div class="dropdown">
-                        <select class="form-control" id="stream-names">
-                            <option id="hold">Select a river name...</option>
-                        </select>
-                    </div>
-                    <div class="btn-container">
-                        <button id="getStream" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                    </div>
+                    <h4>Do you know the name of the stream or river you want to access?</h4>
+                        <div class="dropdown">
+                            <select class="form-control" id="stream-names">
+                                <option id="hold">Select a river name...</option>
+                            </select>
+                        </div>
+                        <div class="btn-container">
+                            <button id="getStream" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                        </div>
                 </div>
                 <div class="modal-body">
-                    <p>Do you want to explore one South Carolina's State Scenic Rivers?
-                    <div class="dropdown">
-                        <select class="form-control" id="scenic-names">
-                            <option id="hold">Select a Scenic River...</option>
-                        </select>
-                    </div>
-                    <div class="btn-container">
-                        <button id="getScenic" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                    </div>
+                    <h4>Do you want to explore one South Carolina's State Scenic Rivers?</h4>
+                        <div class="dropdown">
+                            <select class="form-control" id="scenic-names">
+                                <option id="hold">Select a Scenic River...</option>
+                            </select>
+                        </div>
+                        <div class="btn-container">
+                            <button id="getScenic" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                        </div>
                 </div>
                 <div class="modal-body">
-                    <p>This is where you can find access on one of the many Blue Trails in the state.</p>
+                    <h4>This is where you can find access on one of the many Blue Trails in the state.</h4>
                     <div class="dropdown">
                         <select class="form-control" id="trail-names">
                             <option id="hold">Select a trail name...</option>
@@ -172,7 +181,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal" ><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -182,24 +193,30 @@
     <!-- /.modal -->
 
     <div class="modal fade" id="floatModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Create a Float Plan!</h4>
+                    <h3 class="modal-title">Create a Float Plan.</h3>
                 </div>
                 <div class="modal-body planPoints">
                     <h4>Find out what you'll encounter along the river!</h4>
-                       <h5>Choose Start and End points by clicking on the icons in the map. Then come back here, review your start and end points below, and hit the <i>Make Float Plan</i> button.</h5>
                     <p>With the Float Plan tool, you'll create a list of connected points so you can plan your trip. </p>
-                       <ul> 
-                            <li>Choose points from multiple rivers (as long as they're connected)</li>
-                           <li>Make sure the <b>Start Point is upstream of the End Point</b></li>
-                            <li>View the points and the list on the map.</li>
-                            <li>Listed in upstream to downstream order, with river miles.</li>
-                            <li>Export the data to CSV file for importing to GPS.</li>
-                            <li>Export a PDF that you can print and take with you.</li>
-                        </ul><br>
+                    <h4>A few hints:</h4>
+                    <ul>
+                        <li>Scout out river access with other tools in the app.</li>
+                        <li>Choose points from one or more <b>connected</b> rivers by clicking the icons in the map.</li>
+                        <li>Review your points below - Make sure the <b>Start point is upstream of the End point.</b></li>
+                        <li>Hit the Make Float Plan button to get a list of all the points in between.</li>
+                    </ul>
+                    <h4>What can you do with the Float Plan?</h4>
+                    <ul>
+                        <li>View the points and the list on the map in upstream to downstream order.</li>
+                        <li>Export the data to CSV file for viewing in a spreadsheet.</li>
+                        <li>Export to GPX for your GPS device.</li>
+                        <li>Export a PDF that you can print and take with you.</li>
+                    </ul>
+                    <br>
                     <table id="plan-points">
                         <tr>
                             <th>Start Point:</th>
@@ -214,14 +231,19 @@
                             <th>Stream/River:</th>
                         </tr>
                         <tr>
-                            <td id="planStartStream" >...</td>
+                            <td id="planStartStream">...</td>
                             <td id="planEndStream">...</td>
                         </tr>
                     </table>
+                    <div class="modal-body" style="height:50px;">
+                        <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="generate-plan">Make Float Plan</button>
+                        <button type="button" class="btn btn-warning left-btn" data-dismiss="modal" id="clear-plan">Clear Points</button>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="generate-plan">Make Float Plan</button>
-                    <button type="button" class="btn btn-warning left-btn" data-dismiss="modal" id="clear-plan">Reset</button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -230,15 +252,26 @@
     </div>
     <!-- /.modal -->
 
-       <div class="modal fade" id="floatResultModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="floatResultModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Float Plan</h4>
+                    <h3 class="modal-title">Float Plan</h3>
                 </div>
                 <div class="modal-body">
-                    <h4>This river trip covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s).</span></h4>
+                    <span id="float-error-bw">Error: The Start point is downstream of the End point. Select points in upstream to downstream order.</span>
+                    <div id="float-error-mult">Error: Float Plan could not be created.
+                        <br>
+                        <br>
+                        <ul>
+                            <li>The Start and End points you selected are not connected, OR</li>
+                            <li>The Start point is downstream of the End point on a connected river.</li>
+                        </ul>
+                        Please check your start and end points, and try again.
+                    </div>
+
+                    <h4 id="float-header">This river trip covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s).</span></h4>
                     <div id="planList">
                         <table id="planMiles">
                         </table>
@@ -248,9 +281,17 @@
                     <div id="planOptions">
                         <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-map">View Map</button>
                         <button type="button" class="btn btn-success" data-dismiss="modal" id="export-csv">Export CSV</button>
+                        <button type="button" class="btn btn-warning" data-dismiss="modal" id="export-gpx">Export GPX</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-pdf">Export PDF</button>
                         <button type="button" class="btn btn-default view-all" data-dismiss="modal" id="start-over">Start Over</button>
                     </div>
+                    <div id="error-close">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default feedback-btn left-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
+                        </button>
+                        <p style="width:90%;text-align:left;margin:10px auto;">Do you think that this error message was given by mistake? Please let us know so we can fix it!</p>
+                    </div>
+
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -258,54 +299,57 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
-    
-    
-       <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Provide some feedback!</h4>
-            <p>Do you see a mistake? Want to add a public access point? Have a question about this information?</p>
-          </div>
-          <div class="modal-body">
-              <div>
-                <form id="contact-form">
-                  <div class="well well-sm">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label for="first-name">First Name:</label>
-                          <input type="text" class="form-control" id="first-name">
-                        </div>
-                        <div class="form-group">
-                          <label for="last-name">Last Name:</label>
-                          <input type="text" class="form-control" id="last-email">
-                        </div>
-                        <div class="form-group">
-                          <label for="email">Email:</label>
-                          <input type="text" class="form-control" id="email">
-                        </div>
-                      </div>
-                      <div class="col-md-8">
-                        <label for="message">Message:</label>
-                        <textarea class="form-control" rows="8" id="message"></textarea>
-                      </div>
-                      <div class="col-md-12">
-                        <p>
-                          <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Submit</button>
-                        </p>
-                      </div>
+
+
+    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title">Provide some feedback.</h3>
+                </div>
+                <h4>Do you see a mistake? Want to add a public access point? Have a question about this information?</h4>
+                <div class="modal-body">
+                    <div>
+                        <form id="contact-form">
+                            <div class="well well-sm">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="first-name">First Name:</label>
+                                            <input type="text" class="form-control" id="first-name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="last-name">Last Name:</label>
+                                            <input type="text" class="form-control" id="last-email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email:</label>
+                                            <input type="text" class="form-control" id="email">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label for="message">Message:</label>
+                                        <textarea class="form-control" rows="8" id="message"></textarea>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p>
+                                            <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Submit</button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                  </div>
-                </form>
-              </div>
-          </div>
-          <div class="modal-footer">
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
     <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -320,9 +364,12 @@
                     <button type="button" class="btn btn-default" id="planStart">Make Start Point</button>
                     <button type="button" class="btn btn-default" id="planEnd">Make End Point</button>
                     <button type="button" class="btn btn-default right-btn" data-dismiss="modal" id="goToFloat">Float Plan Window</button>
+                    <span id="float-warning-st">Warning! The START point is not an access point or public land. There may not be river access at this location.</span>
+                    <span id="float-warning-en">Warning! The END point is not an access point or public land. There may not be river access at this location.</span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li></button>
+                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
+                    </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -360,156 +407,160 @@
                     <h4 class="modal-title">Information</h4>
                 </div>
                 <div class="modal-body">
-                  <div id="legendBox">
-                    <table class="table table-hover" id="table-legend" frame=box>
-                      <thead>
-                        <tr>
-                          <th style="text-align:center" colspan="2"><h4><strong>Points of Interest</strong></h4></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/canoe.svg" alt="canoe" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Kayak/Canoe Access</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/ramp.svg" alt="ramp" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Boat Ramp</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/bridge.svg" alt="bridge" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Bridge</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/pub.svg" alt="pub" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Public Land</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/rapids.svg" alt="rapids" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Rapids</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/lake.svg" alt="lake" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Reservoir</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/damp.svg" alt="damportage" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Dam - Portage</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/damn.svg" alt="damnoportage" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Dam - No Portage</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/gage.svg" alt="guage" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Stream Gauge</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/conf.svg" alt="conf" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Confluence</td>
-                        </tr>
-                        <tr>
-                          <td style="text-align:center"> <img src="icons/island.svg" alt="island" width="20px" height="20px"> </td>
-                          <td style="text-align:center">Island</td>
-                        </tr>
-                      </tbody>
-                    </table><br>
-                  </div>
-                  <div id="credits">
-                  <p>*Enter any information that would be useful about this application*<br>
-                    Another goal of the project is to help paddlers by linking to more detailed
-                    information about access points, public lands, paddling trails, and providing USGS flow information.
-                    There will also be a form for submitting changes or making comments, which will help the SCDNR Rivers
-                    program keep the data up-to-date.
-                  </p>
-                  <p>*Enter any information that would be useful about this application*<br>
-                    Another goal of the project is to help paddlers by linking to more detailed
-                    information about access points, public lands, paddling trails, and providing USGS flow information.
-                    There will also be a form for submitting changes or making comments, which will help the SCDNR Rivers
-                    program keep the data up-to-date.
-                  </p>
-                  <h5><strong>Credits</strong></h5>
-                  <p> A special thanks to Tom Taylor, the owner of <a href="http://randomconnections.com" target="_blank">Random Connections Blog.</a>
-                     Much of the foundation of this project was made possible because of the impressive project undertaken by him. His work is
-                     located
-                     <a href="http://randomconnections.com/paddling-south-carolinas-rivers/" target="_blank">here.</a>
-                   </p>
-                   <p>Also thanks to:</p>
-                 <div id="credit-list">
-                  <ul>
-                    <li> Local Paddling Clubs </li>
-                    <li> Utility Company Websites </li>
-                    <li> Local Government and Recreation Departments </li>
-                    <li> Paddling Guidebooks </li>
-                    <li> Paddling and Outdoor Internet Forums </li>
-                  </ul>
-                </div><br><br><br>
-                  <p><strong>Contact us:</strong><br>
-                    Phone: 803.896.7714<br>
-                    <a href="mailto:ArringtonT@dnr.sc.gov">ArringtonT@dnr.sc.gov</a>
-                  </p><br>
-                      <h4>Add this Application to your Mobile Device Home Screen</h4>
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="instruct-btn" data-target="#intruct">Apple iOS Instructions</button>&nbsp;
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="androidins-btn" data-target="#androidins">Android OS Instructions</button><br><br>
-                        <div id="instruct" class="collapse">
-                          <h4>Step 1:</h4>
-                          <p>
-                            Visit the application in the Mobile Device's Safari Web Browser
-                          </p>
-                          <h4>Step 2:</h4>
-                          <p>
-                            <img src="images/part1Instruct.png" alt="part2" id="instructPics">
-                          </p>
-                          <h4>Step 3:</h4>
-                          <img src="images/part2Instruct.png" alt="part3" id="instructPics">
-                          <h4>Step 4:</h4>
-                          <p>
-                            Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
-                          </p>
-                        </div><br>
-                        <div id="androidins" class="collapse">
-                          <h4>Step 1:</h4>
-                          <p>
-                            Visit the application in your Mobile Device's Web Browser
-                          </p>
-                          <h4>Step 2:</h4>
-                          <p>
-                            Select the options icon in the top right corner of the browser
-                          </p>
-                          <h4>Step 3:</h4>
-                            <img src="images/androidinst.png" alt="part3" id="instructPics">
-                          <h4>Step 4:</h4>
-                          <p>
-                            Name the Application whatever you'd like and then select "Add" in the upper right-hand corner.
-                          </p>
+                    <div id="legendBox">
+                        <table class="table table-hover" id="table-legend" frame=box>
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center" colspan="2">
+                                        <h4><strong>Points of Interest</strong></h4></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/canoe.svg" alt="canoe" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Kayak/Canoe Access</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/ramp.svg" alt="ramp" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Boat Ramp</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/bridge.svg" alt="bridge" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Bridge</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/pub.svg" alt="pub" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Public Land</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/rapids.svg" alt="rapids" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Rapids</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/lake.svg" alt="lake" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Reservoir</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/damp.svg" alt="damportage" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Dam - Portage</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/damn.svg" alt="damnoportage" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Dam - No Portage</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/gage.svg" alt="guage" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Stream Gauge</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/conf.svg" alt="conf" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Confluence</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"> <img src="icons/island.svg" alt="island" width="20px" height="20px"> </td>
+                                    <td style="text-align:center">Island</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                    </div>
+                    <div id="credits">
+                        <p>*Enter any information that would be useful about this application*
+                            <br> Another goal of the project is to help paddlers by linking to more detailed information about access points, public lands, paddling trails, and providing USGS flow information. There will also be a form for submitting changes or making comments, which will help the SCDNR Rivers program keep the data up-to-date.
+                        </p>
+                        <p>*Enter any information that would be useful about this application*
+                            <br> Another goal of the project is to help paddlers by linking to more detailed information about access points, public lands, paddling trails, and providing USGS flow information. There will also be a form for submitting changes or making comments, which will help the SCDNR Rivers program keep the data up-to-date.
+                        </p>
+                        <h5><strong>Credits</strong></h5>
+                        <p> A special thanks to Tom Taylor, the owner of <a href="http://randomconnections.com" target="_blank">Random Connections Blog.</a> Much of the foundation of this project was made possible because of the impressive project undertaken by him. His work is located
+                            <a href="http://randomconnections.com/paddling-south-carolinas-rivers/" target="_blank">here.</a>
+                        </p>
+                        <p>Also thanks to:</p>
+                        <div id="credit-list">
+                            <ul>
+                                <li> Local Paddling Clubs </li>
+                                <li> Utility Company Websites </li>
+                                <li> Local Government and Recreation Departments </li>
+                                <li> Paddling Guidebooks </li>
+                                <li> Paddling and Outdoor Internet Forums </li>
+                            </ul>
                         </div>
-                <div class="modal-footer">
-                  <div id="dnrcredits">
-                    <img src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" width="10%" height="10%">
-                    <h5><strong>South Carolina Department of Natural Resources</strong> </h5>
-                    <h5>Land, Water &amp; Conservation Division</h5>
-                    <h6> <em>River Stewardship Program</em> </h6>
-                  </div>
-                  <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        <br>
+                        <br>
+                        <br>
+                        <p><strong>Contact us:</strong>
+                            <br> Phone: 803.896.7714
+                            <br>
+                            <a href="mailto:ArringtonT@dnr.sc.gov">ArringtonT@dnr.sc.gov</a>
+                        </p>
+                        <br>
+                        <h4>Add this Application to your Mobile Device Home Screen</h4>
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="instruct-btn" data-target="#intruct">Apple iOS Instructions</button>&nbsp;
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="androidins-btn" data-target="#androidins">Android OS Instructions</button>
+                        <br>
+                        <br>
+                        <div id="instruct" class="collapse">
+                            <h4>Step 1:</h4>
+                            <p>
+                                Visit the application in the Mobile Device's Safari Web Browser
+                            </p>
+                            <h4>Step 2:</h4>
+                            <p>
+                                <img src="images/part1Instruct.png" alt="part2" id="instructPics">
+                            </p>
+                            <h4>Step 3:</h4>
+                            <img src="images/part2Instruct.png" alt="part3" id="instructPics">
+                            <h4>Step 4:</h4>
+                            <p>
+                                Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
+                            </p>
+                        </div>
+                        <br>
+                        <div id="androidins" class="collapse">
+                            <h4>Step 1:</h4>
+                            <p>
+                                Visit the application in your Mobile Device's Web Browser
+                            </p>
+                            <h4>Step 2:</h4>
+                            <p>
+                                Select the options icon in the top right corner of the browser
+                            </p>
+                            <h4>Step 3:</h4>
+                            <img src="images/androidinst.png" alt="part3" id="instructPics">
+                            <h4>Step 4:</h4>
+                            <p>
+                                Name the Application whatever you'd like and then select "Add" in the upper right-hand corner.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <div id="dnrcredits">
+                                <img src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" width="10%" height="10%">
+                                <h5><strong>South Carolina Department of Natural Resources</strong> </h5>
+                                <h5>Land, Water &amp; Conservation Division</h5>
+                                <h6> <em>River Stewardship Program</em> </h6>
+                            </div>
+                            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
                 </div>
+                <!-- /.modal-dialog -->
             </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
+            <!-- /.modal -->
 
 
 
 
 
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.1/esri-leaflet.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
-    <script src="js/app.js"></script>
+            <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+            <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+            <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.1/esri-leaflet.js"></script>
+            <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
+            <script src="js/papaparse.min.js"></script>
+            <script src="js/togpx.js"></script>
+            <script src="js/app.js"></script>
 </body>
 
 </html>
