@@ -532,12 +532,14 @@ $("#legend-btn").click(function() {
 //APPLE DEVICE HOME SCREEN INSTRUCTIONS-----------------------
 $("#instruct-btn").click(function() {
   $('#instruct').collapse();
+  $('#instruct').collapse('hide');
   return false;
 });
 
 //ANDROID DEVICE HOME SCREEN INSTRUCTIONS--------------------
 $("#androidins-btn").click(function() {
   $('#androidins').collapse();
+  $('#androidins').collapse('hide');
   return false;
 });
 
