@@ -868,7 +868,8 @@ $("#export-csv").click(function() {
 });
 
 $("#export-gpx").click(function() {
-    var geoJson = floatPlanLayer.toGeoJSON();
+    
+    var geoJson = floatPlanGroup.toGeoJSON();
     var gpx = togpx(geoJson, {
         featureTitle: function(props) {
             return props.pointName
