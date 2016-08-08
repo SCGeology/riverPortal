@@ -530,17 +530,15 @@ $("#legend-btn").click(function() {
 };*/
 
 //APPLE DEVICE HOME SCREEN INSTRUCTIONS-----------------------
-$("#instruct-btn").click(function() {
-  $('#instruct').collapse();
-  $('#instruct').collapse('hide');
-  return false;
+$("#ios-btn").click(function() {
+  $('#ios').show();
+  $('#android').hide();
 });
 
 //ANDROID DEVICE HOME SCREEN INSTRUCTIONS--------------------
-$("#androidins-btn").click(function() {
-  $('#androidins').collapse();
-  $('#androidins').collapse('hide');
-  return false;
+$("#android-btn").click(function() {
+  $('#android').show();
+  $('#ios').hide();
 });
 
 
