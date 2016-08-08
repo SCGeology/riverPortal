@@ -512,15 +512,15 @@ $("#legend-btn").click(function() {
 };*/
 
 //APPLE DEVICE HOME SCREEN INSTRUCTIONS-----------------------
-$("#instruct-btn").click(function() {
-    $('#instruct').collapse();
-    return false;
+$("#ios-btn").click(function() {
+  $('#ios').show();
+  $('#android').hide();
 });
 
 //ANDROID DEVICE HOME SCREEN INSTRUCTIONS--------------------
-$("#androidins-btn").click(function() {
-    $('#androidins').collapse();
-    return false;
+$("#android-btn").click(function() {
+  $('#android').show();
+  $('#ios').hide();
 });
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW

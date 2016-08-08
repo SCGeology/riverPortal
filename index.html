@@ -24,17 +24,17 @@
     <link rel="shortcut icon" href="images/appIcon.png">
 
     <!-- iPhone SPLASHSCREEN-->
-    <link href="images/appstartup320_460.png" media="(device-width: 320px)" rel="apple-touch-startup-image">
+    <link rel="apple-touch-startup-image" href="images/appstartup320_460.png" media="(device-width: 320px)">
     <!-- iPhone (Retina) SPLASHSCREEN-->
-    <link href="images/appstartup640_920.png" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link rel="apple-touch-startup-image" href="images/appstartup640_920.png" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)">
     <!-- iPad (portrait) SPLASHSCREEN-->
-    <link href="images/appstartup768_1004.png" media="(device-width: 768px) and (orientation: portrait)" rel="apple-touch-startup-image">
+    <link rel="apple-touch-startup-image" href="images/appstartup768_1004.png" media="(device-width: 768px) and (orientation: portrait)">
     <!-- iPad (landscape) SPLASHSCREEN-->
-    <link href="images/appstartup748_1024.png" media="(device-width: 768px) and (orientation: landscape)" rel="apple-touch-startup-image">
+    <link rel="apple-touch-startup-image" href="images/appstartup748_1024.png" media="(device-width: 768px) and (orientation: landscape)">
     <!-- iPad (Retina, portrait) SPLASHSCREEN-->
-    <link href="images/appstartup1536_2008.png" media="(device-width: 1536px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link rel="apple-touch-startup-image" href="images/appstartup1536_2008.png" media="(device-width: 1536px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)">
     <!-- iPad (Retina, landscape) SPLASHSCREEN-->
-    <link href="images/appstartup2048_1496.png" media="(device-width: 1536px)  and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link rel="apple-touch-startup-image" href="images/appstartup2048_1496.png" media="(device-width: 1536px)  and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)">
 
 </head>
 
@@ -71,7 +71,6 @@
                         <h3 class="panel-title" id="stream-title">SC Department of Natural Resources
               <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
                     </div>
-
                     <div class="sidebar-table" id="side-table">
                         <table class="table table-hover" id="feature-list">
                             <thead class="hidden">
@@ -486,50 +485,47 @@
                         </div>
                         <br>
                         <br>
-                        <br>
-                        <p><strong>Contact us:</strong>
-                            <br> Phone: 803.896.7714
-                            <br>
-                            <a href="mailto:ArringtonT@dnr.sc.gov">ArringtonT@dnr.sc.gov</a>
-                        </p>
-                        <br>
+                        <p><strong>Contact us:</strong></p>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions?</button>
+                        <br><br><br>
                         <h4>Add this Application to your Mobile Device Home Screen</h4>
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="instruct-btn" data-target="#intruct">Apple iOS Instructions</button>&nbsp;
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="androidins-btn" data-target="#androidins">Android OS Instructions</button>
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="ios-btn" data-target="#instruct">Apple iOS Instructions</button>&nbsp;
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="android-btn" data-target="#instruct">Android OS Instructions</button>
                         <br>
                         <br>
                         <div id="instruct" class="collapse">
-                            <h4>Step 1:</h4>
-                            <p>
-                                Visit the application in the Mobile Device's Safari Web Browser
-                            </p>
-                            <h4>Step 2:</h4>
-                            <p>
-                                <img src="images/part1Instruct.png" alt="part2" id="instructPics">
-                            </p>
-                            <h4>Step 3:</h4>
-                            <img src="images/part2Instruct.png" alt="part3" id="instructPics">
-                            <h4>Step 4:</h4>
-                            <p>
-                                Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
-                            </p>
-                        </div>
-                        <br>
-                        <div id="androidins" class="collapse">
-                            <h4>Step 1:</h4>
-                            <p>
-                                Visit the application in your Mobile Device's Web Browser
-                            </p>
-                            <h4>Step 2:</h4>
-                            <p>
-                                Select the options icon in the top right corner of the browser
-                            </p>
-                            <h4>Step 3:</h4>
-                            <img src="images/androidinst.png" alt="part3" id="instructPics">
-                            <h4>Step 4:</h4>
-                            <p>
-                                Name the Application whatever you'd like and then select "Add" in the upper right-hand corner.
-                            </p>
+                            <div id="ios">
+                                <h4>Step 1:</h4>
+                                <p>
+                                    Visit the application in the Mobile Device's Safari Web Browser
+                                </p>
+                                <h4>Step 2:</h4>
+                                <p>
+                                    <img src="images/part1Instruct.png" alt="part2" id="instructPics">
+                                </p>
+                                <h4>Step 3:</h4>
+                                <img src="images/part2Instruct.png" alt="part3" id="instructPics">
+                                <h4>Step 4:</h4>
+                                <p>
+                                    Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
+                                </p>
+                            </div>
+                            <div id="android">
+                                <h4>Step 1:</h4>
+                                <p>
+                                    Visit the application in your Mobile Device's Web Browser
+                                </p>
+                                <h4>Step 2:</h4>
+                                <p>
+                                    Select the options icon in the top right corner of the browser
+                                </p>
+                                <h4>Step 3:</h4>
+                                <img src="images/androidinst.png" alt="part3" id="instructPics">
+                                <h4>Step 4:</h4>
+                                <p>
+                                    Name the Application whatever you'd like and then select "Add" in the upper right-hand corner.
+                                </p>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <div id="dnrcredits">
@@ -546,6 +542,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- /.modal -->
+            
         <!-- MAJOR LIBRARIES -->
             <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
