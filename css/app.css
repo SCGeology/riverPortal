@@ -125,7 +125,7 @@ input[type="radio"], input[type="checkbox"] {
 #planStartStream, #planEndStream{background-color:#e6f7ff;}
 #planList {
     margin:10px;
-    width:50%;
+    width:70%;
 }
 #planMiles {
     width:100%;
@@ -149,6 +149,10 @@ input[type="radio"], input[type="checkbox"] {
 }
 .endSelected{
     border:2px solid #ff3300;
+}
+#floatModal, #feedbackModal{
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 #float-warning-st,#float-warning-en,#float-error-bw,#float-error-mult{
     color:#ff471a;
