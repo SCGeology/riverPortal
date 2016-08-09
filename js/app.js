@@ -6,6 +6,8 @@ $(window).resize(function() {
 });
 
 
+//ALL THE BUTTONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 //ZOOMS TO THE POINT WHEN CLICKED FROM THE SIDEBAR    
 $(document).on("click", ".feature-row", function(e) {
     map.flyTo([$(this).attr("lat"), $(this).attr("lng")], 17);
@@ -57,10 +59,6 @@ $("#goToFloat").click(function() {
     $("#floatModal").modal("show");
 });
 
-$(".feedback-btn").click(function() {
-    $("#feedbackModal").modal("show");
-});
-
 $("#nav-btn").click(function() {
     $(".navbar-collapse").collapse("toggle");
     return false;
@@ -76,19 +74,74 @@ $("#sidebar-hide-btn").click(function() {
     return false;
 });
 
-//Might use this when other layers are added.
+$("#send-email").click(function() {
+    $("#thanksModal").modal("show");
+});
+
+$("#legend-btn").click(function() {
+    $("#legendModal").modal("show");
+    $(".navbar-collapse.in").collapse("hide");
+    return false;
+});
+
+//DEVICE HOME SCREEN INSTRUCTIONS
+$("#ios-btn").click(function() {
+  $('#ios').show();
+  $('#android').hide();
+});
+
+$("#android-btn").click(function() {
+  $('#android').show();
+  $('#ios').hide();
+});
+
+//CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
+$(".view-all").click(function() {
+
+    removeLayers([basemap, accessLayer, startEndGroup]);
+
+    if (!(map.hasLayer(accessLayer))) {
+        map.addLayer(accessLayer);
+    }
+
+    clearPlan();
+
+    floatPlanActive = false;
+
+    $(".floatTable").remove();
+
+    accessLayer.setWhere(fullWhere);
+    accessLayer.query().bounds(function(error, latlngbounds) {
+        map.flyToBounds(latlngbounds, {
+            padding: zoomPadding
+        });
+    });
+
+    //NEED TO PUT THE DEFAULT STUFF BACK IN THE PANEL AND CLEAR THE LIST OF ITEMS
+    $("#feature-list tbody").empty();
+    $("#stream-names").val("Select a river name...");
+    $("#scenic-names").val("Select a Scenic River...");
+    $("#trail-names").val("Select a trail name...");
+    $("#stream-title").html("Paddling the Palmetto State");
+    $("#initial").show();
+});
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//SIDEBAR AND LAYOUT SETUP~~~~~~~~~~~~~~~~
 function sizeLayerControl() {
     $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
 }
 
 var floatPlanActive = false;
 
-//INFORMATION/LEGEND BUTTON IN SMALL SCREENS--------------------
 if (document.body.clientWidth <= 767) {
     zoomPadding = [20, 20]
+    var isCollapsed = true;
 } else {
     zoomPadding = [100, 100]
-};
+    var isCollapsed = false;
+}
 
 function animateSidebar() {
     $("#sidebar").animate({
@@ -110,25 +163,69 @@ function syncSidebar(field, filter) {
     $("#stream-title").html(filter);
 }
 
-// Basemap Layers
+function removeLayers(keepLayers) {
+    map.eachLayer(function(layer) {
+        if ($.inArray(layer, keepLayers) == -1) {
+            map.removeLayer(layer);
+        }
+    });
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+//~~~~~~~~~~~~~~MAP SETUP~~~~~~~~~~~~~~~~~~~~~
+
 var basemap = L.esri.basemapLayer("Imagery");
 
-// GET RIVER ACCESS DATA VIA ESRI LEAFLET FROM AGOL (FOR NOW, PROBABLY SWITCH TO SERVER)
+map = L.map("map", {
+    zoom: 8,
+    center: [33.7, -81.1],
+    zoomControl: false,
+    attributionControl: false
+});
+
+basemap.addTo(map);
 
 var access = "https://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/riversPortal/FeatureServer/0"
 
+/* Attribution control */
+function updateAttribution(e) {
+    $.each(map._layers, function(index, layer) {
+        if (layer.getAttribution) {
+            $("#attribution").html((layer.getAttribution()));
+        }
+    });
+}
+map.on("layeradd", updateAttribution);
+map.on("layerremove", updateAttribution);
+
+var attributionControl = L.control({
+    position: "bottomright"
+});
+attributionControl.onAdd = function(map) {
+    var div = L.DomUtil.create("div", "leaflet-control-attribution");
+    div.innerHTML = "<span class='hidden-xs'>SC DNR, with help from... | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
+    return div;
+};
+map.addControl(attributionControl);
+
+var zoomControl = L.control.zoom({
+    position: "bottomright"
+}).addTo(map);
+
+//Set up functions for getting properties formatted correctly
 var pTypes = {
-    1: ["Canoe/Kayak Access", "canoe.svg"],
-    2: ["Boat Ramp", "ramp.svg"],
-    3: ["Dam - Portage", "damp.svg"],
-    4: ["Rapids/Shoals", "rapids.svg"],
-    5: ["Public Land", "pub.svg"],
-    6: ["Bridge", "bridge.svg"],
-    7: ["Dam - No Portage", "damn.svg"],
-    8: ["Confluence", "conf.svg"],
-    9: ["Island", "island.svg"],
-    10: ["Reservoir", "lake.svg"],
-    11: ["Stream Gage", "gage.svg"]
+    1: ["Canoe/Kayak Access", "canoe.png"],
+    2: ["Boat Ramp", "ramp.png"],
+    3: ["Dam - Portage", "damp.png"],
+    4: ["Rapids/Shoals", "rapids.png"],
+    5: ["Public Land", "pub.png"],
+    6: ["Bridge", "bridge.png"],
+    7: ["Dam - No Portage", "damn.png"],
+    8: ["Confluence", "conf.png"],
+    9: ["Island", "island.png"],
+    10: ["Reservoir", "lake.png"],
+    11: ["Stream Gage", "gage.png"]
 };
 
 var rSide = {
@@ -171,31 +268,14 @@ function getUrl(property) {
     return html
 }
 
-//GET THE UNIQUE NAMES OF RIVERS AND POPULATE A DROPDOWN IN THE 'FIND A RIVER' MODAL
+//unique values arrays
 var riverNames = []
 var trailNames = []
 var scenicNames = []
 
-map = L.map("map", {
-    zoom: 8,
-    center: [33.7, -81.1],
-    zoomControl: false,
-    attributionControl: false
-});
-
-basemap.addTo(map);
-
 var fullWhere = "pointType IN (1,2,5)"
 
-function removeLayers(keepLayers) {
-    map.eachLayer(function(layer) {
-        if ($.inArray(layer, keepLayers) == -1) {
-            map.removeLayer(layer);
-        }
-    });
-}
-
-//~~~~~THESE FUNCTIONS WILL BE USED TO BUILD AND DISPLAY LEAFLET GEOJSON, BOTH ON ORIGINAL ESRI FEATURE LAYER AND ALSO FEATURE COLLECTIONS RETURNED FROM ESRI.QUERY~~~~~~~~~~~
+//Reusable functions to build geojson from data returned from esri
 
 function featureModalContent(feature) {
 
@@ -220,17 +300,6 @@ function featureModalContent(feature) {
     }
 }
 
-//NOT USING RIGHT NOW, MAYBE USE LATER.
-function pushToSearch(layer) {
-    accessSearch.push({
-        name: layer.feature.properties.pointName,
-        source: "Access",
-        id: layer.feature.properties.pointID,
-        lat: layer.feature.geometry.coordinates[1],
-        lng: layer.feature.geometry.coordinates[0]
-    });
-}
-
 function makePointToLayer(geojson, latlng) {
     return L.marker(latlng, {
         icon: L.icon({
@@ -241,6 +310,7 @@ function makePointToLayer(geojson, latlng) {
     })
 }
 
+//used in onEachFeature to attach variables to each feature
 function defineFloatPoints(layer) {
     planID = layer.feature.properties.pointID
     planName = layer.feature.properties.pointName
@@ -249,10 +319,8 @@ function defineFloatPoints(layer) {
     planType = layer.feature.properties.pointType
     coords = [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0]]
 }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-//DEFINE THE DATA FROM ESRI FEATURE LAYER - PLUGIN IN THE FUNCTIONS TO BUILD GEOSJON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//original data layer
 var accessLayer = L.esri.featureLayer({
     url: access,
     where: fullWhere,
@@ -278,41 +346,12 @@ var accessLayer = L.esri.featureLayer({
         }
     }
 }).addTo(map);
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/* Attribution control */
-function updateAttribution(e) {
-    $.each(map._layers, function(index, layer) {
-        if (layer.getAttribution) {
-            $("#attribution").html((layer.getAttribution()));
-        }
-    });
-}
-map.on("layeradd", updateAttribution);
-map.on("layerremove", updateAttribution);
 
-var attributionControl = L.control({
-    position: "bottomright"
-});
-attributionControl.onAdd = function(map) {
-    var div = L.DomUtil.create("div", "leaflet-control-attribution");
-    div.innerHTML = "<span class='hidden-xs'>SC DNR, with help from... | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
-    return div;
-};
-map.addControl(attributionControl);
+//~~~~~~~~~~~FIND A RIVER MODAL~~~~~~~~~~~~~~~~~~~~~~~~
 
-var zoomControl = L.control.zoom({
-    position: "bottomright"
-}).addTo(map);
-
-/* Larger screens get expanded layer control and visible sidebar */
-if (document.body.clientWidth <= 767) {
-    var isCollapsed = true;
-} else {
-    var isCollapsed = false;
-}
-
-//ONCE ALL DATA LOADS, GET ALL THE RIVER and TRAIL NAMES AND ADD THEM TO THE DROPDOWN LISTS IN THE MODALS.
+//once original data loads, get unique value names for river dropdown lists.
 accessLayer.on("load", function() {
     for (var i = 0; i < riverNames.length; i++) {
         val = riverNames.sort()[i];
@@ -333,7 +372,7 @@ accessLayer.on("load", function() {
     accessLayer.off("load");
 });
 
-//GET STREAM NAME FROM OPTION, RUN ESRI QUERY, ZOOM TO THOSE FEATURES
+//get stream from options, run filter, display results
 $(".filter-btn").click(function(evt) {
     if (this.id === "getStream") {
         var field = "streamName"
@@ -366,9 +405,9 @@ $(".filter-btn").click(function(evt) {
     if (!(map.hasLayer(accessLayer))) {
         map.addLayer(accessLayer);
     }
-
+    
     //CONSIDER DOING A QUERY INSTEAD OF SET WHERE FILTER....
-
+    
     accessLayer.setWhere(expression, function() {
         syncSidebar(field, filter);
     });
@@ -381,19 +420,18 @@ $(".filter-btn").click(function(evt) {
             });
         });
 });
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-//NEAR MODAL SCRIPT USING ESRI GEOCODER-----------------------
+//~~~~~~~~~~~~NEAR MODAL - GEOLOCATION AND QUERY~~~~~~~~
 
 function syncSidebarGeo(layer, text) {
 
     $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     $("#stream-title").html("Search distance: " + $("#distanceBox").val() + " miles.");
-
 }
 
-//SET THE STATE VALUE TO AUTOMATICALLY BE SC, BUT WILL CHANGE IF SOMEONE CHANGES IT
 $("#stateBox").val("South Carolina")
 
 function queryLatLng(latlng, text) {
@@ -443,6 +481,8 @@ function queryLatLng(latlng, text) {
         });
 }
 
+var geolatlng = []
+
 function geocodeLatLng() {
 
     var address = $("#addressBox").val()
@@ -457,13 +497,67 @@ function geocodeLatLng() {
             var lat = address.results[0].latlng.lat
             var lng = address.results[0].latlng.lng
             var text = address.results[0].text
-            var latlng = [lat, lng];
+            geolatlng = [lat, lng];
 
-            queryLatLng(latlng, text);
+            queryLatLng(geolatlng, text);
 
         });
 
 }
+
+//GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY---
+var locateOn = false;
+
+map.on('locationfound',function(e) {
+    
+    $("#located").show();
+    $("#addressBox, #cityBox, #stateBox").attr("readOnly","");
+    $("#distanceBox").focus();
+    
+    $("#locate-btn").css("background-color","#ffbf80");
+    
+    geolatlng = e.latlng
+    
+    locateMarker = L.circleMarker(geolatlng,{
+        fillColor:"#0066ff",
+        color:"#000099",
+        fillOpacity:0.7,
+        radius:8
+    }).addTo(map);
+    
+});
+
+map.on('locationerror', function(){
+    $("#not-located").show();
+});
+
+function locateUser(){
+     map.locate({
+        setView: true,
+        maxZoom: 14
+    });
+}
+
+$("#locate-btn").click(function() {
+    if (locateOn == false){
+        
+        locateUser();
+        
+        locateOn = true;
+        
+    } else {
+        
+        locateOn = false;
+        
+        map.removeLayer(locateMarker);
+        
+        $("#located").hide();
+        $("#not-located").hide();
+        
+        $("#addressBox, #cityBox, #stateBox").removeAttr("readOnly","");
+        $("#locate-btn").css("background-color","#fff");
+    }
+});
 
 $("#geocode-btn").click(function() {
     geocodeLatLng();
@@ -471,96 +565,11 @@ $("#geocode-btn").click(function() {
     $("#scenic-names").val("Select a Scenic River...");
     $("#trail-names").val("Select a trail name...");
 });
-
-//GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY------------------------------
-function onLocationFound(e) {
-    map.locate({
-        setView: true,
-        maxZoom: 16
-    });
-
-    var geocodeService = L.esri.Geocoding.geocodeService();
-    map.on('locationfound', function(e) {
-        geocodeService.reverse().latlng(e.latlng).run(function(error, result) {
-            L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
-            $('#addressBox').val(result.address.Address);
-            $('#cityBox').val(result.address.City);
-        });
-    });
-    //queryLatLng(e.latlng);
-};
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-$("#locate-btn").click(function() {
-    //map.on('locationfound', onLocationFound);
-    onLocationFound();
-});
-
-
-//INFORMATION/LEGEND BUTTON----------------------------------------
-$("#legend-btn").click(function() {
-    $("#legendModal").modal("show");
-    $(".navbar-collapse.in").collapse("hide");
-    return false;
-});
-
-//INFORMATION/LEGEND BUTTON IN SMALL SCREENS--------------------
-/*if (document.body.clientWidth <= 767) {
-    $("#info-text").text('About');
-} else {
-    $("#info-text").text('');
-};*/
-
-//APPLE DEVICE HOME SCREEN INSTRUCTIONS-----------------------
-$("#ios-btn").click(function() {
-  $('#ios').show();
-  $('#android').hide();
-});
-
-//ANDROID DEVICE HOME SCREEN INSTRUCTIONS--------------------
-$("#android-btn").click(function() {
-  $('#android').show();
-  $('#ios').hide();
-});
-
-//CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
-$(".view-all").click(function() {
-
-    removeLayers([basemap, accessLayer, startEndGroup]);
-
-    if (!(map.hasLayer(accessLayer))) {
-        map.addLayer(accessLayer);
-    }
-
-    clearPlan();
-
-    floatPlanActive = false;
-
-    $(".floatTable").remove();
-
-    accessLayer.setWhere(fullWhere);
-    accessLayer.query().bounds(function(error, latlngbounds) {
-        map.flyToBounds(latlngbounds, {
-            padding: zoomPadding
-        });
-    });
-
-    //NEED TO PUT THE DEFAULT STUFF BACK IN THE PANEL AND CLEAR THE LIST OF ITEMS
-    $("#feature-list tbody").empty();
-    $("#stream-names").val("Select a river name...");
-    $("#scenic-names").val("Select a Scenic River...");
-    $("#trail-names").val("Select a trail name...");
-    $("#stream-title").html("Paddling the Palmetto State");
-    $("#initial").show();
-});
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// DEVELOP FLOAT PLAN TOOL
-// SELECT A START AND END POINT, RETURN ALL POINTS IN BETWEEN
-// IF MULTIPLE STREAMS, RETURN ERROR IF THOSE DO NOT CONNECT
-
+//~~~~~~~~~~~~~CREATE FLOAT PLAN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //This works bc onEachFeature assigns the variables on the click for the modal, and then it is sent to the float plan modal when the button is clicked
-//This is the initial stuff that happens on the map and getting the points.
 
 var startEndGroup = L.featureGroup().addTo(map);
 
@@ -840,8 +849,8 @@ $("#generate-plan").click(function() {
 
 });
 
-//Get the data into CSV format and initiate download... using PapaParse to 'unparse' the geoJson 'feature' objects. 
-//USING PAPA PARSE
+//~~~~~~~FLOAT PLAN EXPORT OPTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 $("#export-csv").click(function() {
     var propArray = []
 
@@ -869,11 +878,32 @@ $("#export-csv").click(function() {
 
 $("#export-gpx").click(function() {
     
-    var geoJson = floatPlanGroup.toGeoJSON();
-    var gpx = togpx(geoJson, {
+    var geo = { "type": "FeatureCollection",
+    "features": []
+              }
+    
+    floatPlanGroup.eachLayer(function(layer) {
+        var geoJson = layer.toGeoJSON();
+        var fLength = geoJson.features.length;
+        
+        for (var i = 0; i < fLength; i++) {
+            geo.features.push(geoJson.features[i])
+        }        
+    });
+    
+    var gpx = togpx(geo, {
         featureTitle: function(props) {
             return props.pointName
+        },
+        featureDescription: function(props){
+            var pt = getType(props.pointType)[0]
+            var sn = props.streamName
+            var sm = props.streamMile
+            var pd = props.pointDesc
+
+            return pt+" - "+sn+" - Mile: "+sm+" - "+pd
         }
+        
     });
 
     var hiddenElement = document.createElement('a');
@@ -881,8 +911,10 @@ $("#export-gpx").click(function() {
     hiddenElement.target = '_blank';
     hiddenElement.download = 'floatPlan.gpx';
     hiddenElement.click();
-})
+});
 
+
+//pdf export
 function nullPdf(inProp){
     if (inProp == null){
         return ''
@@ -972,10 +1004,7 @@ $("#export-pdf").click(function() {
     pdfMake.createPdf(pdfData).open();
 });
 
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 // Leaflet patch to make layer control scrollable on touch browsers
 var container = $(".leaflet-control-layers")[0];

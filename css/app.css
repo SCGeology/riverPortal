@@ -94,19 +94,24 @@ input[type="radio"], input[type="checkbox"] {
 #legendbtn-navbar{
   float:right;
 }
-#credit-list {
-  padding-left: 40%;
-}
 #dnrcredits {
   margin:auto;
   text-align: center;
 }
+#legend-text{
+    margin:0 1em;
+    width:60%;
+    float:left;
+}
 #legendBox {
-    width: 40%;
-    margin:auto;
+    width: 35%;
+    margin:10px auto;
     padding-right: 10px;
     padding-bottom: 10px;
     float:left;
+}
+#legendBox table{
+    border-color: #bbb;
 }
 #geocode-btn{
     margin-bottom:10px;
@@ -162,10 +167,20 @@ input[type="radio"], input[type="checkbox"] {
     margin-top:10px;
 }
 #error-close{display:none;}
+#not-located{
+    color:#ff471a;
+    text-decoration: underline;
+    display:none;
+}
+#located{display:none;}
 #initial {
     padding:1em;
-    text-align: center;
     height:100%;
+}
+#initial h4{line-height: 1.6em;}
+#initial h4 span{
+    color:#0099cc;
+    font-weight: bold;
 }
 #panel-image {
     width:98%;
@@ -251,6 +266,10 @@ input[type="radio"], input[type="checkbox"] {
     float:none;
     width: 90%;
   }
+    #legend-text{
+        width:auto;
+        margin:auto;
+    }
   #credit-list{
     padding-left: 5%;
   }

@@ -68,8 +68,8 @@
             <div class="sidebar-wrapper">
                 <div class="panel panel-default" id="features">
                     <div class="panel-heading">
-                        <h3 class="panel-title" id="stream-title">SC Department of Natural Resources
-              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
+                        <h3 class="panel-title"><span id="stream-title">SC Department of Natural Resources</span>
+                            <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
                     </div>
                     <div class="sidebar-table" id="side-table">
                         <table class="table table-hover" id="feature-list">
@@ -90,7 +90,9 @@
                     </div>
                     <div id="initial">
                         <img id="panel-image" src="images/appstartup.png" alt="lynches river" />
-                        <p>South Carolina's rivers are awesome!</p>
+                        <h4>More than <span>500</span> public river access locations on <span>56 rivers</span> covering <span>2,700 miles</span> of water!
+                        <br><br>
+                            The average distance to a public river access from <em>anywhere in South Carolina</em> is only <span>5 miles!</span> Find a river, and explore! </h4>
                     </div>
                 </div>
             </div>
@@ -114,6 +116,8 @@
                         <button type="button" data-toggle="collapse" data-target=".navbar-collapse.in" class="btn btn-default" id="locate-btn"><b>Use Current Location</b>&nbsp;&nbsp;<i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                         <br>
                         <br>
+                        <p id="located">Current Location Found. Enter search distance.</p>
+                        <p id="not-located">Current location not found.</p>
                         <input type="text" class="form-control" name="addressBox" id="addressBox" placeholder="Address">
                         <br>
                         <input type="text" class="form-control" name="cityBox" id="cityBox" placeholder="City">
@@ -128,8 +132,7 @@
                     <p style="width:75%;">The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
-                    </button>
+                    <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -148,25 +151,25 @@
                 </div>
                 <div class="modal-body">
                     <h4>Do you know the name of the stream or river you want to access?</h4>
-                        <div class="dropdown">
-                            <select class="form-control" id="stream-names">
-                                <option id="hold">Select a river name...</option>
-                            </select>
-                        </div>
-                        <div class="btn-container">
-                            <button id="getStream" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                        </div>
+                    <div class="dropdown">
+                        <select class="form-control" id="stream-names">
+                            <option id="hold">Select a river name...</option>
+                        </select>
+                    </div>
+                    <div class="btn-container">
+                        <button id="getStream" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <h4>Do you want to explore one South Carolina's State Scenic Rivers?</h4>
-                        <div class="dropdown">
-                            <select class="form-control" id="scenic-names">
-                                <option id="hold">Select a Scenic River...</option>
-                            </select>
-                        </div>
-                        <div class="btn-container">
-                            <button id="getScenic" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
-                        </div>
+                    <div class="dropdown">
+                        <select class="form-control" id="scenic-names">
+                            <option id="hold">Select a Scenic River...</option>
+                        </select>
+                    </div>
+                    <div class="btn-container">
+                        <button id="getScenic" type="button" class="btn btn-primary filter-btn right-btn" aria-pressed="false" data-dismiss="modal">Zoom to River</button>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <h4>This is where you can find access on one of the many Blue Trails in the state.</h4>
@@ -180,8 +183,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
-                    </button>
+                    <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -206,14 +208,12 @@
                         <li>Scout out river access with other tools in the app.</li>
                         <li>Choose points from one or more <b>connected</b> rivers by clicking the icons in the map.</li>
                         <li>Review your points below - Make sure the <b>Start point is upstream of the End point.</b></li>
-                        <li>Hit the Make Float Plan button to get a list of all the points in between.</li>
                     </ul>
                     <h4>What can you do with the Float Plan?</h4>
                     <ul>
                         <li>View the points and the list on the map in upstream to downstream order.</li>
-                        <li>Export the data to CSV file for viewing in a spreadsheet.</li>
-                        <li>Export to GPX for your GPS device.</li>
-                        <li>Export a PDF that you can print and take with you.</li>
+                        <li>Find the distance between points of interest.</li>
+                        <li>Export the data to CSV, GPX, or PDF.</li>
                     </ul>
                     <br>
                     <table id="plan-points">
@@ -240,8 +240,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
-                    </button>
+                    <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -286,62 +285,10 @@
                     </div>
                     <div id="error-close">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-default feedback-btn left-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
-                        </button>
+                        <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                         <p style="width:90%;text-align:left;margin:10px auto;">Do you think that this error message was given by mistake? Please let us know so we can fix it!</p>
                     </div>
 
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
-
-    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3 class="modal-title">Provide some feedback.</h3>
-                </div>
-                <div class="modal-body">
-                     <h4>Do you see a mistake? Want to add a public access point? Have a question about this information?</h4>
-                    <div>
-                        <form id="contact-form">
-                            <div class="well well-sm">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="first-name">First Name:</label>
-                                            <input type="text" class="form-control" id="first-name">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="last-name">Last Name:</label>
-                                            <input type="text" class="form-control" id="last-email">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Email:</label>
-                                            <input type="text" class="form-control" id="email">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label for="message">Message:</label>
-                                        <textarea class="form-control" rows="8" id="message"></textarea>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <p>
-                                            <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Submit</button>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -367,8 +314,7 @@
                     <span id="float-warning-en">Warning! The END point is not an access point or public land. There may not be river access at this location.</span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default left-btn feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</li>
-                    </button>
+                    <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -405,92 +351,93 @@
                     <h4 class="modal-title">Information</h4>
                 </div>
                 <div class="modal-body">
-                    <div id="legendBox">
-                        <table class="table table-hover" id="table-legend" frame=box>
-                            <thead>
-                                <tr>
-                                    <th style="text-align:center" colspan="2">
-                                        <h4><strong>Points of Interest</strong></h4></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/canoe.svg" alt="canoe" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Kayak/Canoe Access</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/ramp.svg" alt="ramp" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Boat Ramp</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/bridge.svg" alt="bridge" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Bridge</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/pub.svg" alt="pub" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Public Land</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/rapids.svg" alt="rapids" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Rapids</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/lake.svg" alt="lake" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Reservoir</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/damp.svg" alt="damportage" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Dam - Portage</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/damn.svg" alt="damnoportage" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Dam - No Portage</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/gage.svg" alt="guage" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Stream Gauge</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/conf.svg" alt="conf" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Confluence</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"> <img src="icons/island.svg" alt="island" width="20px" height="20px"> </td>
-                                    <td style="text-align:center">Island</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <br>
-                    </div>
-                    <div id="credits">
-                        <p>*Enter any information that would be useful about this application*
-                            <br> Another goal of the project is to help paddlers by linking to more detailed information about access points, public lands, paddling trails, and providing USGS flow information. There will also be a form for submitting changes or making comments, which will help the SCDNR Rivers program keep the data up-to-date.
-                        </p>
-                        <p>*Enter any information that would be useful about this application*
-                            <br> Another goal of the project is to help paddlers by linking to more detailed information about access points, public lands, paddling trails, and providing USGS flow information. There will also be a form for submitting changes or making comments, which will help the SCDNR Rivers program keep the data up-to-date.
-                        </p>
-                        <h5><strong>Credits</strong></h5>
-                        <p> A special thanks to Tom Taylor, the owner of <a href="http://randomconnections.com" target="_blank">Random Connections Blog.</a> Much of the foundation of this project was made possible because of the impressive project undertaken by him. His work is located
-                            <a href="http://randomconnections.com/paddling-south-carolinas-rivers/" target="_blank">here.</a>
-                        </p>
-                        <p>Also thanks to:</p>
-                        <div id="credit-list">
-                            <ul>
-                                <li> Local Paddling Clubs </li>
-                                <li> Utility Company Websites </li>
-                                <li> Local Government and Recreation Departments </li>
-                                <li> Paddling Guidebooks </li>
-                                <li> Paddling and Outdoor Internet Forums </li>
-                            </ul>
+                    <div id="legend-body">
+                        <div id="legendBox">
+                            <table class="table" id="table-legend" frame=box>
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center" colspan="2">
+                                            <h4><strong>Legend</strong></h4></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/canoe.svg" alt="canoe" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Kayak/Canoe Access</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/ramp.svg" alt="ramp" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Boat Ramp</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/bridge.svg" alt="bridge" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Bridge</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/pub.svg" alt="pub" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Public Land</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/rapids.svg" alt="rapids" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Rapids</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/lake.svg" alt="lake" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Reservoir</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/damp.svg" alt="damportage" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Dam - Portage</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/damn.svg" alt="damnoportage" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Dam - No Portage</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/gage.svg" alt="guage" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Stream Gauge</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/conf.svg" alt="conf" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Confluence</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"> <img src="icons/island.svg" alt="island" width="20px" height="20px"> </td>
+                                        <td style="text-align:center">Island</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br>
                         </div>
-                        <br>
-                        <br>
+                        <div id="legend-text">
+                            <p>This application was developed by the Land, Water, &amp; Conservation Division of the South Carolina Department of Natural Resources (SCDNR) for the <a href="http://www.dnr.sc.gov/water/river/index.html">Scenic Rivers Program</a>. Rivers are our most abundant and accessible public natural resource. We hope this application will help people in South Carolina discover the vast river recreation opportunities.</p>
+                            <h4>Keep Our Rivers Scenic</h4>
+                            <p>Respect our river resources and public access so that others can enjoy it in the future. One way to do this is by following <a href="https://lnt.org/learn/7-principles">Leave No Trace principles</a> when in the outdoors. </p>
+                            <h4>Respect Primate Property</h4>
+                            <p>While rivers are a South Carolina public resource, adjoining land on either bank may be private property. Do not trespass on private property, and be respectul of all private property adjoining the river.</p>
+                            <h4>Data Disclaimer</h4>
+                            <p>The public access, public lands, and point-of-interest information in this application, and any hyperlinked information outside of this application, is not guaranteed to be accurate. We will do our best to keep the application updated as needed. If you see a mistake in the data, please let us know through the contact form.</p>
+                            <p>Neither the State of South Carolina, the Department of Natural Resources, nor any of its employees, is responsible for any improper or incorrect use of the information described and/or contained herein, and assume no responsibility for the use of the information. </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5><strong>Credits</strong></h5>
+                        <p> Add Credits here or move them into a different modal? </p>
                         <p><strong>Contact us:</strong></p>
-                        <button type="button" class="btn btn-default feedback-btn" data-dismiss="modal"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions?</button>
-                        <br><br><br>
+                        <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
+                        <br><br>
+                        <p>Tanner Arrington<br>
+                        LWC GIS Manager<br>
+                            <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">arringtont@dnr.sc.gov</a></p>
+                        <p>Bill Marshall<br>
+                            Scenic Rivers Program Manager<br>
+                            <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">marshallb@dnr.sc.gov</a></p>
+                        <br>
+                        <br>
                         <h4>Add this Application to your Mobile Device Home Screen</h4>
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="ios-btn" data-target="#instruct">Apple iOS Instructions</button>&nbsp;
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="android-btn" data-target="#instruct">Android OS Instructions</button>
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="ios-btn" data-target="#instruct">Apple iOS</button>&nbsp;
+                        <button type="button" data-toggle="collapse" class="btn btn-default" id="android-btn" data-target="#instruct">Android OS</button>
                         <br>
                         <br>
                         <div id="instruct" class="collapse">
@@ -532,7 +479,6 @@
                                 <img src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" width="10%" height="10%">
                                 <h5><strong>South Carolina Department of Natural Resources</strong> </h5>
                                 <h5>Land, Water &amp; Conservation Division</h5>
-                                <h6> <em>River Stewardship Program</em> </h6>
                             </div>
                             <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
                         </div>
@@ -542,20 +488,20 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- /.modal -->
-            
-        <!-- MAJOR LIBRARIES -->
+
+            <!-- MAJOR LIBRARIES -->
             <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
             <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
             <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.1/esri-leaflet.js"></script>
             <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
             <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
-        <!--LIBRARIES FOR EXPORT OPTIONS -->    
+            <!--LIBRARIES FOR EXPORT OPTIONS -->
             <script src="js/papaparse.min.js"></script>
             <script src="js/pdfmake.min.js"></script>
             <script src="js/vfs_fonts.js"></script>
             <script src="js/togpx.js"></script>
-        <!-- APPLICATION SCRIPT -->    
+            <!-- APPLICATION SCRIPT -->
             <script src="js/app.js"></script>
 </body>
 
