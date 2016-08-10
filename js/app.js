@@ -5,8 +5,7 @@ $(window).resize(function() {
     sizeLayerControl();
 });
 
-
-//ALL THE BUTTONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//SIMPLE BUTTONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //ZOOMS TO THE POINT WHEN CLICKED FROM THE SIDEBAR    
 $(document).on("click", ".feature-row", function(e) {
@@ -98,7 +97,7 @@ $("#android-btn").click(function() {
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $(".view-all").click(function() {
 
-    removeLayers([basemap, accessLayer, startEndGroup]);
+    removeLayers([basemap, imagery, accessLayer, startEndGroup]);
 
     if (!(map.hasLayer(accessLayer))) {
         map.addLayer(accessLayer);
@@ -124,6 +123,25 @@ $(".view-all").click(function() {
     $("#trail-names").val("Select a trail name...");
     $("#stream-title").html("Paddling the Palmetto State");
     $("#initial").show();
+    $("#view-connected").css("display","none");
+});
+
+$("#view-connected").click(function(){
+    var filterWhere = accessLayer.getWhere();
+    var posi = filterWhere.indexOf("=");
+    var filterStream = filterWhere.substr(posi+2,filterWhere.length-(posi+3));
+    
+    for (var i=0;i<connected.length;i++){
+        if (connected[i].streamName == filterStream){
+            var list = connected[i].connectedStream.split(",");
+            list.push(filterStream);
+            var expression = "streamName IN ('"+list.join("','")+"')"
+            console.log(expression);
+            accessLayer.setWhere(expression);
+        }
+    }
+    $(this).css("display","none");
+    
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,16 +193,27 @@ function removeLayers(keepLayers) {
 
 //~~~~~~~~~~~~~~MAP SETUP~~~~~~~~~~~~~~~~~~~~~
 
-var basemap = L.esri.basemapLayer("Imagery");
+var imagery = L.esri.basemapLayer("Imagery");
+var basemap = L.tileLayer("https://api.mapbox.com/styles/v1/scearthsci/cirnx501k0012g1mbinagyxgu/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic2NlYXJ0aHNjaSIsImEiOiI3NTg0NGM0ZTMzNjI5N2Q5ZDRmMWQ0YjI5MjczNTlhYSJ9.36fX8a8aHxH7ZouF3KqMqQ");
 
 map = L.map("map", {
     zoom: 8,
     center: [33.7, -81.1],
     zoomControl: false,
-    attributionControl: false
+    attributionControl: false,
+    minZoom:7
 });
 
 basemap.addTo(map);
+
+map.on('baselayerchange', function(e){
+    $("#view-all").toggleClass("dark light");
+});
+
+var baselayers = {"Topo":basemap,"Imagery":imagery};
+L.control.layers(baselayers,null,{
+    position:'topleft'
+}).addTo(map);
 
 var access = "https://services.arcgis.com/acgZYxoN5Oj8pDLa/arcgis/rest/services/riversPortal/FeatureServer/0"
 
@@ -279,10 +308,8 @@ var fullWhere = "pointType IN (1,2,5)"
 
 function featureModalContent(feature) {
 
-    var ll = [feature.properties.lat, feature.properties.long];
-
     $(document).on("click", "#zoom", function(e) {
-        alert(ll);
+        var ll = [feature.properties.lat, feature.properties.long];
         map.flyTo(ll, 14);
         $("#featureModal").modal("hide");
     });
@@ -380,18 +407,21 @@ $(".filter-btn").click(function(evt) {
         //reset the other boxes selection
         $("#scenic-names").val("Select a Scenic River...");
         $("#trail-names").val("Select a trail name...");
+        $("#view-connected").css("display","block");
     } else if (this.id == "getTrail") {
         var field = "waterTrail_Name"
         var filter = $("#trail-names").val();
         //reset the other boxes selection
         $("#stream-names").val("Select a river name...");
         $("#scenic-names").val("Select a Scenic River...");
+        $("#view-connected").css("display","none");
     } else if (this.id == "getScenic") {
         var field = "scenic_River"
         var filter = $("#scenic-names").val();
         //reset the other boxes selection
         $("#stream-names").val("Select a river name...");
         $("#trail-names").val("Select a trail name...");
+        $("#view-connected").css("display","none");
     }
 
     var expression = field + "='" + filter + "'"
@@ -399,7 +429,7 @@ $(".filter-btn").click(function(evt) {
     $("#initial").hide();
 
     //clear layers and remove float plain points, if exist
-    removeLayers([basemap, accessLayer, startEndGroup]);
+    removeLayers([basemap, imagery, accessLayer, startEndGroup]);
     $(".floatTable").remove();
     //make sure that accessLayer is added to map, or setWhere filter can't happen
     if (!(map.hasLayer(accessLayer))) {
@@ -448,7 +478,7 @@ function queryLatLng(latlng, text) {
             } else {
 
                 //remove layers and clear the side table of float plan points if it exists.
-                removeLayers([basemap, startEndGroup]);
+                removeLayers([basemap, imagery, startEndGroup]);
                 $(".floatTable").remove();
                 $("#feature-list tbody").empty();
                 $("#initial").hide();
@@ -485,24 +515,28 @@ var geolatlng = []
 
 function geocodeLatLng() {
 
-    var address = $("#addressBox").val()
-    var city = $("#cityBox").val()
-    var state = $("#stateBox").val()
-    L.esri.Geocoding.geocode()
-        .address(address)
-        .city(city)
-        .region(state)
-        .run(function(err, address, response) {
+    if (locateOn == false){
+        var address = $("#addressBox").val()
+        var city = $("#cityBox").val()
+        var state = $("#stateBox").val()
+        L.esri.Geocoding.geocode()
+            .address(address)
+            .city(city)
+            .region(state)
+            .run(function(err, address, response) {
 
-            var lat = address.results[0].latlng.lat
-            var lng = address.results[0].latlng.lng
-            var text = address.results[0].text
-            geolatlng = [lat, lng];
-
-            queryLatLng(geolatlng, text);
-
+                var lat = address.results[0].latlng.lat
+                var lng = address.results[0].latlng.lng
+                var text = address.results[0].text
+                geolatlng = [lat, lng];
         });
+    } else {
+        
+        var text = geolatlng;    
+                 
+    }
 
+    queryLatLng(geolatlng, text);
 }
 
 //GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY---
@@ -524,7 +558,6 @@ map.on('locationfound',function(e) {
         fillOpacity:0.7,
         radius:8
     }).addTo(map);
-    
 });
 
 map.on('locationerror', function(){
@@ -659,7 +692,7 @@ function floatPlanQuery(list) {
 
     if (lastEntry["stream"] === endStream) {
 
-        removeLayers([basemap, startEndGroup])
+        removeLayers([basemap, imagery, startEndGroup])
         floatPlanActive = true;
         $("#feature-list tbody").empty();
         $("#planMiles").empty();
@@ -810,7 +843,7 @@ $("#generate-plan").click(function() {
             } else {
 
                 //run the float plan process for points that are on the same stream... else move on to deal with multiple streams 
-                removeLayers([basemap, startEndGroup])
+                removeLayers([basemap, imagery, startEndGroup])
                 floatPlanActive = true;
                 $("#feature-list tbody").empty();
                 $("#planMiles").empty();
@@ -851,6 +884,8 @@ $("#generate-plan").click(function() {
 
 //~~~~~~~FLOAT PLAN EXPORT OPTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+var exportOption
+
 $("#export-csv").click(function() {
     var propArray = []
 
@@ -867,12 +902,6 @@ $("#export-csv").click(function() {
     });
 
     var csv = Papa.unparse(propArray);
-
-    var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-    hiddenElement.target = '_blank';
-    hiddenElement.download = 'floatPlan.csv';
-    hiddenElement.click();
 
 });
 
@@ -905,103 +934,7 @@ $("#export-gpx").click(function() {
         }
         
     });
-
-    var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:text/csv;charset=utf-8,' + gpx;
-    hiddenElement.target = '_blank';
-    hiddenElement.download = 'floatPlan.gpx';
-    hiddenElement.click();
-});
-
-
-//pdf export
-function nullPdf(inProp){
-    if (inProp == null){
-        return ''
-    } else {
-        return inProp
-    }
-}
-
-function buildPDF() {
     
-    var body = [
-                [{
-                    text: 'Point Type',
-                    style: 'tableHeader'
-                },
-                {
-                    text: 'Name',
-                    style: 'tableHeader'
-                }, {
-                    text: 'Stream Miles',
-                    style: 'tableHeader'
-                }, {
-                    text: 'Stream/River',
-                    style: 'tableHeader'
-                }, {
-                    text: 'Description',
-                    style: 'tableHeader'
-                }, {
-                    text: 'Amenities',
-                    style: 'tableHeader'
-                },{
-                    text: 'Latitude',
-                    style: 'tableHeader'
-                },{
-                    text: 'Longitude',
-                    style: 'tableHeader'
-                }, {
-                    text: 'Side of River',
-                    style: 'tableHeader'
-                }],
-            ]
-    
-    var geoJson = floatPlanGroup.toGeoJSON();
-
-    floatPlanGroup.eachLayer(function(layer) {
-        var geoJson = layer.toGeoJSON();
-        var fLength = geoJson.features.length;
-
-        for (var i = 0; i < fLength; i++) {
-            var row = [
-                getType(geoJson.features[i].properties.pointType)[0],
-                nullPdf(geoJson.features[i].properties.pointName),
-                geoJson.features[i].properties.streamMile.toString(),
-                geoJson.features[i].properties.streamName,
-                nullPdf(geoJson.features[i].properties.pointDesc),
-                nullPdf(geoJson.features[i].properties.amenities),
-                geoJson.features[i].properties.lat,
-                geoJson.features[i].properties.long,
-                getSide(geoJson.features[i].properties.riverSide)
-            ]
-            body.push(row);
-        }
-    });
-    
-    return body
-}
-
-$("#export-pdf").click(function() {
-    
-    var pdfData = {
-        pageOrientation: 'landscape',
-        content: [{
-            text: 'Float Plan',
-            fontSize: 14,
-            bold: true,
-            margin: [0, 20, 0, 8]
-        }, {
-            style: 'tableExample',
-            table: {
-                headerRows: 1,
-                body: buildPDF()
-            },
-            layout: 'lightHorizontalLines'
-        }]
-    };
-    
-    pdfMake.createPdf(pdfData).open();
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

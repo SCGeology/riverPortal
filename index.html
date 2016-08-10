@@ -46,7 +46,7 @@
                     <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-search fa-lg white"></i></a>
                     <a href="#" class="navbar-icon pull-left visible-xs" id="sidebar-toggle-btn"><i class="fa fa-bars fa-lg white"></i></a>
                 </div>
-                <a class="navbar-brand" href="#">SC Rivers</a>
+                <a class="navbar-brand" href="">SC Rivers</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -87,18 +87,19 @@
                             <tbody class="list">
                             </tbody>
                         </table>
-                    </div>
-                    <div id="initial">
-                        <img id="panel-image" src="images/appstartup.png" alt="lynches river" />
-                        <h4>More than <span>500</span> public river access locations on <span>56 rivers</span> covering <span>2,700 miles</span> of water!
-                        <br><br>
+                        <div id="initial">
+                            <img id="panel-image" src="images/appstartup.png" alt="lynches river" />
+                            <h4>More than <span>500</span> public river access locations on <span>56 rivers</span> covering <span>2,700 miles</span> of water!
+                            <br><br>
                             The average distance to a public river access from <em>anywhere in South Carolina</em> is only <span>5 miles!</span> Find a river, and explore! </h4>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div id="map">
-            <button type="button" id="view-all" class="btn btn-default left-btn view-all" data-dismiss="modal">View All Rivers</button>
+            <button type="button" id="view-all" class="map-btn btn btn-default view-all dark">View All Rivers</button>
+            <button type="button" id="view-connected" class="map-btn btn btn-default dark">View Connected Rivers</button>
         </div>
     </div>
 
@@ -150,7 +151,7 @@
                     <h3 class="modal-title">Find a River or Blue Trail.</h3>
                 </div>
                 <div class="modal-body">
-                    <h4>Do you know the name of the stream or river you want to access?</h4>
+                    <h4>River or Stream Name</h4>
                     <div class="dropdown">
                         <select class="form-control" id="stream-names">
                             <option id="hold">Select a river name...</option>
@@ -161,7 +162,7 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <h4>Do you want to explore one South Carolina's State Scenic Rivers?</h4>
+                    <h4>South Carolina's State Scenic Rivers</h4>
                     <div class="dropdown">
                         <select class="form-control" id="scenic-names">
                             <option id="hold">Select a Scenic River...</option>
@@ -172,7 +173,7 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <h4>This is where you can find access on one of the many Blue Trails in the state.</h4>
+                    <h4>Blue Trails &amp; Water Trails</h4>
                     <div class="dropdown">
                         <select class="form-control" id="trail-names">
                             <option id="hold">Select a trail name...</option>
@@ -213,7 +214,7 @@
                     <ul>
                         <li>View the points and the list on the map in upstream to downstream order.</li>
                         <li>Find the distance between points of interest.</li>
-                        <li>Export the data to CSV, GPX, or PDF.</li>
+                        <li>Export the data to CSV, GPX, or Print.</li>
                     </ul>
                     <br>
                     <table id="plan-points">
@@ -280,7 +281,7 @@
                         <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-map">View Map</button>
                         <button type="button" class="btn btn-success" data-dismiss="modal" id="export-csv">Export CSV</button>
                         <button type="button" class="btn btn-warning" data-dismiss="modal" id="export-gpx">Export GPX</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-pdf">Export PDF</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-raw">Raw Data</button>
                         <button type="button" class="btn btn-default view-all" data-dismiss="modal" id="start-over">Start Over</button>
                     </div>
                     <div id="error-close">
@@ -498,11 +499,12 @@
             <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
             <!--LIBRARIES FOR EXPORT OPTIONS -->
             <script src="js/papaparse.min.js"></script>
-            <script src="js/pdfmake.min.js"></script>
-            <script src="js/vfs_fonts.js"></script>
             <script src="js/togpx.js"></script>
+            <script src="js/export.js"></script>
             <!-- APPLICATION SCRIPT -->
             <script src="js/app.js"></script>
+            <script src="js/connected.js"></script>
+            
 </body>
 
 </html>
