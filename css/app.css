@@ -24,8 +24,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 #loading {
   position: absolute;
-  width: 220px;
-  height: 19px;
+  width: 200px;
+  height: 200px;
   top: 50%;
   left: 50%;
   margin: -10px 0 0 -110px;
@@ -55,9 +55,6 @@ input[type="radio"], input[type="checkbox"] {
 #modal-footer {
   clear:both;
 }
-.progress-bar-full {
-  width: 100%;
-}
 .white {
   color: #FFFFFF;
 }
@@ -83,9 +80,6 @@ input[type="radio"], input[type="checkbox"] {
 .leaflet-control-layers label {
   font-weight: normal;
   margin-bottom: 0px;
-}
-.leaflet-control-layers-list input[type="radio"], input[type="checkbox"] {
-  margin: 2px;
 }
 .table {
   margin-bottom: 0px;
@@ -115,6 +109,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 #geocode-btn{
     margin-bottom:10px;
+    margin-left:20px;
 }
 #plan-points {
     border-collapse: separate;
@@ -206,11 +201,11 @@ input[type="radio"], input[type="checkbox"] {
 .map-btn {
     background:none;
     z-index: 1049;
+    right:10px;
 }
 #view-all {
     position:absolute;
     top:11px;
-    right:10px;
 }
 .light{
     color:#FFF;
@@ -218,6 +213,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 .light:hover {
     color:#DDD;
+    background:none;
 }
 .dark{
     color:#333;
@@ -225,6 +221,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 .dark:hover {
     color:#555;
+    background:none;
 }
 
 #view-connected {
@@ -235,6 +232,18 @@ input[type="radio"], input[type="checkbox"] {
 #stream-name-fill{
     width:100%;
     height:1em;
+}
+#raw{
+    width:100%;
+    min-width:600px;
+    border-collapse:collapse;
+    max-width:1000px;
+    text-align: left;
+    margin:5px;
+}
+#raw td, #raw th {
+    padding:2px 4px;
+    border:1px solid #ddd;
 }
 .navbar {
     background-image:url(../images/navban.jpg);

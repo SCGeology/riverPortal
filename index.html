@@ -36,9 +36,13 @@
     <!-- iPad (Retina, landscape) SPLASHSCREEN-->
     <link rel="apple-touch-startup-image" href="images/appstartup2048_1496.png" media="(device-width: 1536px)  and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)">
 
+    <script src="js/spin.min.js"></script>
+
 </head>
 
 <body>
+    <div id="loading">
+    </div>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -281,7 +285,7 @@
                         <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-map">View Map</button>
                         <button type="button" class="btn btn-success" data-dismiss="modal" id="export-csv">Export CSV</button>
                         <button type="button" class="btn btn-warning" data-dismiss="modal" id="export-gpx">Export GPX</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-raw">Raw Data</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-raw">Print Table</button>
                         <button type="button" class="btn btn-default view-all" data-dismiss="modal" id="start-over">Start Over</button>
                     </div>
                     <div id="error-close">
@@ -427,12 +431,15 @@
                         <p> Add Credits here or move them into a different modal? </p>
                         <p><strong>Contact us:</strong></p>
                         <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
-                        <br><br>
-                        <p>Tanner Arrington<br>
-                        LWC GIS Manager<br>
+                        <br>
+                        <br>
+                        <p>Tanner Arrington
+                            <br> LWC GIS Manager
+                            <br>
                             <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">arringtont@dnr.sc.gov</a></p>
-                        <p>Bill Marshall<br>
-                            Scenic Rivers Program Manager<br>
+                        <p>Bill Marshall
+                            <br> Scenic Rivers Program Manager
+                            <br>
                             <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">marshallb@dnr.sc.gov</a></p>
                         <br>
                         <br>
@@ -484,27 +491,44 @@
                             <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
                         </div>
                     </div>
-                    <!-- /.modal-content -->
                 </div>
-                <!-- /.modal-dialog -->
             </div>
-            <!-- /.modal -->
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
-            <!-- MAJOR LIBRARIES -->
-            <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-            <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
-            <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.1/esri-leaflet.js"></script>
-            <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
-            <!--LIBRARIES FOR EXPORT OPTIONS -->
-            <script src="js/papaparse.min.js"></script>
-            <script src="js/togpx.js"></script>
-            <script src="js/export.js"></script>
-            <!-- APPLICATION SCRIPT -->
-            <script src="js/app.js"></script>
-            <script src="js/connected.js"></script>
-            
+    <table id="raw">
+        <thead>
+            <th>Name</th>
+            <th>Stream Mile</th>
+            <th>Stream Name</th>
+            <th>Description</th>
+            <th>Amenities</th>
+            <th>Side of River</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+                
+
+    <!-- MAJOR LIBRARIES -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.1/esri-leaflet.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.1.1/esri-leaflet-geocoder.js"></script>
+    <!--LIBRARIES FOR EXPORT OPTIONS -->
+    <script src="js/papaparse.min.js"></script>
+    <script src="js/togpx.js"></script>
+    <!-- APPLICATION SCRIPT -->
+    <script src="js/app.js"></script>
+    <script src="js/connected.js"></script>
+
 </body>
 
 </html>

@@ -3,7 +3,11 @@ var map;
 //Might use this when other map layers are added and we might use a layer control
 $(window).resize(function() {
     sizeLayerControl();
-});
+});    
+
+var loadTarget = document.getElementById("loading");
+//spinner
+var spinner = new Spinner().spin(loadTarget);
 
 //SIMPLE BUTTONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -96,7 +100,10 @@ $("#android-btn").click(function() {
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $(".view-all").click(function() {
-
+    
+    $("#loading").show();
+    spinner.spin(loadTarget);
+    
     removeLayers([basemap, imagery, accessLayer, startEndGroup]);
 
     if (!(map.hasLayer(accessLayer))) {
@@ -228,6 +235,11 @@ function updateAttribution(e) {
 map.on("layeradd", updateAttribution);
 map.on("layerremove", updateAttribution);
 
+map.on('zoomend',function(){
+   spinner.stop();
+   $("#loading").hide();
+});
+
 var attributionControl = L.control({
     position: "bottomright"
 });
@@ -331,8 +343,8 @@ function makePointToLayer(geojson, latlng) {
     return L.marker(latlng, {
         icon: L.icon({
             iconUrl: 'icons/' + getType(geojson.properties.pointType)[1],
-            iconSize: [20, 20],
-            iconAnchor: [10, 10]
+            iconSize: [18, 18],
+            iconAnchor: [9, 9]
         })
     })
 }
@@ -373,13 +385,15 @@ var accessLayer = L.esri.featureLayer({
         }
     }
 }).addTo(map);
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //~~~~~~~~~~~FIND A RIVER MODAL~~~~~~~~~~~~~~~~~~~~~~~~
 
 //once original data loads, get unique value names for river dropdown lists.
 accessLayer.on("load", function() {
+    spinner.stop();
+    $("#loading").hide();
     for (var i = 0; i < riverNames.length; i++) {
         val = riverNames.sort()[i];
         $("#stream-names").append('<option value="' + val + '">' + val + '</option>');
@@ -465,7 +479,7 @@ function syncSidebarGeo(layer, text) {
 $("#stateBox").val("South Carolina")
 
 function queryLatLng(latlng, text) {
-
+    
     var distance = Number($("#distanceBox").val()) * 1609.34
 
     accessLayer.query()
@@ -511,36 +525,17 @@ function queryLatLng(latlng, text) {
         });
 }
 
-var geolatlng = []
-
-function geocodeLatLng() {
-
-    if (locateOn == false){
-        var address = $("#addressBox").val()
-        var city = $("#cityBox").val()
-        var state = $("#stateBox").val()
-        L.esri.Geocoding.geocode()
-            .address(address)
-            .city(city)
-            .region(state)
-            .run(function(err, address, response) {
-
-                var lat = address.results[0].latlng.lat
-                var lng = address.results[0].latlng.lng
-                var text = address.results[0].text
-                geolatlng = [lat, lng];
-        });
-    } else {
-        
-        var text = geolatlng;    
-                 
-    }
-
-    queryLatLng(geolatlng, text);
-}
+var geolatlng
 
 //GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY---
 var locateOn = false;
+
+function locateUser(){
+     map.locate({
+        setView: true,
+        maxZoom: 14
+    });
+}
 
 map.on('locationfound',function(e) {
     
@@ -564,13 +559,6 @@ map.on('locationerror', function(){
     $("#not-located").show();
 });
 
-function locateUser(){
-     map.locate({
-        setView: true,
-        maxZoom: 14
-    });
-}
-
 $("#locate-btn").click(function() {
     if (locateOn == false){
         
@@ -591,6 +579,37 @@ $("#locate-btn").click(function() {
         $("#locate-btn").css("background-color","#fff");
     }
 });
+
+function geocodeLatLng() {
+    
+    $("#loading").show();
+    spinner.spin(loadTarget);
+
+    if (locateOn === false){
+
+        var address = $("#addressBox").val()
+        var city = $("#cityBox").val()
+        var state = $("#stateBox").val()
+        L.esri.Geocoding.geocode()
+            .address(address)
+            .city(city)
+            .region(state)
+            .run(function(err, address, response) {
+
+                var lat = address.results[0].latlng.lat
+                var lng = address.results[0].latlng.lng
+                var text = address.results[0].text
+                geolatlng = [lat, lng];
+                queryLatLng(geolatlng, text);
+        });
+        
+    } else {
+        
+        var text = "Your Location: "+geolatlng;    
+        
+        queryLatLng(geolatlng, text);         
+    }
+}
 
 $("#geocode-btn").click(function() {
     geocodeLatLng();
@@ -637,7 +656,7 @@ $("#planStart").click(function() {
     }
 
     //style the border of the button to show it has been selected
-    $("#planStart").addClass("startSelected");
+    $("#planStart").addClass("startSelected").blur();
 
 });
 
@@ -658,7 +677,7 @@ $("#planEnd").click(function() {
     }
 
     //style the border of the button to show it has been selected    
-    $("#planEnd").addClass("endSelected");
+    $("#planEnd").addClass("endSelected").blur();
 });
 
 var clearPlan = function() {
@@ -821,7 +840,10 @@ function getPoints(mileA, mileB, streamName, index) {
 }
 
 $("#generate-plan").click(function() {
-
+    
+    $("#loading").show();
+    spinner.spin(loadTarget);
+    
     floatPlanGroup.clearLayers();
 
     if ($("#planStartText").text() == "No start point selected..." || $("#planEndText").text() == "No end point selected...") {
@@ -902,6 +924,14 @@ $("#export-csv").click(function() {
     });
 
     var csv = Papa.unparse(propArray);
+    
+    var csvContent = "data:text/csv;charset=utf-8,"+csv;
+    var encoded = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encoded);
+    link.setAttribute("download","floatplan.csv");
+    document.body.appendChild(link);
+    link.click();
 
 });
 
@@ -935,6 +965,48 @@ $("#export-gpx").click(function() {
         
     });
     
+    var gpxContent = "data:xml;charset=utf-8,"+gpx;
+    var encoded = encodeURI(gpxContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encoded);
+    link.setAttribute("download","floatplan.gpx");
+    document.body.appendChild(link);
+    link.click();
+    
+});
+
+$("#export-raw").click(function(){
+    
+    $("#raw tbody").empty();
+    
+    var geoJson = floatPlanGroup.toGeoJSON();
+
+    floatPlanGroup.eachLayer(function(layer) {
+        var geoJson = layer.toGeoJSON();
+        var fLength = geoJson.features.length;
+        console.log(geoJson)
+        for (var i = 0; i < fLength; i++) {
+            props = geoJson.features[i].properties
+            var content = 
+                "<tr><td>" + props.pointName + 
+                "</td><td>" + props.streamMile + 
+                "</td><td>" + props.streamName + 
+                "</td><td>" + props.pointDesc+ 
+                "</td><td>" + getAmenities(props.amenities) + 
+                "</td><td>" + getSide(props.riverSide)[0] +
+                "</td><td>" + props.lat + 
+                "</td><td>" + props.long + 
+                "</td></tr>";
+            
+            $("#raw tbody").append(content);
+        }
+    });
+    
+    var raw = document.getElementById("raw");
+    rawWindow = window.open('');
+    rawWindow.document.write('<html"><head><title>Raw Data</title><link rel="stylesheet" type="text/css" href="css/raw.css"></head><body><p>')
+    rawWindow.document.write(raw.outerHTML);
+    rawWindow.document.write('</body></html>');
 });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

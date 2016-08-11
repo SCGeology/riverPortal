@@ -1,0 +1,12 @@
+#raw{
+    width:100%;
+    min-width:600px;
+    border-collapse:collapse;
+    max-width:1000px;
+    text-align: left;
+    margin:5px;
+}
+#raw td, #raw th {
+    padding:2px 4px;
+    border:1px solid #ddd;
+}
