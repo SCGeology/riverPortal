@@ -9,8 +9,19 @@ body {
 input[type="radio"], input[type="checkbox"] {
   margin: 0;
 }
-#sidebar {
+.no-adownload .export-limited {
+    display:none;
+}
+.adownload .export-limited{
     display:block;
+}
+#no-geolocation{display:none;}
+.no-geolocation #no-geolocation {
+    display:block;
+    color:#ff471a;
+}
+#sidebar {
+  display:block;
   width: 350px;
   height: 100%;
   max-width: 100%;
@@ -23,8 +34,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 #loading {
   position: absolute;
-  width: 220px;
-  height: 19px;
+  width: 200px;
+  height: 200px;
   top: 50%;
   left: 50%;
   margin: -10px 0 0 -110px;
@@ -37,25 +48,24 @@ input[type="radio"], input[type="checkbox"] {
   -webkit-box-shadow: none;
     box-shadow: none;
 }
+#float-header{line-height: 1.2em;}
 .panel-heading{
     width: 100%;
  }
  .panel-body{
    width: 100%;
  }
-#searchBox{display:none;}
+
 .hydrograph{
     width:99%;
     padding:1%;
 }
+.gage {background-color:#c6e4ff}
 #sidebar-hide-btn {
   margin-top: -2px;
 }
 #modal-footer {
   clear:both;
-}
-.progress-bar-full {
-  width: 100%;
 }
 .white {
   color: #FFFFFF;
@@ -72,7 +82,7 @@ input[type="radio"], input[type="checkbox"] {
 .sidebar-table {
   position: absolute;
   width: 100%;
-  top: 80px;
+  top: 38px;
   bottom: 0px;
   overflow: auto;
 }
@@ -83,16 +93,101 @@ input[type="radio"], input[type="checkbox"] {
   font-weight: normal;
   margin-bottom: 0px;
 }
-.leaflet-control-layers-list input[type="radio"], input[type="checkbox"] {
-  margin: 2px;
-}
 .table {
   margin-bottom: 0px;
 }
+
+#legendbtn-navbar{
+  float:right;
+}
+#dnrcredits {
+  margin:auto;
+  text-align: center;
+}
+#legend-text{
+    margin:0 1em;
+    width:60%;
+    float:left;
+}
+#legendBox {
+    width: 35%;
+    margin:10px auto;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    float:left;
+}
+#legendBox table{
+    border-color: #bbb;
+}
+#geocode-btn{
+    margin-bottom:10px;
+    margin-left:20px;
+}
+#plan-points {
+    border-collapse: separate;
+    border-spacing: 10px 5px;
+}
+#plan-points td {
+    height:30px;
+    border-radius:5px;
+    padding:0 5px;
+}
+#planStartText {background-color:#d9f2e6;}
+#planEndText {background-color:#ffd6cc;}
+#planStartStream, #planEndStream{background-color:#e6f7ff;}
+#planList {
+    margin:10px;
+    width:70%;
+}
+#planMiles {
+    width:100%;
+}
+
+#planMiles td, #planMiles th {
+    padding:4px;
+    font-size:1.2em;
+}
+.totals{color:#0099cc;}
+#planOptions {
+    width:82%;
+    margin:1em auto;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+#planOptions button {margin:5px;}
+.startSelected{
+    border:2px solid #00cc00;
+}
+.endSelected{
+    border:2px solid #ff3300;
+}
+#floatModal, #feedbackModal{
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#float-warning-st,#float-warning-en,#float-error-bw,#float-error-mult{
+    color:#ff471a;
+    text-decoration: underline;
+    display:none;
+    width:100%;
+    margin-top:10px;
+}
+#error-close{display:none;}
+#not-located{
+    color:#ff471a;
+    text-decoration: underline;
+    display:none;
+}
+#located{display:none;}
 #initial {
     padding:1em;
-    text-align: center;
     height:100%;
+}
+#initial h4{line-height: 1.6em;}
+#initial h4 span{
+    color:#0099cc;
+    font-weight: bold;
 }
 #panel-image {
     width:98%;
@@ -115,14 +210,55 @@ input[type="radio"], input[type="checkbox"] {
     width:100%;
     margin-bottom: 2em;
 }
+.map-btn {
+    background:none;
+    z-index: 1049;
+    right:10px;
+}
+#view-all {
+    position:absolute;
+    top:11px;
+}
+.light{
+    color:#FFF;
+    border-color:#FFF;
+}
+.light:hover {
+    color:#DDD;
+    background:none;
+}
+.dark{
+    color:#333;
+    border-color:#333;
+}
+.dark:hover {
+    color:#555;
+    background:none;
+}
+
+#view-connected {
+    position:absolute;
+    top:50px;
+    display:none;
+}
 #stream-name-fill{
     width:100%;
     height:1em;
 }
+#raw{
+    width:100%;
+    min-width:600px;
+    border-collapse:collapse;
+    max-width:1000px;
+    text-align: left;
+    margin:5px;
+}
+#raw td, #raw th {
+    padding:2px 4px;
+    border:1px solid #ddd;
+}
 .navbar {
-    background-color:darkcyan;
-    background-image:url(../images/rivban.jpg);
-    background-blend-mode:soft-light;
+    background-image:url(../images/navban.jpg);
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -146,41 +282,6 @@ input[type="radio"], input[type="checkbox"] {
 .navbar-header a.navbar-icon {
   margin-left: 25px;
 }
-.typeahead {
-  background-color: #FFFFFF;
-}
-.tt-dropdown-menu {
-  background-color: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px 4px 4px 4px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 4px;
-  padding: 4px 0;
-  width: 100%;
-  max-height: 300px;
-  overflow: auto;
-}
-.tt-suggestion {
-  font-size: 14px;
-  line-height: 20px;
-  padding: 3px 10px;
-}
-.tt-suggestion.tt-cursor {
-  background-color: #0097CF;
-  color: #FFFFFF;
-  cursor: pointer;
-}
-.tt-suggestion p {
-  margin: 0;
-}
-.tt-suggestion + .tt-suggestion {
-  border-top: 1px solid #ccc;
-}
-.typeahead-header {
-  margin: 0 5px 5px 5px;
-  padding: 3px 0;
-  border-bottom: 2px solid #333;
-}
 .has-feedback .form-control-feedback {
   position: absolute;
   top: 0;
@@ -196,10 +297,38 @@ input[type="radio"], input[type="checkbox"] {
     font-size: 18px;
   }
 }
+
 @media (max-width: 767px){
   #sidebar {
     display: none;
   }
+  #legendBox {
+    float:none;
+    width: 90%;
+  }
+    #legend-text{
+        width:auto;
+        margin:auto;
+    }
+  #credit-list{
+    padding-left: 5%;
+  }
+  #legendbtn-navbar{
+    float:none;
+  }
+  #instructPics {
+    width: 90%;
+  }
+    #planList {
+        width:95%;
+    }
+    #float-plan .btn{
+        display:block;
+        margin:5px auto;
+        width:144px;
+    }
+    #goToFloat{float:none;}
+}
   .url-break {
     word-break: break-all;
     word-break: break-word;
