@@ -123,6 +123,7 @@
                         <br>
                         <p id="located">Current Location Found. Enter search distance.</p>
                         <p id="not-located">Current location not found.</p>
+                        <p id="no-geolocation">Geolocation is not supported on your device or your web browser.</p>
                         <input type="text" class="form-control" name="addressBox" id="addressBox" placeholder="Address">
                         <br>
                         <input type="text" class="form-control" name="cityBox" id="cityBox" placeholder="City">
@@ -274,7 +275,7 @@
                         Please check your start and end points, and try again.
                     </div>
 
-                    <h4 id="float-header">This river trip covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s).</span></h4>
+                    <h4 id="float-header">This river trip starts at <span class="totals" id="starting"></span>, covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s),</span> and ends at <span class="totals" id="ending"></span>.</h4>
                     <div id="planList">
                         <table id="planMiles">
                         </table>
@@ -283,9 +284,9 @@
                 <div class="modal-footer">
                     <div id="planOptions">
                         <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-map">View Map</button>
-                        <button type="button" class="btn btn-success" data-dismiss="modal" id="export-csv">Export CSV</button>
-                        <button type="button" class="btn btn-warning" data-dismiss="modal" id="export-gpx">Export GPX</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-raw">Print Table</button>
+                        <button type="button" class="btn btn-success export-limited" data-dismiss="modal" id="export-csv">Export CSV</button>
+                        <button type="button" class="btn btn-warning export-limited" data-dismiss="modal" id="export-gpx">Export GPX</button>
                         <button type="button" class="btn btn-default view-all" data-dismiss="modal" id="start-over">Start Over</button>
                     </div>
                     <div id="error-close">
@@ -319,7 +320,7 @@
                     <span id="float-warning-en">Warning! The END point is not an access point or public land. There may not be river access at this location.</span>
                 </div>
                 <div class="modal-footer">
-                    <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
+                    <a role="button" class="btn btn-default feedback-btn" id="feature-feedback"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -529,6 +530,8 @@
     <!-- APPLICATION SCRIPT -->
     <script src="js/app.js"></script>
     <script src="js/connected.js"></script>
+    <!--CUSTOM MODERNIZR BUILD-->
+    <script src="js/modernizr.js"></script>
 
 </body>
 

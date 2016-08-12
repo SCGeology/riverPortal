@@ -9,7 +9,17 @@ body {
 input[type="radio"], input[type="checkbox"] {
   margin: 0;
 }
-
+.no-adownload .export-limited {
+    display:none;
+}
+.adownload .export-limited{
+    display:block;
+}
+#no-geolocation{display:none;}
+.no-geolocation #no-geolocation {
+    display:block;
+    color:#ff471a;
+}
 #sidebar {
   display:block;
   width: 350px;
@@ -38,6 +48,7 @@ input[type="radio"], input[type="checkbox"] {
   -webkit-box-shadow: none;
     box-shadow: none;
 }
+#float-header{line-height: 1.2em;}
 .panel-heading{
     width: 100%;
  }
@@ -49,6 +60,7 @@ input[type="radio"], input[type="checkbox"] {
     width:99%;
     padding:1%;
 }
+.gage {background-color:#c6e4ff}
 #sidebar-hide-btn {
   margin-top: -2px;
 }

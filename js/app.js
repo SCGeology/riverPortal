@@ -15,6 +15,10 @@ var spinner = new Spinner().spin(loadTarget);
 $(document).on("click", ".feature-row", function(e) {
     map.flyTo([$(this).attr("lat"), $(this).attr("lng")], 17);
     /* Hide sidebar and go to the map on small screens */
+    if ($(this).hasClass("gage")) {
+        var usgsurl = "http://waterdata.usgs.gov/nwis/uv?site_no="+$(this).attr("id");
+        window.open(usgsurl);
+    }
     if (document.body.clientWidth <= 767) {
         $("#sidebar").hide();
         map.invalidateSize();
@@ -101,9 +105,6 @@ $("#android-btn").click(function() {
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
 $(".view-all").click(function() {
     
-    $("#loading").show();
-    spinner.spin(loadTarget);
-    
     removeLayers([basemap, imagery, accessLayer, startEndGroup]);
 
     if (!(map.hasLayer(accessLayer))) {
@@ -130,9 +131,10 @@ $(".view-all").click(function() {
     $("#trail-names").val("Select a trail name...");
     $("#stream-title").html("Paddling the Palmetto State");
     $("#initial").show();
-    $("#view-connected").css("display","none");
+    //$("#view-connected").css("display","none");
 });
 
+/*
 $("#view-connected").click(function(){
     var filterWhere = accessLayer.getWhere();
     var posi = filterWhere.indexOf("=");
@@ -149,7 +151,7 @@ $("#view-connected").click(function(){
     }
     $(this).css("display","none");
     
-});
+});*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -176,16 +178,12 @@ function animateSidebar() {
     });
 }
 
-function syncSidebar(field, filter) {
-    // Empty sidebar features
-    $("#feature-list tbody").empty();
-    // Add features to side bar
-    accessLayer.eachFeature(function(layer) {
-        if (layer.feature.properties[field] === filter) {
-            $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-        }
-    });
+function syncSidebar(layer,filter) {
+        
+    $("#feature-list tbody").append('<tr class="feature-row ' +getType(layer.feature.properties.pointType)[2]+'" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + getGage(layer.feature.properties.pointType,layer.feature.properties.pointName) + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+
     $("#stream-title").html(filter);
+    
 }
 
 function removeLayers(keepLayers) {
@@ -196,7 +194,6 @@ function removeLayers(keepLayers) {
     });
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 //~~~~~~~~~~~~~~MAP SETUP~~~~~~~~~~~~~~~~~~~~~
 
@@ -235,11 +232,6 @@ function updateAttribution(e) {
 map.on("layeradd", updateAttribution);
 map.on("layerremove", updateAttribution);
 
-map.on('zoomend',function(){
-   spinner.stop();
-   $("#loading").hide();
-});
-
 var attributionControl = L.control({
     position: "bottomright"
 });
@@ -266,7 +258,7 @@ var pTypes = {
     8: ["Confluence", "conf.png"],
     9: ["Island", "island.png"],
     10: ["Reservoir", "lake.png"],
-    11: ["Stream Gage", "gage.png"]
+    11: ["Stream Gage", "gage.png","gage"]
 };
 
 var rSide = {
@@ -309,6 +301,13 @@ function getUrl(property) {
     return html
 }
 
+function getGage(type,name){
+    if (type == 11){
+        return "USGS STREAM GAGE"
+    } else {
+        return name
+    }
+}
 //unique values arrays
 var riverNames = []
 var trailNames = []
@@ -325,18 +324,33 @@ function featureModalContent(feature) {
         map.flyTo(ll, 14);
         $("#featureModal").modal("hide");
     });
+    
+    var mailto = "mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback&body=Feedback%20For%20Feature%20ID:%20"+feature.properties.pointID
+    $("#feature-feedback").attr("href",mailto);
 
     $("#feature-title").html(feature.properties.pointName + '&nbsp;&nbsp<img width="30" height="30" src="icons/' + getType(feature.properties.pointType)[1] + '">');
-
-    var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td><a href='#' id='zoom'>" + feature.properties.lat + ", " + feature.properties.long + "</a></td></tr>" + "<tr><th>Directions</th><td>" + "<a href='https://www.google.com/maps/dir//" + feature.properties.lat + "," + feature.properties.long + "' target='_blank'>" + "Google Maps" + "</a>" + "</td></tr>" + "<table>";
+    
+    var content = ""
+    
+    if (feature.properties.pointType == 11){
+        
+        $("#float-plan").css("display","none");
+        
+        content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'> USGS Stream Gage </td></tr>" + "<tr><td colspan='2'><a href='"+feature.properties.linkURL + "' target='_blank'>USGS Data Page</a></td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Coordinates</th><td><a href='#' id='zoom'>" + feature.properties.lat + ", " + feature.properties.long + "</a></td></tr><table>";
+        
+    } else {
+        
+        content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><td colspan='2'>" + feature.properties.streamName + "</td></tr>" + "<tr><td colspan='2'>" + feature.properties.pointDesc + "</td></tr>" + "<tr><td colspan='2'>" + getAmenities(feature.properties.amenities) + "</td></tr>" + "<tr><td colspan='2'>" + getUrl(feature.properties.linkURL) + "</td></tr>" + "<tr><th>Stream Mile</th><td>" + feature.properties.streamMile + "</td></tr>" + "<tr><th>Side of River</th><td>" + getSide(feature.properties.riverSide)[0] + "</td></tr>" + "<tr><th>Coordinates</th><td><a href='#' id='zoom'>" + feature.properties.lat + ", " + feature.properties.long + "</a></td></tr>" + "<tr><th>Directions</th><td>" + "<a href='https://www.google.com/maps/dir//" + feature.properties.lat + "," + feature.properties.long + "' target='_blank'>" + "Google Maps" + "</a>" + "</td></tr>" + "<table>";    
+        
+        if (floatPlanActive == true) {
+            $("#float-plan").css("display", "none");
+        } else {
+            $("#float-plan").css("display", "block");
+        }
+    }
 
     $("#feature-info").html(content);
 
-    if (floatPlanActive == true) {
-        $("#float-plan").css("display", "none");
-    } else {
-        $("#float-plan").css("display", "block");
-    }
 }
 
 function makePointToLayer(geojson, latlng) {
@@ -391,9 +405,12 @@ var accessLayer = L.esri.featureLayer({
 //~~~~~~~~~~~FIND A RIVER MODAL~~~~~~~~~~~~~~~~~~~~~~~~
 
 //once original data loads, get unique value names for river dropdown lists.
+
 accessLayer.on("load", function() {
+    
     spinner.stop();
     $("#loading").hide();
+    
     for (var i = 0; i < riverNames.length; i++) {
         val = riverNames.sort()[i];
         $("#stream-names").append('<option value="' + val + '">' + val + '</option>');
@@ -410,7 +427,9 @@ accessLayer.on("load", function() {
             $("#scenic-names").append('<option value="' + val + '">' + val + '</option>');
         }
     }
+    
     accessLayer.off("load");
+
 });
 
 //get stream from options, run filter, display results
@@ -421,57 +440,68 @@ $(".filter-btn").click(function(evt) {
         //reset the other boxes selection
         $("#scenic-names").val("Select a Scenic River...");
         $("#trail-names").val("Select a trail name...");
-        $("#view-connected").css("display","block");
+        //$("#view-connected").css("display","block");
     } else if (this.id == "getTrail") {
         var field = "waterTrail_Name"
         var filter = $("#trail-names").val();
         //reset the other boxes selection
         $("#stream-names").val("Select a river name...");
         $("#scenic-names").val("Select a Scenic River...");
-        $("#view-connected").css("display","none");
+        //$("#view-connected").css("display","none");
     } else if (this.id == "getScenic") {
         var field = "scenic_River"
         var filter = $("#scenic-names").val();
         //reset the other boxes selection
         $("#stream-names").val("Select a river name...");
         $("#trail-names").val("Select a trail name...");
-        $("#view-connected").css("display","none");
+        //$("#view-connected").css("display","none");
     }
 
     var expression = field + "='" + filter + "'"
 
     $("#initial").hide();
-
+    $("#feature-list tbody").empty();
+    
     //clear layers and remove float plain points, if exist
-    removeLayers([basemap, imagery, accessLayer, startEndGroup]);
+    removeLayers([basemap, imagery, startEndGroup]);
     $(".floatTable").remove();
-    //make sure that accessLayer is added to map, or setWhere filter can't happen
-    if (!(map.hasLayer(accessLayer))) {
-        map.addLayer(accessLayer);
-    }
     
-    //CONSIDER DOING A QUERY INSTEAD OF SET WHERE FILTER....
-    
-    accessLayer.setWhere(expression, function() {
-        syncSidebar(field, filter);
-    });
-
     accessLayer.query()
         .where(expression)
-        .bounds(function(error, latlngbounds) {
-            map.flyToBounds(latlngbounds, {
-                padding: zoomPadding
-            });
+        .orderBy("streamName")
+        .run(function(error,fc,response){
+            var filterLayer = L.geoJson(fc, {
+                pointToLayer: makePointToLayer,
+                onEachFeature: function(feature, layer) {
+                        if (feature.properties) {
+
+                            layer.on({
+                                click: function(e) {
+                                    featureModalContent(feature);
+                                    $("#featureModal").modal("show");
+                                    defineFloatPoints(layer);
+                                }
+                            });
+                        }
+                        syncSidebar(layer, filter);
+                    }
+                }).addTo(map);
+        
+                map.flyToBounds(filterLayer.getBounds(), {
+                    padding: zoomPadding
+                });
         });
 });
+             
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 //~~~~~~~~~~~~NEAR MODAL - GEOLOCATION AND QUERY~~~~~~~~
+//modernizr tests to see if supported, if not, button disabled
 
 function syncSidebarGeo(layer, text) {
 
-    $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+    $("#feature-list tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + getGage(layer.feature.properties.pointType,layer.feature.properties.pointName) + '</td><td class="stream-name">' + layer.feature.properties.streamName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     $("#stream-title").html("Search distance: " + $("#distanceBox").val() + " miles.");
 }
@@ -581,9 +611,6 @@ $("#locate-btn").click(function() {
 });
 
 function geocodeLatLng() {
-    
-    $("#loading").show();
-    spinner.spin(loadTarget);
 
     if (locateOn === false){
 
@@ -640,6 +667,7 @@ var endCircle = L.circleMarker([0, 0], {
 });
 
 $("#planStart").click(function() {
+    starting = planName
     $("#planStartText").html(planName)
     startID = planID
     startMile = planMiles
@@ -661,6 +689,7 @@ $("#planStart").click(function() {
 });
 
 $("#planEnd").click(function() {
+    ending = planName
     $("#planEndText").html(planName)
     endID = planID
     endMile = planMiles
@@ -699,7 +728,7 @@ function syncSidebarFloat(layer, index) {
 
     var $tableID = $("#feature-list" + index.toString());
 
-    $tableID.find("tbody").append('<tr class="feature-row" id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + layer.feature.properties.pointName + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+    $tableID.find("tbody").append('<tr class="feature-row ' +getType(layer.feature.properties.pointType)[2]+' id="' + layer.feature.properties.pointID + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="icons/' + getType(layer.feature.properties.pointType)[1] + '"></td><td class="point-name">' + getGage(layer.feature.properties.pointType,layer.feature.properties.pointName) + '</td><td class="stream-mile">' + layer.feature.properties.streamMile + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     $("#stream-title").html("Float Plan");
 
@@ -743,6 +772,8 @@ function floatPlanQuery(list) {
 
         }
 
+        $("#starting").text(starting);
+        $("#ending").text(ending);
         $("#totalMiles").text(totalMiles.toString());
         $("#totalRivers").text(list.length);
         floatPlanGroup.addTo(map);
@@ -840,9 +871,6 @@ function getPoints(mileA, mileB, streamName, index) {
 }
 
 $("#generate-plan").click(function() {
-    
-    $("#loading").show();
-    spinner.spin(loadTarget);
     
     floatPlanGroup.clearLayers();
 
