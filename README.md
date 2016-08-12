@@ -15,14 +15,20 @@ Also using [ESRI Leaflet](https://esri.github.io/esri-leaflet/) to access data h
 
 Laeflet version is 1.0.
 
+Makes use of other libraries for other tasks, include PapaParse to parse json to csv, togpx for parsing json to GPX, mondernizr to check for feature support, jQuery for jQuery stuff, and Mapbox Studio to design basemap. 
+
 The backbone of the application is the streamMiles field in the river access database. Each point is assigned a stream mile (starting from 0 at the mouth working upstream). Users can easily calculate the distance between access points and points of interest. This also allows for proper sorting of points and networking between streams when using the float plan tool. 
 
 ### Data sources:
 
 First and foremost, Tom's Paddling South Carolina Rivers KML file [LINK](http://randomconnections.com/paddling-south-carolinas-rivers/)
-SCDNR River Stewardship program Scenic Rivers and SCDNR GIS data 
-SC Trails Website [LINK](http://sctrails.net/trails/) 
+
+SCDNR River Stewardship program Scenic Rivers and SCDNR GIS data
+
+SC Trails Website [LINK](http://sctrails.net/trails/)
+
 American Whitewater [LINK](https://www.americanwhitewater.org/content/River/state-summary/state/SC/)
+
 Plus all kinds of other sources that could include:
 - utility company websites (for information on dams)
 - Local paddling clubs and association websites
