@@ -146,7 +146,7 @@ $(".view-all").click(function() {
 
 $("#view-points").click(function(){
     if ($(this).hasClass("access")){
-        accessLayer.setWhere("pointType IN (1,2,3,4,5,6,7,8,9,10,11)");
+        accessLayer.setWhere(allWhere);
         $(this).text("View Only Access");
         $(this).toggleClass("all access");
     } else {
@@ -157,9 +157,9 @@ $("#view-points").click(function(){
     $(this).blur();
 });
     
-/*
-$("#view-connect").click(function(){
-    
+
+/*$("#view-connect").click(function(){
+
 });*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -323,6 +323,7 @@ var trailNames = []
 var scenicNames = []
 
 var fullWhere = "pointType IN (1,2,5)"
+var allWhere = "pointType IN (1,2,3,4,5,6,7,8,9,10,11)"
 
 //Reusable functions to build geojson from data returned from esri
 
@@ -483,7 +484,7 @@ $(".filter-btn").click(function(evt) {
     accessLayer.query()
         .where(expression)
         .run(function(error,fc,response){
-            var filterLayer = L.geoJson(fc, {
+            filterLayer = L.geoJson(fc, {
                 pointToLayer: makePointToLayer,
                 onEachFeature: function(feature, layer) {
                         if (feature.properties) {
@@ -524,9 +525,15 @@ $("#stateBox").val("South Carolina")
 function queryLatLng(latlng, text) {
     
     var distance = Number($("#distanceBox").val()) * 1609.34
-
+    
+    if ($("#check").is(':checked')) {
+        var where = allWhere
+    } else {
+        var where = fullWhere
+    }
+    
     accessLayer.query()
-        .where("pointType IN (1,2,5)")
+        .where(where)
         .nearby(latlng, distance)
         .orderBy("streamName")
         .run(function(error, fc, response) {
@@ -573,13 +580,6 @@ var geolatlng
 
 var locateOn = false;
 
-function locateUser(){
-     map.locate({
-        setView: true,
-        maxZoom: 14
-    });
-}
-
 map.on('locationfound',function(e) {
     
     $("#located").show();
@@ -590,12 +590,6 @@ map.on('locationfound',function(e) {
     
     geolatlng = e.latlng
     
-    locateMarker = L.circleMarker(geolatlng,{
-        fillColor:"#0066ff",
-        color:"#000099",
-        fillOpacity:0.7,
-        radius:8
-    }).addTo(map);
 });
 
 map.on('locationerror', function(){
@@ -604,6 +598,7 @@ map.on('locationerror', function(){
 
 var lc = L.control.locate({
     position: 'bottomright',
+    icon: 'fa fa-location-arrow',
     strings: {
         title: "Current Location"
     }
@@ -618,20 +613,13 @@ $("#legend-btn").click(function() {
 
 $("#locate-btn").click(function() {
     if (locateOn == false){
-        
-        locateUser();
-        
+        lc.start();
         locateOn = true;
-        
     } else {
-        
+        lc.stop();
         locateOn = false;
-        
-        map.removeLayer(locateMarker);
-        
         $("#located").hide();
         $("#not-located").hide();
-        
         $("#addressBox, #cityBox, #stateBox").removeAttr("readOnly","");
         $("#locate-btn").css("background-color","#fff");
     }

@@ -55,7 +55,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;List</a></li>
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;Sidebar</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="near-btn"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;Access Near You</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a River </a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map"></i>&nbsp;&nbsp;Float Plan</a></li>
@@ -130,10 +130,12 @@
                         <br>
                         <label for="distanceBox">How far to search?</label>
                         <input type="text" class="form-control" name="distanceBox" id="distanceBox" placeholder="Miles...">
-                        <br>
                     </form>
-                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
-                    <p style="width:75%;">The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
+                    <div id="submit">
+                        <div id="all-checkbox" style="float:left;"><label><input id="check" type="checkbox" value=""> Return All Points</label></div>
+                        <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
+                        <p id="returned">The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. <strong>'Return All Points' will return all categories.</strong></p>
+                    </div>    
                 </div>
                 <div class="modal-footer">
                     <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
