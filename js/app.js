@@ -90,16 +90,21 @@ $("#legend-btn").click(function() {
     $(".navbar-collapse.in").collapse("hide");
     return false;
 });
+$("#view-list").click(function(){
+    animateSidebar();
+});
 
 //DEVICE HOME SCREEN INSTRUCTIONS
 $("#ios-btn").click(function() {
-  $('#ios').show();
-  $('#android').hide();
+    if ($("#instruct-android").hasClass("in")) {
+        $("#instruct-android").removeClass("in");
+    }
 });
 
 $("#android-btn").click(function() {
-  $('#android').show();
-  $('#ios').hide();
+    if ($("#instruct-ios").hasClass("in")) {
+        $("#instruct-ios").removeClass("in");
+    }
 });
 
 //CLEAR WHERE STATEMENTS AND SHOW ALL RIVERS, ZOOM TO FULL STATE VIEW
@@ -123,7 +128,9 @@ $(".view-all").click(function() {
             padding: zoomPadding
         });
     });
-
+    
+    $("#view-points").text("View All Points").removeClass("all").show();
+    
     //NEED TO PUT THE DEFAULT STUFF BACK IN THE PANEL AND CLEAR THE LIST OF ITEMS
     $("#feature-list tbody").empty();
     $("#stream-names").val("Select a river name...");
@@ -131,26 +138,28 @@ $(".view-all").click(function() {
     $("#trail-names").val("Select a trail name...");
     $("#stream-title").html("Paddling the Palmetto State");
     $("#initial").show();
-    //$("#view-connected").css("display","none");
+    $("#view-connect").css("display","none");
+    
+    $(this).blur();
 });
 
-/*
-$("#view-connected").click(function(){
-    var filterWhere = accessLayer.getWhere();
-    var posi = filterWhere.indexOf("=");
-    var filterStream = filterWhere.substr(posi+2,filterWhere.length-(posi+3));
-    
-    for (var i=0;i<connected.length;i++){
-        if (connected[i].streamName == filterStream){
-            var list = connected[i].connectedStream.split(",");
-            list.push(filterStream);
-            var expression = "streamName IN ('"+list.join("','")+"')"
-            console.log(expression);
-            accessLayer.setWhere(expression);
-        }
+
+$("#view-points").click(function(){
+    if ($(this).hasClass("access")){
+        accessLayer.setWhere(allWhere);
+        $(this).text("View Only Access");
+        $(this).toggleClass("all access");
+    } else {
+        accessLayer.setWhere(fullWhere);
+        $(this).text("View All Points");
+        $(this).toggleClass("all access");
     }
-    $(this).css("display","none");
+    $(this).blur();
+});
     
+
+/*$("#view-connect").click(function(){
+
 });*/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -314,6 +323,7 @@ var trailNames = []
 var scenicNames = []
 
 var fullWhere = "pointType IN (1,2,5)"
+var allWhere = "pointType IN (1,2,3,4,5,6,7,8,9,10,11)"
 
 //Reusable functions to build geojson from data returned from esri
 
@@ -373,10 +383,14 @@ function defineFloatPoints(layer) {
     coords = [layer.feature.geometry.coordinates[1], layer.feature.geometry.coordinates[0]]
 }
 
-//original data layer
+//original data layer - esri feature layer
 var accessLayer = L.esri.featureLayer({
     url: access,
-    where: fullWhere,
+    where:fullWhere,
+//these options possibly improve performance    
+    precision:5,
+    renderer:L.canvas,
+//---------------------------    
     pointToLayer: makePointToLayer,
     onEachFeature: function(feature, layer) {
         if ($.inArray(feature.properties.streamName, riverNames) === -1) {
@@ -440,27 +454,28 @@ $(".filter-btn").click(function(evt) {
         //reset the other boxes selection
         $("#scenic-names").val("Select a Scenic River...");
         $("#trail-names").val("Select a trail name...");
-        //$("#view-connected").css("display","block");
+        $("#view-connect").show();;
     } else if (this.id == "getTrail") {
         var field = "waterTrail_Name"
         var filter = $("#trail-names").val();
         //reset the other boxes selection
         $("#stream-names").val("Select a river name...");
         $("#scenic-names").val("Select a Scenic River...");
-        //$("#view-connected").css("display","none");
+        $("#view-connect").hide();
     } else if (this.id == "getScenic") {
         var field = "scenic_River"
         var filter = $("#scenic-names").val();
         //reset the other boxes selection
         $("#stream-names").val("Select a river name...");
         $("#trail-names").val("Select a trail name...");
-        //$("#view-connected").css("display","none");
+        $("#view-connect").hide();
     }
 
     var expression = field + "='" + filter + "'"
 
     $("#initial").hide();
     $("#feature-list tbody").empty();
+    $("#view-points").hide();
     
     //clear layers and remove float plain points, if exist
     removeLayers([basemap, imagery, startEndGroup]);
@@ -468,9 +483,8 @@ $(".filter-btn").click(function(evt) {
     
     accessLayer.query()
         .where(expression)
-        .orderBy("streamName")
         .run(function(error,fc,response){
-            var filterLayer = L.geoJson(fc, {
+            filterLayer = L.geoJson(fc, {
                 pointToLayer: makePointToLayer,
                 onEachFeature: function(feature, layer) {
                         if (feature.properties) {
@@ -511,14 +525,21 @@ $("#stateBox").val("South Carolina")
 function queryLatLng(latlng, text) {
     
     var distance = Number($("#distanceBox").val()) * 1609.34
-
+    
+    if ($("#check").is(':checked')) {
+        var where = allWhere
+    } else {
+        var where = fullWhere
+    }
+    
     accessLayer.query()
-        .where("pointType IN (1,2,5)")
+        .where(where)
         .nearby(latlng, distance)
         .orderBy("streamName")
         .run(function(error, fc, response) {
             if (fc.features.length == 0) {
-                alert("No results were found. Please enter a valid address or increase your search distance.")
+               $("#no-results").show();
+               $("#errorModal").modal("show");
             } else {
 
                 //remove layers and clear the side table of float plan points if it exists.
@@ -557,15 +578,7 @@ function queryLatLng(latlng, text) {
 
 var geolatlng
 
-//GEOLOCATOR BUTTON - POPULATE FIELDS FOR QUERY---
 var locateOn = false;
-
-function locateUser(){
-     map.locate({
-        setView: true,
-        maxZoom: 14
-    });
-}
 
 map.on('locationfound',function(e) {
     
@@ -577,12 +590,6 @@ map.on('locationfound',function(e) {
     
     geolatlng = e.latlng
     
-    locateMarker = L.circleMarker(geolatlng,{
-        fillColor:"#0066ff",
-        color:"#000099",
-        fillOpacity:0.7,
-        radius:8
-    }).addTo(map);
 });
 
 map.on('locationerror', function(){
@@ -591,6 +598,7 @@ map.on('locationerror', function(){
 
 var lc = L.control.locate({
     position: 'bottomright',
+    icon: 'fa fa-location-arrow',
     strings: {
         title: "Current Location"
     }
@@ -605,20 +613,13 @@ $("#legend-btn").click(function() {
 
 $("#locate-btn").click(function() {
     if (locateOn == false){
-        
-        locateUser();
-        
+        lc.start();
         locateOn = true;
-        
     } else {
-        
+        lc.stop();
         locateOn = false;
-        
-        map.removeLayer(locateMarker);
-        
         $("#located").hide();
         $("#not-located").hide();
-        
         $("#addressBox, #cityBox, #stateBox").removeAttr("readOnly","");
         $("#locate-btn").css("background-color","#fff");
     }
@@ -626,6 +627,8 @@ $("#locate-btn").click(function() {
 
 function geocodeLatLng() {
 
+    $("#view-points").hide();
+    
     if (locateOn === false){
 
         var address = $("#addressBox").val()
@@ -636,7 +639,6 @@ function geocodeLatLng() {
             .city(city)
             .region(state)
             .run(function(err, address, response) {
-
                 var lat = address.results[0].latlng.lat
                 var lng = address.results[0].latlng.lng
                 var text = address.results[0].text
@@ -799,10 +801,9 @@ function floatPlanQuery(list) {
 
         if (lastEntry["startMiles"] === 0 & lastEntry["endMiles"] === 0) {
 
-            $("#float-error-mult").css("display", "block");
-            $("#float-header").hide();
-            $("#planOptions").hide();
-            $("#error-close").show();
+            $("#float-error-mult").show();
+            $("#errorModal").modal("show");
+            $("#floatResultModal").modal("hide");
 
         } else {
 
@@ -890,7 +891,8 @@ $("#generate-plan").click(function() {
 
     if ($("#planStartText").text() == "No start point selected..." || $("#planEndText").text() == "No end point selected...") {
 
-        alert("Select a start and end point by clicking on access points on the map.")
+        $("#select-points").show();
+        $("#errorModal").modal("show");
 
     } else {
 
@@ -899,10 +901,9 @@ $("#generate-plan").click(function() {
             //if the start mile is less than end mile on two points of the same stream, give error     
             if (startMile < endMile) {
 
-                $("#float-error-bw").css("display", "block");
-                $("#float-header").hide();
-                $("#planOptions").hide();
-                $("#error-close").show();
+                $("#float-error-bw").show();
+                $("#errorModal").modal("show");
+                $("#floatResultModal").modal("hide");
 
             } else {
 
@@ -919,7 +920,7 @@ $("#generate-plan").click(function() {
                     "stream": startStream,
                     "startMiles": startMile,
                     "endMiles": endMile
-                })
+                });
 
                 floatPlanQuery(streamMilesArray);
             }
@@ -941,6 +942,7 @@ $("#generate-plan").click(function() {
         //open float plan results modal
         $("#floatModal").modal("hide");
         $("#floatResultModal").modal("show");
+        $("#view-points").hide();
 
     }
 

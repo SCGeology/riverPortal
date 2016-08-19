@@ -125,15 +125,15 @@ var connected = [
   },
   {
     "streamName": "North Santee River",
-    "connectedStream": "Santee River,Congaree River,Echaw Creek"
+    "connectedStream": "Santee River, Congaree River,Echaw Creek"
   },
   {
     "streamName": "North Tyger River",
-    "connectedStream": "South Tyger River,Tyger River,Broad River,Enoree River,Lawsons Fork Creek,Congaree River,Santee River,North Santee River,Pacolet River"
+    "connectedStream": "South Tyger River,Tyger River,Broad River,Enoree River,Lawsons Fork Creek, Congaree River,Santee River,North Santee River,Pacolet River"
   },
   {
     "streamName": "Pacolet River",
-    "connectedStream": "South Tyger River,Tyger River,Broad River,Enoree River,Lawsons Fork Creek,Congaree River,Santee River,North Santee River"
+    "connectedStream": "South Tyger River,Tyger River,Broad River,Enoree River,Lawsons Fork Creek, Congaree River,Santee River,North Santee River"
   },
   {
     "streamName": "Peters Creek",
@@ -173,7 +173,7 @@ var connected = [
   },
   {
     "streamName": "South Tyger River",
-    "connectedStream": "Tyger River,Broad River,Enoree River,Lawsons Fork Creek,Congaree River,Santee River,North Santee River,Pacolet River"
+    "connectedStream": "Tyger River,Broad River,Enoree River,Lawsons Fork Creek, Congaree River,Santee River,North Santee River,Pacolet River"
   },
   {
     "streamName": "Stevens Creek",
@@ -181,11 +181,11 @@ var connected = [
   },
   {
     "streamName": "Twelvemile Creek",
-    "connectedStream": "<Null>"
+    "connectedStream": ""
   },
   {
     "streamName": "Tyger River",
-    "connectedStream": "Broad River,Enoree River,Lawsons Fork Creek,Congaree River,Santee River,North Santee River,Pacolet River,South Tyger River,North Tyger River"
+    "connectedStream": "Broad River,Enoree River,Lawsons Fork Creek, Congaree River,Santee River,North Santee River,Pacolet River,South Tyger River, North Tyger River"
   },
   {
     "streamName": "Waccamaw River",

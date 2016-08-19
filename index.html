@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="no">
+    <meta name="apple-mobile-web-app-capable" content="no">
     <meta name="theme-color" content="#000000">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,11 +51,11 @@
                     <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-search fa-lg white"></i></a>
                     <a href="#" class="navbar-icon pull-left visible-xs" id="sidebar-toggle-btn"><i class="fa fa-bars fa-lg white"></i></a>
                 </div>
-                <a class="navbar-brand" href="">SC Rivers</a>
+                <a class="navbar-brand" href="#">SC Rivers</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;List</a></li>
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;Sidebar</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="near-btn"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;Access Near You</a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="trail-btn"><i class="fa fa-map-signs"></i>&nbsp;&nbsp;Find a River </a></li>
                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="float-btn"><i class="fa fa-map"></i>&nbsp;&nbsp;Float Plan</a></li>
@@ -80,20 +80,16 @@
                         <table class="table table-hover" id="feature-list">
                             <thead class="hidden">
                                 <tr>
-                                    <th>Icon</th>
-                                    <tr>
-                                        <tr>
-                                            <th>Name</th>
-                                            <tr>
-                                                <tr>
-                                                    <th>Chevron</th>
-                                                    <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Mile</th>
+                                    <th></th>
                             </thead>
                             <tbody class="list">
                             </tbody>
                         </table>
                         <div id="initial">
-                            <img id="panel-image" src="images/appstartup.png" alt="lynches river" />
+                            <img id="panel-image" src="images/appstartup320_460.png" alt="lynches river" />
                             <h4>More than <span>500</span> public river access locations on <span>56 rivers</span> covering <span>2,700 miles</span> of water!
                             <br><br>
                             The average distance to a public river access from <em>anywhere in South Carolina</em> is only <span>5 miles!</span> Find a river, and explore! </h4>
@@ -103,8 +99,9 @@
             </div>
         </div>
         <div id="map">
-            <button type="button" id="view-all" class="map-btn btn btn-default view-all dark">View All Rivers</button>
-            <button type="button" id="view-connected" class="map-btn btn btn-default dark">View Connected Rivers</button>
+            <button type="button" id="view-all" class="map-btn btn btn-default view-all dark">Reset Map</button>
+            <button type="button" id="view-points" class="map-btn btn btn-default dark access">Show All Points</button>
+            <button type="button" id="view-connect" class="map-btn btn btn-default dark access">Show Connected</button>
         </div>
     </div>
 
@@ -133,10 +130,12 @@
                         <br>
                         <label for="distanceBox">How far to search?</label>
                         <input type="text" class="form-control" name="distanceBox" id="distanceBox" placeholder="Miles...">
-                        <br>
                     </form>
-                    <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
-                    <p style="width:75%;">The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. </p>
+                    <div id="submit">
+                        <div id="all-checkbox" style="float:left;"><label><input id="check" type="checkbox" value=""> Return All Points</label></div>
+                        <button type="button" class="btn btn-primary right-btn" data-dismiss="modal" id="geocode-btn">Search</button>
+                        <p id="returned">The results of this search are Boat Ramps <img width="20" height="20" src="icons/ramp.svg"> , Canoe/Kayak Access <img width="20" height="20" src="icons/canoe.svg"> and Public Lands <img width="20" height="20" src="icons/pub.svg"> access points. <strong>'Return All Points' will return all categories.</strong></p>
+                    </div>    
                 </div>
                 <div class="modal-footer">
                     <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
@@ -210,18 +209,20 @@
                 <div class="modal-body planPoints">
                     <h4>Find out what you'll encounter along the river!</h4>
                     <p>With the Float Plan tool, you'll create a list of connected points so you can plan your trip. </p>
-                    <h4>A few hints:</h4>
-                    <ul>
-                        <li>Scout out river access with other tools in the app.</li>
-                        <li>Choose points from one or more <b>connected</b> rivers by clicking the icons in the map.</li>
-                        <li>Review your points below - Make sure the <b>Start point is upstream of the End point.</b></li>
-                    </ul>
-                    <h4>What can you do with the Float Plan?</h4>
-                    <ul>
-                        <li>View the points and the list on the map in upstream to downstream order.</li>
-                        <li>Find the distance between points of interest.</li>
-                        <li>Export the data to CSV, GPX, or Print.</li>
-                    </ul>
+                    <h4><a role="button" data-toggle="collapse" href="#hints" style="text-decoration:underline;" aria-expanded="false">A few hints...</a></h4>
+                    <div id="hints" class="collapse">
+                        <ul>
+                            <li>Scout out river access with other tools in the app.</li>
+                            <li>Choose points from one or more <b>connected</b> rivers by clicking the icons in the map.</li>
+                            <li>Review your points below - Make sure the <b>Start point is upstream of the End point.</b></li>
+                        </ul>
+                        <h4>What can you do with the Float Plan?</h4>
+                        <ul>
+                            <li>Map all the points of interest between your start and end point.</li>
+                            <li>Use the upstream-to-downstream list to estimate distances and travel time.</li>
+                            <li>Export the results to CSV, GPX (for your GPS device), or for printing.</li>
+                        </ul>
+                    </div>
                     <br>
                     <table id="plan-points">
                         <tr>
@@ -265,17 +266,6 @@
                     <h3 class="modal-title">Float Plan</h3>
                 </div>
                 <div class="modal-body">
-                    <span id="float-error-bw">Error: The Start point is downstream of the End point. Select points in upstream to downstream order.</span>
-                    <div id="float-error-mult">Error: Float Plan could not be created.
-                        <br>
-                        <br>
-                        <ul>
-                            <li>The Start and End points you selected are not connected, OR</li>
-                            <li>The Start point is downstream of the End point on a connected river.</li>
-                        </ul>
-                        Please check your start and end points, and try again.
-                    </div>
-
                     <h4 id="float-header">This river trip starts at <span class="totals" id="starting"></span>, covers <span class="totals"><span id="totalMiles"></span> miles</span> over <span class="totals"><span id="totalRivers"></span> river(s),</span> and ends at <span class="totals" id="ending"></span>.</h4>
                     <div id="planList">
                         <table id="planMiles">
@@ -285,6 +275,7 @@
                 <div class="modal-footer">
                     <div id="planOptions">
                         <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-map">View Map</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="view-list">View List</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal" id="export-raw">Print Table</button>
                         <button type="button" class="btn btn-success export-limited" data-dismiss="modal" id="export-csv">Export CSV</button>
                         <button type="button" class="btn btn-warning export-limited" data-dismiss="modal" id="export-gpx">Export GPX</button>
@@ -317,31 +308,12 @@
                     <button type="button" class="btn btn-default" id="planStart">Make Start Point</button>
                     <button type="button" class="btn btn-default" id="planEnd">Make End Point</button>
                     <button type="button" class="btn btn-default right-btn" data-dismiss="modal" id="goToFloat">Float Plan Window</button>
-                    <span id="float-warning-st">Warning! The START point is not an access point or public land. There may not be river access at this location.</span>
-                    <span id="float-warning-en">Warning! The END point is not an access point or public land. There may not be river access at this location.</span>
+                    <span class="error" id="float-warning-st">Warning! The START point is not an access point or public land. There may not be river access at this location.</span>
+                    <span class="error" id="float-warning-en">Warning! The END point is not an access point or public land. There may not be river access at this location.</span>
                 </div>
                 <div class="modal-footer">
                     <a role="button" class="btn btn-default feedback-btn" id="feature-feedback"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
-    <div class="modal fade" id="attributionModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">
-              Template by <a href='http://bryanmcbride.com'>bryanmcbride.com</a>
-            </h4>
-                </div>
-                <div class="modal-body">
-                    <div id="attribution"></div>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -429,45 +401,48 @@
                         </div>
                     </div>
                     <div style="clear:both;">
-                        <h5><strong>Credits</strong></h5>
-                        <p> Add Credits here or move them into a different modal? </p>
-                        <p><strong>Contact us:</strong></p>
-                        <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback" role="button" class="btn btn-default feedback-btn"><i class="fa fa-comment black"></i>&nbsp;&nbsp;Comments/Questions</a>
-                        <br>
-                        <br>
-                        <p>Tanner Arrington
-                            <br> LWC GIS Manager
+                        <div id="credits">
+                            <h4>Credits and More Paddling Resources</h4>
+                            <p>This application was made possible with information from many sources and help from many different folks. It is just one of many resources for paddlers in South Carolina. SCDNR has published <a href="http://www.dnr.sc.gov/water/river/pdf/GuidesandMapsforSCRiversJun2016.pdf" target="_blank">a list of other resources</a> that includes guides and guidebooks, maps, and web links. The <a href="http://www.paddlesouthcarolina.org/">SC Paddlesports Industry Association</a> includes members like outfitters, retailers, clubs and non-profits involved in paddlesports business and recreation.</li></p>
+                            <p>A great source of geographic information gleaned for this project comes from the <a href="http://randomconnections.com/paddling-south-carolinas-rivers/" target="_blank">Random Connections blog</a>, where many of locations were recorded as a KML file for use in Google Earth. This blog post also includes a long list of book and online resources.</p>
+                            <p>There are two statewide paddling guidebooks for South Carolina. <a href="http://www.sandlapperpublishing.com/paddling_south_carolina.htm" target="_blank">Paddling South Carolina - A Guide to Palmetto State River Trails</a> - revised in 2001, this book by Gene Able and Jack Horan, published by Sandlapper Publishing, Inc. is a comprehensive guide to paddling most of the state's rivers. It’s available at many bookstores and libraries. <a href="http://www.pocosinpress.com/indexSC.htm" target="_blank">Canoe Kayak South Carolina - A Guide to Paddling the Palmetto State</a> - published in 2014 by Pocosin Press, this book is another comprehensive guide to rivers of South Carolina. The website includes a file of Google Earth Placemarks (KML). 
+                            </p>
+                            <p>Visit this project's github page for more information on software sources and licensing.</p>
+                        </div>
+                        <div id="contact">
+                            <h5><strong>Contact us</strong></h5>
+                            <p>Tanner Arrington
+                                <br> LWC GIS Manager
+                                <br>
+                                <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">arringtont@dnr.sc.gov</a></p>
+                            <p>Bill Marshall
+                                <br> Scenic Rivers Program Manager
+                                <br>
+                                <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">marshallb@dnr.sc.gov</a></p>
+                        </div>
+                        <div id="mobile">
+                            <h5><strong>Add this Application to your Mobile Device Home Screen</strong></h5>
+                            <button type="button" data-toggle="collapse" class="btn btn-default" id="ios-btn" data-target="#instruct-ios">Apple iOS</button>&nbsp;
+                            <button type="button" data-toggle="collapse" class="btn btn-default" id="android-btn" data-target="#instruct-android">Android OS</button>
                             <br>
-                            <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">arringtont@dnr.sc.gov</a></p>
-                        <p>Bill Marshall
-                            <br> Scenic Rivers Program Manager
                             <br>
-                            <a href="mailto:arringtont@dnr.sc.gov?Subject=River%20App%20Feedback">marshallb@dnr.sc.gov</a></p>
-                        <br>
-                        <br>
-                        <h4>Add this Application to your Mobile Device Home Screen</h4>
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="ios-btn" data-target="#instruct">Apple iOS</button>&nbsp;
-                        <button type="button" data-toggle="collapse" class="btn btn-default" id="android-btn" data-target="#instruct">Android OS</button>
-                        <br>
-                        <br>
-                        <div id="instruct" class="collapse">
-                            <div id="ios">
+                            <div class="collapse" id="instruct-ios">
                                 <h4>Step 1:</h4>
                                 <p>
                                     Visit the application in the Mobile Device's Safari Web Browser
                                 </p>
                                 <h4>Step 2:</h4>
                                 <p>
-                                    <img src="images/part1Instruct.png" alt="part2" id="instructPics">
+                                    <img src="images/part1Instruct.png" alt="part2" class="instructPics">
                                 </p>
                                 <h4>Step 3:</h4>
-                                <img src="images/part2Instruct.png" alt="part3" id="instructPics">
+                                <img src="images/part2Instruct.png" alt="part3" class="instructPics">
                                 <h4>Step 4:</h4>
                                 <p>
                                     Name the Application whatever you'd like then select "Add" in the upper right-hand corner.
                                 </p>
                             </div>
-                            <div id="android">
+                            <div class="collapse" id="instruct-android">
                                 <h4>Step 1:</h4>
                                 <p>
                                     Visit the application in your Mobile Device's Web Browser
@@ -477,21 +452,52 @@
                                     Select the options icon in the top right corner of the browser
                                 </p>
                                 <h4>Step 3:</h4>
-                                <img src="images/androidinst.png" alt="part3" id="instructPics">
+                                <img src="images/androidinst.png" alt="part3" class="instructPics">
                                 <h4>Step 4:</h4>
                                 <p>
                                     Name the Application whatever you'd like and then select "Add" in the upper right-hand corner.
                                 </p>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <div id="dnrcredits">
-                                <img src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" width="10%" height="10%">
-                                <h5><strong>South Carolina Department of Natural Resources</strong> </h5>
-                                <h5>Land, Water &amp; Conservation Division</h5>
-                            </div>
-                            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
-                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div id="dnrcredits">
+                        <img src="http://www.dnr.sc.gov/water/hydro/flowmap/docs/dnrLogo.png" alt="dnr logo" width="10%" height="10%">
+                        <h5><strong>South Carolina Department of Natural Resources</strong> </h5>
+                        <h5>Land, Water &amp; Conservation Division</h5>
+                        <h5><a href="http://dnr.sc.gov">www.dnr.sc.gov</a></h5>
+                    </div>
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="error" id="no-results">No results were found. Try another address or use a larger search distance.</p>
+                    <p class="error" id="select-points">Select a start and end point by clicking on access points on the map.</p>
+                    <p class="error" id="float-error-bw">Error: The Start point is downstream of the End point. Select points in upstream to downstream order.</p>
+                    <div class="error" id="float-error-mult">Error: Float Plan could not be created.
+                        <br>
+                        <br>
+                        <ul>
+                            <li>The Start and End points you selected are not connected, OR</li>
+                            <li>The Start point is downstream of the End point on a connected river.</li>
+                        </ul>
+                        Please check your start and end points, and try again.
                     </div>
                 </div>
             </div>
@@ -515,7 +521,7 @@
         <tbody>
         </tbody>
     </table>
-                
+
     <!-- MAJOR LIBRARIES -->
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
