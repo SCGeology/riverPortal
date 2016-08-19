@@ -514,6 +514,15 @@ $("#locate-btn").click(function() {
     onLocationFound();
 });
 
+//L.control.locate().addTo(map);
+
+var lc = L.control.locate({
+    position: 'bottomright',
+    strings: {
+        title: "Current Location"
+    }
+}).addTo(map);
+
 
 //INFORMATION/LEGEND BUTTON----------------------------------------
 $("#legend-btn").click(function() {
