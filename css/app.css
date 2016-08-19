@@ -60,7 +60,7 @@ input[type="radio"], input[type="checkbox"] {
     width:99%;
     padding:1%;
 }
-.gage {background-color:#c6e4ff}
+.gage {color:blue;text-decoration: underline;}
 #sidebar-hide-btn {
   margin-top: -2px;
 }
@@ -96,7 +96,6 @@ input[type="radio"], input[type="checkbox"] {
 .table {
   margin-bottom: 0px;
 }
-
 #legendbtn-navbar{
   float:right;
 }
@@ -116,8 +115,16 @@ input[type="radio"], input[type="checkbox"] {
     padding-bottom: 10px;
     float:left;
 }
+.instructPics {
+    width:30%;
+}
 #legendBox table{
     border-color: #bbb;
+}
+#contact-table {
+    width:90%;
+    margin: auto;
+    text-align: center;
 }
 #geocode-btn{
     margin-bottom:10px;
@@ -166,7 +173,7 @@ input[type="radio"], input[type="checkbox"] {
     overflow-x: hidden;
     overflow-y: auto;
 }
-#float-warning-st,#float-warning-en,#float-error-bw,#float-error-mult{
+.error{
     color:#ff471a;
     text-decoration: underline;
     display:none;
@@ -219,6 +226,15 @@ input[type="radio"], input[type="checkbox"] {
     position:absolute;
     top:11px;
 }
+#view-points {
+    position:absolute;
+    top:50px;
+}
+#view-connect {
+    position:absolute;
+    top:50px;
+    display:none;
+}
 .light{
     color:#FFF;
     border-color:#FFF;
@@ -235,11 +251,8 @@ input[type="radio"], input[type="checkbox"] {
     color:#555;
     background:none;
 }
-
-#view-connected {
-    position:absolute;
-    top:50px;
-    display:none;
+.all {
+    background-color:rgba(179, 230, 255,0.5);
 }
 #stream-name-fill{
     width:100%;
@@ -292,6 +305,7 @@ input[type="radio"], input[type="checkbox"] {
   line-height: 34px;
   text-align: center;
 }
+#view-list{display:none;}
 @media (max-width: 992px) {
   .navbar .navbar-brand {
     font-size: 18px;
@@ -326,6 +340,9 @@ input[type="radio"], input[type="checkbox"] {
         display:block;
         margin:5px auto;
         width:144px;
+    }
+    #view-list {
+        display:block;
     }
     #goToFloat{float:none;}
 }
