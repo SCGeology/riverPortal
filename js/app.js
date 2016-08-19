@@ -589,6 +589,20 @@ map.on('locationerror', function(){
     $("#not-located").show();
 });
 
+var lc = L.control.locate({
+    position: 'bottomright',
+    strings: {
+        title: "Current Location"
+    }
+}).addTo(map);
+
+//INFORMATION/LEGEND BUTTON----------------------------------------
+$("#legend-btn").click(function() {
+  $("#legendModal").modal("show");
+  $(".navbar-collapse.in").collapse("hide");
+  return false;
+});
+
 $("#locate-btn").click(function() {
     if (locateOn == false){
         
