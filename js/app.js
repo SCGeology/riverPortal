@@ -220,7 +220,7 @@ map = L.map("map", {
 basemap.addTo(map);
 
 map.on('baselayerchange', function(e){
-    $("#view-all").toggleClass("dark light");
+    $("#view-all, #view-points, #view-connected").toggleClass("dark light");
 });
 
 var baselayers = {"Topo":basemap,"Imagery":imagery};
